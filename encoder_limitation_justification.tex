@@ -1,0 +1,8 @@
+% Encoder Limitation Justification for SAE Variants
+% Explains why we use Gated, JumpReLU, and Switch SAEs in addition to TopK
+
+\section*{Justification for Multi-Variant SAE Exploration}
+
+Standard Top-K Sparse Autoencoders (SAEs) with linear encoders suffer from known limitations that may undermine feature recovery and interpretability fidelity. Recent work on SAE encoder insufficiency~\cite{rajamanoharan2024sae} demonstrates that linear encoders face amortization gaps (discrepancy between fast amortized encoding and inference-time optimization) and sparse recovery limits (failure to extract sparse representations when ground truth is highly sparse). Given these constraints, we investigate three state-of-the-art alternatives: Gated SAEs decouple feature detection from magnitude estimation, addressing feature splitting and polysemanticity issues inherent to standard architectures; JumpReLU SAEs employ discontinuous activations with straight-through estimators to achieve superior reconstruction fidelity without magnitude shrinkage; and Switch SAEs employ mixture-of-experts routing for sample-efficient learning at scale. By systematically comparing all four architectures, we contextualize the limitations of any single design choice and provide evidence that key motif-aligned features and ablation effects persist across diverse SAE configurations, strengthening claims about mechanistic interpretability.
+
+\bibliography{references}

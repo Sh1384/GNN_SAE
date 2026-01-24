@@ -7,7 +7,7 @@
 ---
 ## Overview
 
-The benchmarking system addresses all three reviewer comments:
+The benchmarking system provides comprehensive evaluation:
 
 1. **Baseline Models** - Demonstrates GNN's advantage over simple baselines
 2. **Data Sensitivity Analysis** - Validates hyperparameter choices (timesteps, noise)
@@ -310,7 +310,7 @@ Visually compare all 4 models showing GNN advantage over baselines
 #### Figure Specification
 - **Size**: 16 × 6 inches
 - **Format**: 2-panel plot
-- **DPI**: 300 (publication quality)
+- **DPI**: 300
 
 #### Panel 1: Mean vs Median Test Loss
 - **Type**: Side-by-side bar chart
@@ -648,7 +648,7 @@ MeanMedian:  ●         ← Tight but higher overall (baseline)
 ### Task J: `plot_statistical_summary_table()` (lines 980-1028)
 
 #### Purpose
-Comprehensive statistics table in publication-ready format
+Comprehensive statistics table in comprehensive format
 
 #### Figure Specification
 - **Size**: 18 × 8 inches
@@ -931,7 +931,7 @@ rank_biserial = 0.18 [95% CI: 0.02 to 0.35]
 ### Task H: `plot_pairwise_comparisons()` (lines 1152-1216)
 
 #### Purpose
-Visualize pairwise comparison results in publication-ready table format
+Visualize pairwise comparison results in comprehensive table format
 
 #### Figure Specification
 - **Size**: 20 × 8 inches
@@ -1252,8 +1252,7 @@ Loss
 ### Task N: `plot_individual_sensitivity_analysis()` (lines 924-1026)
 
 #### Purpose
-High-resolution individual sensitivity plots per model for publication
-
+High-resolution individual sensitivity plots per model
 #### Figure Specification Per Model
 - **Size**: 16 × 10 inches (per model)
 - **Format**: 2 subplots (timestep, noise)

@@ -818,7 +818,9 @@ class BenchmarkExperiment:
                             from gnn_train import MOTIF_LABELS
                             if 0 <= motif_idx < len(MOTIF_LABELS):
                                 motif_label = MOTIF_LABELS[motif_idx]
-                        except:
+                        except (AttributeError, IndexError, ValueError, ImportError) as e:
+                            # Could not extract motif label from batch
+                            print(f"Warning: Failed to extract motif label for graph {g}: {type(e).__name__}: {str(e)}")
                             pass
 
                     # Store metrics

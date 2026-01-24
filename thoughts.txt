@@ -1,7 +1,0 @@
-1. Change cells in last gat notebook after tuning run
-2. upload new gnn_train and benchmarking at sensitivity analysis and gat notebooks completion - P
-3. create copies of current hypp notebooks and restore the original ones back to original (single-motif only and new compute motif metrics) - P
-4. change colormap for UMAP and rerun with new colormap
-5. fyi, since I am running notebooks on colab, activations are being saved on google drive so don't worry about that. Also, don't make a separate script.        
-   Include this in the hyperparameter notebooks itself 
-6. decide equal_count_per_motif or not - P

@@ -39,9 +39,12 @@ import sys
 # Directories
 ABLATION_DIR = Path("ablations")
 
-def setup_directories(latent_dim, k, min_rpb, use_mixed_motifs=False):
+def setup_directories(latent_dim, k, min_rpb, use_mixed_motifs=False, variant=None):
     """Create experiment-specific directories."""
-    exp_name = f"latent{latent_dim}_k{k}_rpb{min_rpb:.2f}"
+    if variant:
+        exp_name = f"{variant}_latent{latent_dim}_k{k}_rpb{min_rpb:.2f}"
+    else:
+        exp_name = f"latent{latent_dim}_k{k}_rpb{min_rpb:.2f}"
     if use_mixed_motifs:
         exp_name += "_mixed"
     results_dir = ABLATION_DIR / f"interpretability_{exp_name}_results"
@@ -50,7 +53,7 @@ def setup_directories(latent_dim, k, min_rpb, use_mixed_motifs=False):
     plots_dir.mkdir(parents=True, exist_ok=True)
     return results_dir, plots_dir
 
-def load_correlation_data(min_rpb=0.05):
+def load_correlation_data(min_rpb=0.05, variant=None):
     """
     Load correlation data and extract features that are:
     1. Significant (FDR < 0.05)
@@ -58,13 +61,27 @@ def load_correlation_data(min_rpb=0.05):
 
     Args:
         min_rpb: Minimum absolute point-biserial correlation threshold
+        variant: SAE variant (topk, gated, jumprelu, switch). If specified, loads variant-specific correlations.
 
     Returns:
         motif_features: Dict mapping motif names to lists of features
         non_filtered_features: List of features that don't meet criteria
         filtered_df: DataFrame of features meeting both criteria
     """
-    df = pd.read_csv('outputs/latent_correlations.csv', index_col=0)
+    if variant:
+        corr_file = f'outputs/feature_analysis_{variant}/latent_correlations.csv'
+    else:
+        corr_file = 'outputs/latent_correlations.csv'
+
+    if not Path(corr_file).exists():
+        print(f"ERROR: Correlation data not found at {corr_file}")
+        if variant:
+            print(f"  Have you run: python analyze_feature_significance.py --variant {variant}?")
+        else:
+            print(f"  Have you run: python compare_sae_configs.py?")
+        return None, None, None
+
+    df = pd.read_csv(corr_file, index_col=0)
 
     # Apply dual filter: significance AND effect size
     filtered_df = df[(df['significant_fdr'] == True) & (df['rpb_abs'] >= min_rpb)]
@@ -110,7 +127,7 @@ def save_feature_mapping(motif_features, results_dir, min_rpb):
         json.dump(mapping, f, indent=2)
     print(f"Saved feature mapping to: {output_path}")
 
-def run_single_ablation(latent_dim, k, features, experiment_name, use_mixed_motifs=False):
+def run_single_ablation(latent_dim, k, features, experiment_name, use_mixed_motifs=False, variant=None):
     """Run a single ablation experiment."""
     feature_str = ','.join(features)
 
@@ -121,6 +138,10 @@ def run_single_ablation(latent_dim, k, features, experiment_name, use_mixed_moti
         "--feature", feature_str,
         "--experiment_name", experiment_name
     ]
+
+    # Add variant parameter if specified
+    if variant:
+        cmd.extend(["--variant", variant])
 
     # Add flag for mixed motifs
     if use_mixed_motifs:
@@ -141,7 +162,7 @@ def run_single_ablation(latent_dim, k, features, experiment_name, use_mixed_moti
     df = pd.read_csv(results_file)
     return df
 
-def run_random_control_trials(latent_dim, k, n_features, n_trials, non_filtered_features, use_mixed_motifs=False):
+def run_random_control_trials(latent_dim, k, n_features, n_trials, non_filtered_features, use_mixed_motifs=False, variant=None):
     """Run multiple random ablation trials and collect statistics."""
     print(f"\nRunning {n_trials} random control trials (ablating {n_features} features each)...")
 
@@ -157,7 +178,7 @@ def run_random_control_trials(latent_dim, k, n_features, n_trials, non_filtered_
 
         experiment_name = f"random_trial_{n_features}feat_n{trial}_k{k}"
 
-        df = run_single_ablation(latent_dim, k, random_features, experiment_name, use_mixed_motifs)
+        df = run_single_ablation(latent_dim, k, random_features, experiment_name, use_mixed_motifs, variant)
 
         if df is not None:
             # Compute mean impact per motif type for this trial
@@ -353,10 +374,12 @@ Examples:
   python run_interpretability_experiments.py --latent_dim 128 --k 8 --min_rpb 0.15 --use_mixed_motifs
         """
     )
-    parser.add_argument('--latent_dim', type=int, required=True,
-                       help='SAE latent dimension (e.g., 128, 256, 512)')
-    parser.add_argument('--k', type=int, required=True,
-                       help='SAE top-k sparsity (e.g., 4, 8, 16, 32)')
+    parser.add_argument('--variant', type=str, choices=['topk', 'gated', 'jumprelu', 'switch'],
+                       help='SAE variant (auto-loads best config if specified)')
+    parser.add_argument('--latent_dim', type=int, default=None,
+                       help='SAE latent dimension (e.g., 128, 256, 512). If --variant specified, auto-loads.')
+    parser.add_argument('--k', type=int, default=None,
+                       help='SAE top-k sparsity (e.g., 4, 8, 16, 32). If --variant specified, auto-loads.')
     parser.add_argument('--min_rpb', type=float, default=0,
                        help='Minimum |rpb| threshold. Recommended: 0.05-0.15')
     parser.add_argument('--n_random_trials', type=int, default=20,
@@ -364,6 +387,34 @@ Examples:
     parser.add_argument('--use_mixed_motifs', action='store_true',
                        help='Run ablations on mixed-motif graphs (4000-4999) using dominant motif labels')
     args = parser.parse_args()
+
+    # Handle variant-based config loading
+    if args.variant:
+        config_csv = Path('outputs/sae_config_comparison.csv')
+        if not config_csv.exists():
+            print(f"ERROR: {config_csv} not found!")
+            print(f"  Phase 2 (compare_sae_configs.py) must complete first")
+            return
+
+        df_config = pd.read_csv(config_csv)
+        variant_config = df_config[df_config['variant'] == args.variant]
+
+        if len(variant_config) == 0:
+            print(f"ERROR: No configuration found for variant {args.variant}")
+            return
+
+        best_config = variant_config.iloc[0]
+        args.latent_dim = int(best_config['latent_dim'])
+        args.k = int(best_config.get('k', 8))  # Default to 8 if not present
+
+        print(f"✓ Auto-loaded best config for {args.variant.upper()}:")
+        print(f"  latent_dim={args.latent_dim}, k={args.k}")
+        print(f"  composite_score={best_config['composite_score']:.3f}\n")
+    else:
+        # If no variant specified, require explicit latent_dim and k
+        if args.latent_dim is None or args.k is None:
+            print("ERROR: Either --variant OR (--latent_dim AND --k) must be specified")
+            return
 
     # Validate inputs
     if args.min_rpb < 0 or args.min_rpb > 1:
@@ -374,7 +425,7 @@ Examples:
         print("WARNING: Less than 10 random trials may not provide robust statistics")
 
     # Setup
-    results_dir, plots_dir = setup_directories(args.latent_dim, args.k, args.min_rpb, args.use_mixed_motifs)
+    results_dir, plots_dir = setup_directories(args.latent_dim, args.k, args.min_rpb, args.use_mixed_motifs, args.variant)
 
     print("="*70)
     print("MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING")
@@ -390,7 +441,12 @@ Examples:
     print(f"  Trials per feature count: {args.n_random_trials}")
 
     # Load data with filtering
-    motif_features, non_filtered_features, filtered_df = load_correlation_data(args.min_rpb)
+    motif_features, non_filtered_features, filtered_df = load_correlation_data(args.min_rpb, args.variant)
+
+    if motif_features is None:
+        print("ERROR: Could not load correlation data")
+        return
+
     save_feature_mapping(motif_features, results_dir, args.min_rpb)
 
     print(f"\nNon-filtered features available for random controls: {len(non_filtered_features)}")
@@ -424,9 +480,13 @@ Examples:
             continue
 
         print(f"\nAblating {feature_set_name} features ({len(features)})...")
-        experiment_name = f"{feature_set_name.lower().replace(' ', '_')}_l{args.latent_dim}_k{args.k}"
+        # Include variant in experiment name if specified
+        if args.variant:
+            experiment_name = f"{feature_set_name.lower().replace(' ', '_')}_{args.variant}_l{args.latent_dim}_k{args.k}"
+        else:
+            experiment_name = f"{feature_set_name.lower().replace(' ', '_')}_l{args.latent_dim}_k{args.k}"
 
-        df = run_single_ablation(args.latent_dim, args.k, features, experiment_name, args.use_mixed_motifs)
+        df = run_single_ablation(args.latent_dim, args.k, features, experiment_name, args.use_mixed_motifs, args.variant)
 
         if df is not None:
             for motif in df['Motif'].unique():
@@ -455,7 +515,7 @@ Examples:
     for n_features in unique_feature_counts:
         random_df = run_random_control_trials(args.latent_dim, args.k, n_features,
                                               args.n_random_trials, non_filtered_features,
-                                              args.use_mixed_motifs)
+                                              args.use_mixed_motifs, args.variant)
         random_df.to_csv(results_dir / f'random_{n_features}feat_trials.csv', index=False)
         random_results_dict[n_features] = random_df
 

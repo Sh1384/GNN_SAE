@@ -5,7 +5,7 @@ Generate Layer 2 Activations for Mixed-Motif Graphs
 Loads mixed-motif graphs (4000-4999) and generates layer2 activations
 using the current GNN checkpoint (checkpoints/gnn_model.pt).
 
-Saves to: outputs/activations/layer2_new/mixed/
+Saves to: outputs/activations/layer2/mixed/
 
 Usage:
     python generate_mixed_motif_activations.py
@@ -155,7 +155,7 @@ def main():
 
     checkpoint_path = Path("checkpoints/gnn_model.pt")
     graphs_dir = Path("virtual_graphs/data/all_graphs/raw_graphs")
-    output_dir = Path("outputs/activations/layer2_new/mixed")
+    output_dir = Path("outputs/activations/layer2/mixed")
 
     # Validate paths
     if not checkpoint_path.exists():

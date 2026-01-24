@@ -35,12 +35,13 @@ import networkx as nx
 from scipy import stats
 
 # Import your models
-from sparse_autoencoder import SparseAutoencoder
+from sparse_autoencoder import BaseSAE, TopKSAE, GatedSAE, JumpReLUSAE, SwitchSAE
 # Ensure GCNModel is importable
 try:
     from gnn_train import GCNModel
-except ImportError:
-    pass
+except ImportError as e:
+    print(f"Warning: Could not import GCNModel from gnn_train: {str(e)}")
+    GCNModel = None
 
 # Setup Directories
 ABLATION_DIR = Path("ablations")
@@ -52,28 +53,133 @@ ABLATION_DIR.mkdir(exist_ok=True)
 # Model Loading & Helpers
 # -----------------------------------------------------------------------------
 
-def load_sae_model(latent_dim, k):
-    """Load trained SAE model."""
-    checkpoint_path = f"checkpoints/sae_latent{latent_dim}_k{k}.pt"
-    if not Path(checkpoint_path).exists():
-        raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
+def detect_variant_from_path(checkpoint_path: str) -> str:
+    """Auto-detect SAE variant from checkpoint filename."""
+    path_str = checkpoint_path.lower()
+    if 'topk' in path_str:
+        return 'topk'
+    elif 'gated' in path_str:
+        return 'gated'
+    elif 'jumprelu' in path_str:
+        return 'jumprelu'
+    elif 'switch' in path_str:
+        return 'switch'
+    else:
+        # Default to TopK for backward compatibility with old naming
+        return 'topk'
 
-    model = SparseAutoencoder(input_dim=64, latent_dim=latent_dim, k=k)
-    checkpoint = torch.load(checkpoint_path, weights_only=False)
-    model.load_state_dict(checkpoint["model_state_dict"])
+def load_sae_model(variant=None, checkpoint_path=None, latent_dim=None, **kwargs):
+    """
+    Load trained SAE model with auto-detection of variant.
+
+    Args:
+        variant: One of 'topk', 'gated', 'jumprelu', 'switch' (auto-detected if None)
+        checkpoint_path: Explicit path to checkpoint (if None, constructed from params)
+        latent_dim: Latent dimension (required for TopK and Gated)
+        **kwargs: Additional variant-specific parameters (k, sparsity_coef, threshold_init, etc.)
+
+    Returns:
+        Loaded SAE model (subclass of BaseSAE)
+
+    Raises:
+        FileNotFoundError: If checkpoint file doesn't exist
+        ValueError: If variant is unknown or checkpoint is corrupted
+    """
+    # Auto-construct checkpoint path if not provided
+    if checkpoint_path is None:
+        if variant == 'topk':
+            checkpoint_path = f"checkpoints/sae_topk_latent{latent_dim}_k{kwargs.get('k')}_seed42.pt"
+        elif variant == 'gated':
+            sparsity_coef = kwargs.get('sparsity_coef', 1e-3)
+            checkpoint_path = f"checkpoints/sae_gated_latent{latent_dim}_lambda{sparsity_coef:.0e}_seed42.pt"
+        elif variant == 'jumprelu':
+            threshold_init = kwargs.get('threshold_init', 0.01)
+            checkpoint_path = f"checkpoints/sae_jumprelu_latent{latent_dim}_thresh{threshold_init:.0e}_bw1e-02_seed42.pt"
+        elif variant == 'switch':
+            num_experts = kwargs.get('num_experts', 8)
+            latent_per_expert = kwargs.get('latent_per_expert', 64)
+            k_per_expert = kwargs.get('k_per_expert', 8)
+            checkpoint_path = f"checkpoints/sae_switch_experts{num_experts}_latent{num_experts*latent_per_expert}_k{k_per_expert}_seed42.pt"
+        else:
+            # Fallback to TopK default
+            checkpoint_path = f"checkpoints/sae_latent{latent_dim}_k{kwargs.get('k')}.pt"
+
+    # Auto-detect variant if not provided
+    if variant is None:
+        variant = detect_variant_from_path(checkpoint_path)
+
+    # Check file exists
+    if not Path(checkpoint_path).exists():
+        raise FileNotFoundError(f"SAE checkpoint not found: {checkpoint_path}")
+
+    # Create appropriate model instance
+    try:
+        if variant == 'topk':
+            model = TopKSAE(input_dim=64, latent_dim=latent_dim, k=kwargs.get('k'))
+        elif variant == 'gated':
+            model = GatedSAE(input_dim=64, latent_dim=latent_dim, sparsity_coef=kwargs.get('sparsity_coef', 1e-3))
+        elif variant == 'jumprelu':
+            model = JumpReLUSAE(input_dim=64, latent_dim=latent_dim, threshold_init=kwargs.get('threshold_init', 0.01))
+        elif variant == 'switch':
+            model = SwitchSAE(input_dim=64, num_experts=kwargs.get('num_experts', 8),
+                             latent_per_expert=kwargs.get('latent_per_expert', 64),
+                             k_per_expert=kwargs.get('k_per_expert', 8))
+        else:
+            raise ValueError(f"Unknown SAE variant: {variant}")
+    except Exception as e:
+        raise ValueError(f"Failed to instantiate SAE model (variant={variant}): {str(e)}")
+
+    # Load checkpoint with error handling
+    try:
+        checkpoint = torch.load(checkpoint_path, weights_only=False)
+    except Exception as e:
+        raise ValueError(f"Failed to load SAE checkpoint file {checkpoint_path}: {str(e)}")
+
+    # Validate checkpoint structure
+    if "model_state_dict" not in checkpoint:
+        raise ValueError(f"Checkpoint missing 'model_state_dict' key at {checkpoint_path}")
+
+    # Load state dict with error handling
+    try:
+        model.load_state_dict(checkpoint["model_state_dict"])
+    except RuntimeError as e:
+        raise ValueError(f"Failed to load SAE state dict (shape mismatch?): {str(e)}")
+
     model.eval()
     return model
 
 def load_gnn_model():
-    """Load trained GNN model."""
+    """Load trained GNN model.
+
+    Returns:
+        GNN model on evaluation mode, or None if loading failed.
+    """
     try:
         from gnn_train import GCNModel
-        gnn_checkpoint_path = "checkpoints/gnn_model.pt"
-        if not Path(gnn_checkpoint_path).exists():
-            return None
+    except ImportError as e:
+        print(f"Error: Could not import GCNModel from gnn_train: {str(e)}")
+        return None
 
+    gnn_checkpoint_path = "checkpoints/gnn_model.pt"
+    if not Path(gnn_checkpoint_path).exists():
+        print(f"Warning: GNN checkpoint not found at {gnn_checkpoint_path}")
+        return None
+
+    try:
         # Load state dict to infer architecture
         state_dict = torch.load(gnn_checkpoint_path, weights_only=True)
+    except Exception as e:
+        print(f"Error: Failed to load GNN checkpoint file {gnn_checkpoint_path}: {str(e)}")
+        return None
+
+    # Validate required keys
+    required_keys = ['conv1.bias', 'conv2.bias']
+    missing_keys = [k for k in required_keys if k not in state_dict]
+    if missing_keys:
+        print(f"Error: GNN checkpoint missing keys: {missing_keys}")
+        return None
+
+    try:
         hidden_dim1 = state_dict['conv1.bias'].shape[0]
         hidden_dim2 = state_dict['conv2.bias'].shape[0]
 
@@ -81,30 +187,73 @@ def load_gnn_model():
         gnn.load_state_dict(state_dict)
         gnn.eval()
         return gnn
+    except RuntimeError as e:
+        print(f"Error: Failed to load GNN state dict (architecture mismatch?): {str(e)}")
+        return None
     except Exception as e:
-        print(f"Warning: Could not load GNN model: {e}")
+        print(f"Error: Unexpected error loading GNN model: {str(e)}")
         return None
 
 def get_feature_indices(feature_spec, latent_dim):
+    """Parse feature specification string and validate indices.
+
+    Args:
+        feature_spec: Feature specification (e.g., 'z496' or 'z496,z200')
+        latent_dim: Maximum valid feature index
+
+    Returns:
+        List of valid feature indices (0-based)
+
+    Raises:
+        ValueError: If feature_spec is empty or contains invalid indices
+    """
     features = []
+    if not feature_spec or not feature_spec.strip():
+        raise ValueError("Feature specification cannot be empty")
+
     for feat in feature_spec.split(','):
-        if feat.strip().startswith('z'):
-            try:
-                idx = int(feat.strip()[1:]) - 1
-                if 0 <= idx < latent_dim: features.append(idx)
-            except: pass
+        feat = feat.strip()
+        if not feat:
+            continue
+        if not feat.startswith('z'):
+            raise ValueError(f"Invalid feature format: {feat}. Expected format: z123")
+        try:
+            idx = int(feat[1:]) - 1  # Convert z-indexed to 0-based
+            if idx < 0 or idx >= latent_dim:
+                raise ValueError(f"Feature index {idx + 1} out of range [1, {latent_dim}]")
+            features.append(idx)
+        except ValueError as e:
+            # Re-raise with context
+            raise ValueError(f"Failed to parse feature {feat}: {str(e)}")
+        except Exception as e:
+            raise ValueError(f"Unexpected error parsing feature {feat}: {str(e)}")
+
+    if not features:
+        raise ValueError(f"No valid features parsed from specification: {feature_spec}")
+
     return features
 
 def load_graph_motif_metadata(graph_id):
-    """Load motif metadata for a specific graph."""
+    """Load motif metadata for a specific graph.
+
+    Args:
+        graph_id: ID of the graph
+
+    Returns:
+        Dict mapping motif names to node counts, or {} if file not found
+    """
     metadata_path = Path(f"virtual_graphs/data/all_graphs/graph_motif_metadata/graph_{graph_id}_metadata.csv")
     if not metadata_path.exists():
         return {}
 
-    df = pd.read_csv(metadata_path, index_col=0)
-    # Count nodes in each motif
-    motif_counts = df.sum(axis=0).to_dict()
-    return motif_counts
+    try:
+        df = pd.read_csv(metadata_path, index_col=0)
+        # Count nodes in each motif
+        motif_counts = df.sum(axis=0).to_dict()
+        return motif_counts
+    except Exception as e:
+        print(f"Warning: Failed to load motif metadata for graph {graph_id}: {str(e)}")
+        return {}
 
 def get_dominant_motif(graph_id):
     """Determine the majority motif for a graph."""
@@ -141,120 +290,263 @@ def simulate_expression(W, graph_id, steps=50, gamma=0.3, noise_std=0.01):
     return x
 
 def load_graph_data(graph_id):
+    """Load graph structure and compute edge information.
+
+    Args:
+        graph_id: ID of the graph
+
+    Returns:
+        Tuple of (edge_index, edge_weight, y_true, mask) or None if loading fails
+
+    Note:
+        Returns None silently on missing file (not uncommon in partial datasets),
+        but raises on corrupted files to alert user.
+    """
     path = Path(f"virtual_graphs/data/all_graphs/raw_graphs/graph_{graph_id}.pkl")
-    if not path.exists(): return None
-    with open(path, 'rb') as f:
-        G = pickle.load(f)
-    W = nx.to_numpy_array(G, weight='weight')
-    edge_index = torch.tensor(np.array(np.nonzero(W)), dtype=torch.long)
-    edge_weight = torch.tensor(W[W != 0], dtype=torch.float32)
-    y_true = torch.tensor(simulate_expression(W, graph_id), dtype=torch.float32)
-    rng = np.random.default_rng(42 + graph_id)
-    mask = torch.tensor(rng.random(len(G.nodes())) < 0.3, dtype=torch.bool)
-    return edge_index, edge_weight, y_true, mask
+    if not path.exists():
+        return None
+
+    try:
+        with open(path, 'rb') as f:
+            G = pickle.load(f)
+    except Exception as e:
+        print(f"Error: Failed to load graph {graph_id} from {path}: {str(e)}")
+        return None
+
+    try:
+        W = nx.to_numpy_array(G, weight='weight')
+        edge_index = torch.tensor(np.array(np.nonzero(W)), dtype=torch.long)
+        edge_weight = torch.tensor(W[W != 0], dtype=torch.float32)
+        y_true = torch.tensor(simulate_expression(W, graph_id), dtype=torch.float32)
+        rng = np.random.default_rng(42 + graph_id)
+        mask = torch.tensor(rng.random(len(G.nodes())) < 0.3, dtype=torch.bool)
+        return edge_index, edge_weight, y_true, mask
+    except Exception as e:
+        print(f"Error: Failed to process graph {graph_id} (corrupt data?): {str(e)}")
+        return None
 
 def evaluate_gnn_output(gnn_model, layer2_activations, edge_index, edge_weight):
-    if gnn_model is None: return None
-    with torch.no_grad():
-        h3 = gnn_model.conv3(layer2_activations, edge_index, edge_weight=edge_weight)
-        pred = h3.squeeze(-1)
-    return pred
+    """Evaluate GNN output for given layer2 activations.
+
+    Args:
+        gnn_model: GNN model (or None)
+        layer2_activations: Tensor of layer2 activations
+        edge_index: Edge indices
+        edge_weight: Edge weights
+
+    Returns:
+        Predictions tensor or None if gnn_model is None or inference fails
+    """
+    if gnn_model is None:
+        return None
+
+    try:
+        with torch.no_grad():
+            h3 = gnn_model.conv3(layer2_activations, edge_index, edge_weight=edge_weight)
+            pred = h3.squeeze(-1)
+
+        # Validate output
+        if pred.shape[0] != layer2_activations.shape[0]:
+            print(f"Error: GNN output shape mismatch: expected {layer2_activations.shape[0]} predictions, got {pred.shape[0]}")
+            return None
+        if torch.isnan(pred).any() or torch.isinf(pred).any():
+            print("Error: GNN output contains NaN or Inf values")
+            return None
+
+        return pred
+    except Exception as e:
+        print(f"Error: GNN inference failed: {str(e)}")
+        return None
 
 # -----------------------------------------------------------------------------
 # Main Analysis Logic
 # -----------------------------------------------------------------------------
 
 def run_ablation_experiment(latent_dim, k, ablate_indices, experiment_name, motif_type_filter=None, use_mixed_motifs=False):
+    """Run ablation experiment comparing original, full SAE, and ablated SAE reconstructions.
+
+    Args:
+        latent_dim: SAE latent dimension
+        k: TopK parameter
+        ablate_indices: List of feature indices to ablate
+        experiment_name: Name for this experiment (used in output filenames)
+        motif_type_filter: Optional filter for specific motif types
+        use_mixed_motifs: Use mixed-motif test set instead of single-motif
+
+    Returns:
+        DataFrame with ablation results (columns: graph_id, Motif, Loss (Original), Loss (Full SAE), Loss (Ablated), ...)
+    """
     print(f"Running Ablation: {experiment_name}")
-    sae_model = load_sae_model(latent_dim, k)
+    print(f"Ablating {len(ablate_indices)} features: {ablate_indices}")
+
+    # Load SAE model
+    try:
+        sae_model = load_sae_model(variant='topk', latent_dim=latent_dim, k=k)
+    except Exception as e:
+        print(f"Error: Failed to load SAE model: {str(e)}")
+        return pd.DataFrame()
+
+    # Load GNN model (optional, continue if not available)
     gnn_model = load_gnn_model()
 
     # Load graph IDs based on mode
-    if use_mixed_motifs:
-        # Use ALL mixed-motif graphs (4000-4999)
-        # These should be in outputs/activations/layer2_new/mixed/ (generated with current GNN)
-        mixed_dir = Path('outputs/activations/layer2_new/mixed')
-        if not mixed_dir.exists():
-            print(f"ERROR: Mixed-motif activations not found at {mixed_dir}")
-            print("Please run: python generate_mixed_motif_activations.py")
-            return pd.DataFrame()
+    try:
+        if use_mixed_motifs:
+            # Use ALL mixed-motif graphs (4000-4999)
+            # These should be in outputs/activations/layer2/mixed/
+            mixed_dir = Path('outputs/activations/layer2/mixed')
+            if not mixed_dir.exists():
+                print(f"Error: Mixed-motif activations not found at {mixed_dir}")
+                print("Please run: python generate_mixed_motif_activations.py")
+                return pd.DataFrame()
 
-        graph_ids = []
-        for act_file in mixed_dir.glob('graph_*.pt'):
-            graph_id = int(act_file.stem.replace('graph_', ''))
-            graph_ids.append(graph_id)
+            graph_ids = []
+            for act_file in mixed_dir.glob('graph_*.pt'):
+                try:
+                    graph_id = int(act_file.stem.replace('graph_', ''))
+                    graph_ids.append(graph_id)
+                except ValueError:
+                    print(f"Warning: Could not parse graph ID from filename: {act_file.stem}")
 
-        if len(graph_ids) == 0:
-            print(f"ERROR: No activation files found in {mixed_dir}")
-            print("Please run: python generate_mixed_motif_activations.py")
-            return pd.DataFrame()
+            if len(graph_ids) == 0:
+                print(f"Error: No activation files found in {mixed_dir}")
+                print("Please run: python generate_mixed_motif_activations.py")
+                return pd.DataFrame()
 
-        graph_ids = sorted(graph_ids)
-        print(f"Found {len(graph_ids)} mixed-motif graphs (range: {min(graph_ids)}-{max(graph_ids)})")
-    else:
-        # Use single-motif test graphs
-        with open('outputs/test_graph_ids.json', 'r') as f:
-            graph_ids = json.load(f)['graph_ids']
+            graph_ids = sorted(graph_ids)
+            print(f"Found {len(graph_ids)} mixed-motif graphs (range: {min(graph_ids)}-{max(graph_ids)})")
+        else:
+            # Use single-motif test graphs
+            test_graph_ids_file = Path('outputs/test_graph_ids.json')
+            if not test_graph_ids_file.exists():
+                print(f"Error: Test graph IDs file not found at {test_graph_ids_file}")
+                return pd.DataFrame()
+
+            try:
+                with open(test_graph_ids_file, 'r') as f:
+                    graph_ids = json.load(f)['graph_ids']
+            except Exception as e:
+                print(f"Error: Failed to load test graph IDs: {str(e)}")
+                return pd.DataFrame()
+
+            print(f"Loaded {len(graph_ids)} test graphs")
+    except Exception as e:
+        print(f"Error: Failed to load graph ID list: {str(e)}")
+        return pd.DataFrame()
 
     results = []
+    skipped_count = 0
+    error_count = 0
     print(f"Processing {len(graph_ids)} graphs...")
 
     for graph_id in tqdm(graph_ids):
-        # 1. Determine Motif
-        motif_label = get_dominant_motif(graph_id)
+        try:
+            # 1. Determine Motif
+            motif_label = get_dominant_motif(graph_id)
 
-        # Apply optional filter
-        if motif_type_filter and motif_type_filter.lower() != 'all':
-            # Simple check if filter string is part of label
-            if motif_type_filter.lower() not in motif_label.lower().replace(" ", "_"):
-                continue
+            # Apply optional filter
+            if motif_type_filter and motif_type_filter.lower() != 'all':
+                # Simple check if filter string is part of label
+                if motif_type_filter.lower() not in motif_label.lower().replace(" ", "_"):
+                    continue
 
-        # 2. Load Data
-        if use_mixed_motifs:
-            # Mixed motifs are in layer2_new/mixed (generated with current GNN)
-            act_file = Path(f"outputs/activations/layer2_new/mixed/graph_{graph_id}.pt")
+            # 2. Load Activations
+            if use_mixed_motifs:
+                # Mixed motifs are in layer2/mixed
+                act_file = Path(f"outputs/activations/layer2/mixed/graph_{graph_id}.pt")
+            else:
+                # Single motifs use layer2/test
+                act_file = Path(f"outputs/activations/layer2/test/graph_{graph_id}.pt")
+
             if not act_file.exists():
-                continue
-        else:
-            # Single motifs use layer2_new/test
-            act_file = Path(f"outputs/activations/layer2_new/test/graph_{graph_id}.pt")
-            if not act_file.exists():
+                skipped_count += 1
                 continue
 
-        original_acts = torch.load(act_file, weights_only=True)
+            try:
+                original_acts = torch.load(act_file, weights_only=True)
+            except Exception as e:
+                print(f"Error: Failed to load activations for graph {graph_id}: {str(e)}")
+                error_count += 1
+                continue
 
-        # 3. SAE Reconstructions
-        with torch.no_grad():
-            latents_full = sae_model.encode(original_acts)
-            reconstructed_full = sae_model.decoder(latents_full)
-            
-            latents_ablated = latents_full.clone()
-            latents_ablated[:, ablate_indices] = 0.0
-            reconstructed_ablated = sae_model.decoder(latents_ablated)
+            # Validate activations shape
+            if original_acts.shape[1] != 64:
+                print(f"Error: Graph {graph_id} has wrong activation dim {original_acts.shape[1]}, expected 64")
+                error_count += 1
+                continue
 
-        # 4. GNN Inference
-        graph_data = load_graph_data(graph_id)
-        if gnn_model and graph_data:
-            edge_index, edge_weight, y_true, mask = graph_data
-            
-            out_original = evaluate_gnn_output(gnn_model, original_acts, edge_index, edge_weight)
-            out_full_sae = evaluate_gnn_output(gnn_model, reconstructed_full, edge_index, edge_weight)
-            out_ablated = evaluate_gnn_output(gnn_model, reconstructed_ablated, edge_index, edge_weight)
+            # 3. SAE Reconstructions
+            try:
+                with torch.no_grad():
+                    latents_full = sae_model.encode(original_acts)
+                    reconstructed_full = sae_model.decoder(latents_full)
 
-            if out_original is not None:
-                loss_original = torch.mean(((out_original - y_true)[mask]) ** 2).item()
-                loss_full_sae = torch.mean(((out_full_sae - y_true)[mask]) ** 2).item()
-                loss_ablated = torch.mean(((out_ablated - y_true)[mask]) ** 2).item()
+                    latents_ablated = latents_full.clone()
+                    latents_ablated[:, ablate_indices] = 0.0
+                    reconstructed_ablated = sae_model.decoder(latents_ablated)
+            except Exception as e:
+                print(f"Error: SAE processing failed for graph {graph_id}: {str(e)}")
+                error_count += 1
+                continue
 
-                results.append({
-                    'graph_id': graph_id,
-                    'Motif': motif_label,
-                    'Loss (Original)': loss_original,
-                    'Loss (Full SAE)': loss_full_sae,
-                    'Loss (Ablated)': loss_ablated,
-                    'SAE Degradation': loss_full_sae - loss_original,
-                    'Ablation Impact': loss_ablated - loss_full_sae
-                })
+            # 4. GNN Inference
+            graph_data = load_graph_data(graph_id)
+            if graph_data is None:
+                skipped_count += 1
+                continue
+
+            if gnn_model:
+                try:
+                    edge_index, edge_weight, y_true, mask = graph_data
+
+                    out_original = evaluate_gnn_output(gnn_model, original_acts, edge_index, edge_weight)
+                    out_full_sae = evaluate_gnn_output(gnn_model, reconstructed_full, edge_index, edge_weight)
+                    out_ablated = evaluate_gnn_output(gnn_model, reconstructed_ablated, edge_index, edge_weight)
+
+                    if out_original is None or out_full_sae is None or out_ablated is None:
+                        error_count += 1
+                        continue
+
+                    # Compute losses
+                    try:
+                        loss_original = torch.mean(((out_original - y_true)[mask]) ** 2).item()
+                        loss_full_sae = torch.mean(((out_full_sae - y_true)[mask]) ** 2).item()
+                        loss_ablated = torch.mean(((out_ablated - y_true)[mask]) ** 2).item()
+
+                        # Validate loss values
+                        if any(not np.isfinite(v) for v in [loss_original, loss_full_sae, loss_ablated]):
+                            print(f"Error: Non-finite loss values for graph {graph_id}: {loss_original}, {loss_full_sae}, {loss_ablated}")
+                            error_count += 1
+                            continue
+
+                        results.append({
+                            'graph_id': graph_id,
+                            'Motif': motif_label,
+                            'Loss (Original)': loss_original,
+                            'Loss (Full SAE)': loss_full_sae,
+                            'Loss (Ablated)': loss_ablated,
+                            'SAE Degradation': loss_full_sae - loss_original,
+                            'Ablation Impact': loss_ablated - loss_full_sae
+                        })
+                    except Exception as e:
+                        print(f"Error: Loss computation failed for graph {graph_id}: {str(e)}")
+                        error_count += 1
+                except Exception as e:
+                    print(f"Error: GNN inference failed for graph {graph_id}: {str(e)}")
+                    error_count += 1
+        except Exception as e:
+            print(f"Error: Unexpected error processing graph {graph_id}: {str(e)}")
+            error_count += 1
+            continue
+
+    # Print summary stats
+    print(f"\n{'='*60}")
+    print(f"Processing Summary:")
+    print(f"  Successfully processed: {len(results)} graphs")
+    print(f"  Skipped (missing files): {skipped_count} graphs")
+    print(f"  Errors: {error_count} graphs")
+    print(f"  Total: {len(results) + skipped_count + error_count} / {len(graph_ids)}")
+    print(f"{'='*60}\n")
 
     return pd.DataFrame(results)
 
@@ -407,17 +699,29 @@ def plot_boxplots(df, experiment_name):
 # -----------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--latent_dim', type=int, required=True)
-    parser.add_argument('--k', type=int, required=True)
-    parser.add_argument('--feature', type=str, required=True, help='e.g. z496 or z496,z200')
-    parser.add_argument('--motif_type', type=str, default='all', help='Optional filter')
+    """Main entry point for ablation analysis.
+
+    Command-line interface:
+        python run_ablation.py --latent_dim 512 --k 16 --feature z496
+    """
+    parser = argparse.ArgumentParser(description="SAE Feature Ablation Analysis")
+    parser.add_argument('--latent_dim', type=int, required=True, help='SAE latent dimension')
+    parser.add_argument('--k', type=int, required=True, help='TopK parameter')
+    parser.add_argument('--feature', type=str, required=True, help='Feature(s) to ablate (e.g., z496 or z496,z200)')
+    parser.add_argument('--motif_type', type=str, default='all', help='Optional filter for specific motif types')
     parser.add_argument('--experiment_name', type=str, default=None, help='Optional experiment name override')
     parser.add_argument('--use_mixed_motifs', action='store_true',
                        help='Run ablations on mixed-motif graphs (4000+) using dominant motif labels')
     args = parser.parse_args()
 
-    ablate_indices = get_feature_indices(args.feature, args.latent_dim)
+    try:
+        # Parse feature indices with validation
+        print(f"Feature specification: {args.feature}")
+        ablate_indices = get_feature_indices(args.feature, args.latent_dim)
+        print(f"Parsed ablation indices: {ablate_indices}")
+    except ValueError as e:
+        print(f"Error: {str(e)}")
+        return 1
 
     # Name experiment
     if args.experiment_name:
@@ -426,41 +730,75 @@ def main():
         feat_str = "multi" if "," in args.feature else args.feature
         experiment_name = f"ablate_{feat_str}"
 
-    print(f"Ablating indices: {ablate_indices}")
-
-    # Run Analysis
-    df = run_ablation_experiment(args.latent_dim, args.k, ablate_indices, experiment_name,
-                                 args.motif_type, args.use_mixed_motifs)
+    try:
+        # Run Analysis
+        df = run_ablation_experiment(
+            args.latent_dim, args.k, ablate_indices, experiment_name,
+            args.motif_type, args.use_mixed_motifs
+        )
+    except Exception as e:
+        print(f"Error: Ablation experiment failed: {str(e)}")
+        return 1
 
     # Save results to CSV
-    results_file = ABLATION_DIR / "results" / f"{experiment_name}_results.csv"
-    df.to_csv(results_file, index=False)
-    print(f"\nSaved results to: {results_file}")
+    try:
+        results_file = ABLATION_DIR / "results" / f"{experiment_name}_results.csv"
+        results_file.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(results_file, index=False)
+        print(f"\nSaved results to: {results_file}")
+    except Exception as e:
+        print(f"Error: Failed to save results CSV: {str(e)}")
+        return 1
 
     # Calculate Stats
     print("\n" + "="*60)
     print("RESULTS SUMMARY")
     print("="*60)
 
-    if df.empty or 'Ablation Impact' not in df.columns:
-        print("ERROR: No results generated. DataFrame is empty or missing expected columns.")
-        print(f"DataFrame shape: {df.shape}")
-        print(f"DataFrame columns: {df.columns.tolist()}")
-        return
+    if df.empty:
+        print("Warning: No results generated. DataFrame is empty.")
+        print("This may occur if:")
+        print("  - No activation files were found")
+        print("  - All graphs were filtered out")
+        print("  - All graphs produced errors during processing")
+        return 1
 
-    # Overall Impact
-    mean_imp = df['Ablation Impact'].mean()
-    p_val = stats.wilcoxon(df['Loss (Full SAE)'], df['Loss (Ablated)'])[1]
+    if 'Ablation Impact' not in df.columns:
+        print("Error: DataFrame missing 'Ablation Impact' column.")
+        print(f"Available columns: {df.columns.tolist()}")
+        return 1
 
-    print(f"Mean Ablation Impact: {mean_imp:.2e} (p={p_val:.2e})")
+    # Overall Impact Stats
+    try:
+        mean_imp = df['Ablation Impact'].mean()
+        std_imp = df['Ablation Impact'].std()
+        print(f"\nMean Ablation Impact: {mean_imp:.4e} ± {std_imp:.4e}")
 
-    # Breakdown by Motif
-    print("\nImpact by Motif Type:")
-    motif_stats = df.groupby('Motif')['Ablation Impact'].agg(['count', 'mean', 'std'])
-    print(motif_stats)
+        # Statistical test
+        try:
+            p_val = stats.wilcoxon(df['Loss (Full SAE)'], df['Loss (Ablated)'])[1]
+            print(f"Wilcoxon signed-rank test p-value: {p_val:.4e}")
+        except Exception as e:
+            print(f"Warning: Could not compute Wilcoxon test: {str(e)}")
 
-    # Plot
-    plot_boxplots(df, experiment_name)
+        # Breakdown by Motif
+        print("\nImpact by Motif Type:")
+        motif_stats = df.groupby('Motif')['Ablation Impact'].agg(['count', 'mean', 'std'])
+        print(motif_stats)
+    except Exception as e:
+        print(f"Error: Failed to compute statistics: {str(e)}")
+        return 1
+
+    # Plot results
+    try:
+        plot_boxplots(df, experiment_name)
+    except Exception as e:
+        print(f"Warning: Failed to generate plot: {str(e)}")
+        # Don't fail if plotting fails, as results are already saved
+
+    print("\n✓ Ablation analysis completed successfully!")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())
