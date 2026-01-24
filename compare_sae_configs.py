@@ -6,15 +6,18 @@ Runs motif analysis across different SAE configurations (latent_dim, k combinati
 and summarizes key metrics to identify optimal hyperparameters.
 
 Usage:
-    python compare_sae_configs.py
+    python compare_sae_configs.py                    # Default: sort by max_rpb_abs
+    python compare_sae_configs.py --metric max_rpb_abs
+    python compare_sae_configs.py --metric composite_score
 
 Output:
     - CSV file with comparison metrics
     - Summary table printed to console
-    - Recommended configuration based on composite score
+    - Recommended configuration based on selected metric
 """
 
 import json
+import argparse
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -624,6 +627,26 @@ def analyze_switch_configuration(num_experts, latent_per_expert, k_per_expert):
 
 def main():
     """Run analysis for all configurations and generate summary."""
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(
+        description='SAE Hyperparameter Comparison',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python compare_sae_configs.py                    # Default: sort by max_rpb_abs
+  python compare_sae_configs.py --metric max_rpb_abs
+  python compare_sae_configs.py --metric composite_score
+        """
+    )
+    parser.add_argument(
+        '--metric',
+        type=str,
+        choices=['max_rpb_abs', 'composite_score'],
+        default='max_rpb_abs',
+        help='Metric to use for ranking configurations (default: max_rpb_abs)'
+    )
+    args = parser.parse_args()
+
     print("="*70)
     print("SAE HYPERPARAMETER COMPARISON")
     print("="*70)
@@ -632,6 +655,7 @@ def main():
     total_configs = sum(len(configs) for configs in VARIANT_CONFIGS.values())
     print(f"\nTesting {total_configs} configurations across all variants...")
     print(f"NOTE: Skipping significance testing for speed")
+    print(f"RANKING METRIC: {args.metric}")
 
     results = []
     all_correlations = []  # Collect correlation data from all configs
@@ -715,8 +739,9 @@ def main():
     # Create summary DataFrame
     df_results = pd.DataFrame(results)
 
-    # Sort by composite score
-    df_results = df_results.sort_values('composite_score', ascending=False)
+    # Sort by selected metric
+    df_results = df_results.sort_values(args.metric, ascending=False)
+    print(f"✓ Sorted configurations by {args.metric}")
 
     # Save to CSV
     output_file = 'outputs/sae_config_comparison.csv'
@@ -776,21 +801,34 @@ def main():
     print("\n" + "="*70)
     print("INTERPRETATION GUIDE")
     print("="*70)
-    print("""
-  Composite Score Components (no significance testing):
-    • 50% - Max correlation (effect size)
-    • 35% - Best F1 score (predictive performance)
-    • 15% - Capacity utilization (1 - dead feature rate)
+    print(f"""
+  Ranking Metric Used: {args.metric}
+
+  Metric Descriptions:
+
+    max_rpb_abs (Default):
+      • Direct measure of feature-motif correlation strength
+      • Simpler, more interpretable
+      • Recommended for most use cases
+      • Selects config with strongest feature-motif alignment
+
+    composite_score:
+      • Weighted combination: 50% max_rpb_abs + 35% F1 + 15% capacity
+      • Balances effect size with predictive performance and efficiency
+      • Use if you want to optimize for multiple factors simultaneously
+
+  To use a different metric:
+    python compare_sae_configs.py --metric composite_score
 
   Good Configuration Indicators:
-    ✓ Composite score > 0.5
     ✓ Max |rpb| > 0.3
     ✓ Best F1 > 0.3
     ✓ Dead feature rate < 0.5
+    ✓ Composite score > 0.5 (if using composite_score metric)
 
   To use the recommended configuration, update your notebook:
-    LATENT_DIM = {best_latent}
-    K = {best_k}
+    LATENT_DIM = {int(best['latent_dim'])}
+    K = {int(best['k'])}
     """.format(best_latent=int(best['latent_dim']), best_k=int(best['k'])))
 
 def load_data_and_model_gated(latent_dim, sparsity_coef):

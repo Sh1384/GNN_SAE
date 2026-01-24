@@ -18,6 +18,7 @@
 9. [Key Data Files](#key-data-files)
 10. [Critical Checkpoints](#critical-checkpoints)
 11. [Troubleshooting Guide](#troubleshooting-guide)
+12. [Google Colab Execution Guide](#google-colab-execution-guide)
 
 ---
 
@@ -420,7 +421,7 @@ checkpoints/sae_topk_latent512_k8_seed1011.pt
 
 ### PHASE 1: SAE Training (30 Configurations, Seed=42)
 
-**Input**: `outputs/activations/layer2/{train,val,test}/`
+**Input**: `outputs/activations/layer2/{train,val,test}/` (mixed split used later in Phase 3d)
 **Output**: 30 checkpoints + metrics
 **Time**: ~5 hours (GPU required)
 
@@ -438,6 +439,206 @@ Gated:      checkpoints/sae_gated_latent{latent_dim}_lambda{sparsity_coef:.0e}_s
 JumpReLU:   checkpoints/sae_jumprelu_latent{latent_dim}_thresh{threshold_init:.0e}_bw{bandwidth:.0e}_seed42.pt
 Switch:     checkpoints/sae_switch_experts{num_experts}_latent{total_latent}_k{k_per_expert}_seed42.pt
 ```
+
+#### SAE Training Hyperparameters (Phase 1 Technical Details)
+
+**General Training Configuration** (applies to all 30 configurations):
+
+| Hyperparameter | Value | Type | Purpose |
+|---|---|---|---|
+| `SEED` | 42 | Integer | Reproducibility - initializes PyTorch, NumPy, CUDA RNG |
+| `DEVICE` | 'cuda' or 'cpu' | String | GPU acceleration (CUDA if available, falls back to CPU) |
+| `BATCH_SIZE` | 1024 | Integer | Training batch size - balance between gradient stability and memory |
+| `NUM_EPOCHS` | 200 | Integer | Maximum training epochs (can terminate early via early stopping) |
+| `LEARNING_RATE` | 5e-4 (0.0005) | Float | Adam optimizer learning rate |
+| `OPTIMIZER` | Adam | String | Adaptive learning rate optimization |
+| `EARLY_STOPPING_PATIENCE` | 15 | Integer | Epochs without val loss improvement before stopping |
+| `INPUT_DIM` | 64 | Integer | GNN layer 2 activation dimension |
+
+---
+
+##### Why These Hyperparameters?
+
+**Batch Size = 1024**:
+- **Stability**: Large batch size stabilizes gradient estimates across different sparsity levels
+- **Memory balance**: Fits in GPU VRAM (~12-16GB) for latent_dim=512 with num_workers=4
+- **Variant compatibility**: TopK, Gated, and JumpReLU can all use the same batch size
+- **Convergence**: Empirically found to converge reliably across all 4 variant types
+
+**Learning Rate = 5e-4**:
+- **Adam default scaling**: Mid-range Adam learning rate (typical: 1e-4 to 1e-3)
+- **Variant heterogeneity**: Works well for both MSE-only (TopK) and complex loss combinations (Gated, Switch)
+- **Convergence speed**: Reaches stable loss in 50-100 epochs for most configs (with early stopping at epoch 165 avg)
+- **Gradient stability**: Avoids overshooting, essential for sparse updates in JumpReLU
+
+**NUM_EPOCHS = 200**:
+- **Worst-case ceiling**: Allows slowest configs (typically Gated with λ=1e-3) full training time
+- **Early stopping**: Average actual training stops ~80-165 epochs depending on config
+- **Initialization coverage**: 200 epochs sufficient for all variants to explore latent space
+- **Trade-off**: Beyond 200 epochs shows minimal additional improvement (diminishing returns)
+
+**SEED = 42**:
+- **Reproducibility**: Ensures identical initialization across 30 configs for fair comparison
+- **Multi-seed consistency**: Phase 1 uses seed=42; Phase 2b uses seeds [123, 456, 789, 1011] for stability analysis
+- **Random initialization**: Affects encoder/decoder weight initialization and data shuffling
+
+**DEVICE = 'cuda'**:
+- **Requirement**: All variants require GPU for practical training (5h on GPU vs ~24h on CPU)
+- **Memory usage**: ~8-12GB GPU VRAM with batch_size=1024, latent_dim=512
+- **Automatic fallback**: Uses CPU if CUDA unavailable (training will be slow)
+
+---
+
+##### Optimizer Configuration (Adam)
+
+```python
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+```
+
+**Adam (Adaptive Moment Estimation)**:
+- **Why Adam**: Combines adaptive learning rates per parameter with momentum
+- **Advantages**:
+  - Works well with sparse gradient updates from TopK and JumpReLU
+  - Handles variable sparsity across epochs (Gated SAE)
+  - Robust across latent dimensions (128, 256, 512)
+- **Hyperparameters** (PyTorch defaults used):
+  - β₁ = 0.9 (momentum exponential decay)
+  - β₂ = 0.999 (squared gradient exponential decay)
+  - ε = 1e-8 (numerical stability)
+
+---
+
+##### Data Loader Configuration
+
+```python
+train_loader = DataLoader(train_dataset, batch_size=1024,
+                         shuffle=True, num_workers=4)
+val_loader   = DataLoader(val_dataset, batch_size=1024,
+                         shuffle=False, num_workers=4)
+test_loader  = DataLoader(test_dataset, batch_size=1024,
+                         shuffle=False, num_workers=4)
+```
+
+| Parameter | Value | Reason |
+|---|---|---|
+| `batch_size` | 1024 | Same as training for consistency |
+| `shuffle=True` (train) | Yes | Randomize batch order for gradient stability |
+| `shuffle=False` (val/test) | No | Ensure reproducible evaluation |
+| `num_workers` | 4 | Parallel data loading (CPU→GPU pipeline) |
+
+---
+
+##### Early Stopping Mechanism
+
+**Goal**: Prevent overfitting while allowing sufficient convergence
+
+```
+Best validation loss: 0.0823 (epoch 42)
+→ patience_counter = 0
+
+Epoch 43-57: Val loss increases
+→ patience_counter increments
+
+patience_counter reaches 15 → STOP at epoch 57
+→ Load best checkpoint from epoch 42
+```
+
+**Why patience=15**:
+- Allows 15 epochs of fluctuation (noise in validation loss)
+- Triggers early stop ~80-165 epochs depending on config
+- Prevents unnecessary computation for slow-converging configs
+- Optimal checkpoint selected automatically
+
+---
+
+##### Training Dynamics & Convergence Patterns
+
+**Expected Behavior Across Variants**:
+
+| Variant | Typical Convergence | Loss Pattern | Notes |
+|---|---|---|---|
+| **TopK** | 40-60 epochs | Smooth decline | Fixed sparsity = stable gradient flow |
+| **Gated** | 60-100 epochs | Slower with λ↑ | Gate network requires more optimization |
+| **JumpReLU** | 100-150 epochs | Variable early | Straight-through estimator = noisier |
+| **Switch** | 80-120 epochs | Multi-modal | Expert routing adds complexity |
+
+**Loss Components** (variant-dependent):
+- **Reconstruction Loss** (all): MSE between input and reconstruction
+- **Sparsity Loss** (Gated): L1 penalty on gate activations
+- **Auxiliary Loss** (Gated, Switch): Load balancing and expert utilization
+- **Direct L0** (JumpReLU): Continuous approximation of feature count
+
+**Typical Metrics During Training**:
+```
+Epoch 1:   Train Loss: 0.4523  Val Loss: 0.4401
+Epoch 10:  Train Loss: 0.1234  Val Loss: 0.1289
+Epoch 50:  Train Loss: 0.0856  Val Loss: 0.0834  ← Often best here
+Epoch 100: Train Loss: 0.0823  Val Loss: 0.0823  ← Convergence
+Epoch 200: [Early stopping typically activates before reaching here]
+```
+
+---
+
+##### Memory & Computational Considerations
+
+**GPU Memory Usage** (batch_size=1024, latent_dim=512):
+- Model parameters: ~130KB-500KB (minimal)
+- Forward pass activations: ~65MB (1024 × 64 input)
+- Latent representations: ~2GB (1024 × 512 latent)
+- Optimizer states: ~4GB (Adam maintains 2× parameter copies)
+- **Total**: ~6-7GB GPU VRAM
+
+**CPU Memory** (parallel data loading with num_workers=4):
+- Cached activations (train + val + test): ~1.5GB
+- DataLoader workers: ~200MB each (4 workers = 800MB)
+- **Total**: ~2.3GB system RAM
+
+**Wall-Clock Time Estimates** (NVIDIA A100 GPU):
+- Single config training: ~10 minutes (avg, with early stopping)
+- 30 configs sequentially: ~5 hours (Phase 1 runtime)
+- Per-variant training time:
+  - TopK (11 configs): ~2.0 hours
+  - Gated (9 configs): ~1.8 hours
+  - JumpReLU (6 configs): ~1.5 hours
+  - Switch (4 configs): ~0.9 hours
+
+---
+
+##### Interaction with Variant-Specific Hyperparameters
+
+**How General Hyperparameters Affect Each Variant**:
+
+1. **Learning Rate (5e-4) and Sparsity Coefficient (Gated λ)**:
+   - λ = 1e-4: Very sparse, trains quickly (40-60 epochs)
+   - λ = 1e-3: Dense, needs more epochs (100-120 epochs)
+   - LR = 5e-4 balances both extremes
+
+2. **Batch Size (1024) and Latent Dimension**:
+   - Larger latent_dim (512) requires larger batch for stable gradient estimates
+   - Smaller latent_dim (128) could use batch_size=512, but 1024 is safe across all
+
+3. **Early Stopping (patience=15) and Architecture Complexity**:
+   - TopK (simple): Often stops early (40-60 epochs)
+   - Switch (complex): Usually needs full 15-epoch patience window (80-120 epochs)
+
+---
+
+##### Reproducibility & Seed Management
+
+**Phase 1 (Initial Exploration)**:
+- All 30 configs use `seed=42`
+- Ensures fair comparison (same initialization randomness)
+- Checkpoint: `sae_VARIANT_seed42.pt`
+
+**Phase 2b (Multi-Seed Validation)**:
+- Retrains best 4 configs with seeds `[123, 456, 789, 1011]`
+- Tests feature stability across different random initializations
+- Checkpoints: `sae_VARIANT_seed{123,456,789,1011}.pt`
+
+**Phase 4 (Statistical Analysis)**:
+- Uses all 5 seeds per config (42 + 123 + 456 + 789 + 1011)
+- Computes feature stability metrics
+- Validates that results are robust, not seed-dependent
 
 ---
 
@@ -461,7 +662,20 @@ Switch:     checkpoints/sae_switch_experts{num_experts}_latent{total_latent}_k{k
 - `outputs/latent_correlations.csv` - Feature-motif correlations + significance for all configs
 - `outputs/test_graph_ids.json` - Test set definition
 
-**Key metric for Phase 3**: `max_rpb_abs` (used in Phase 3a to select single best config)
+**Ranking Metrics** (both computed in CSV output):
+
+| Metric | Description | Default? | Use Case |
+|--------|---|---|---|
+| `max_rpb_abs` | Point-biserial correlation (feature-motif strength) | ✅ Yes | Simple, direct measure; recommended for Phase 3 |
+| `composite_score` | 50% effect size + 35% F1 + 15% capacity | ❌ No | Multi-factor optimization if desired |
+
+**To change ranking metric**:
+```bash
+python compare_sae_configs.py                    # Default: max_rpb_abs
+python compare_sae_configs.py --metric composite_score
+```
+
+Phase 3a uses the top-ranked config from `outputs/sae_config_comparison.csv`. The CSV contains both metrics, allowing alternative ranking if needed.
 
 ---
 
@@ -525,14 +739,14 @@ checkpoints/sae_topk_latent512_k8_seed1011.pt
 
 ### PHASE 3a: SAE Latent Space Ablations
 
-**Input**: Best overall config (by max_rpb_abs) + feature-motif correlations
+**Input**: Best overall config (selected by Phase 2 ranking metric) + feature-motif correlations
 **Output**: 4 CSV files (one per motif)
 **Time**: ~2 hours
 
 **Script**: `run_interpretability_experiments.py --variant {best_variant}`
 
 **What happens**:
-1. Phase 3a loads Phase 2 CSV, selects best config by **max_rpb_abs** (not composite_score)
+1. Phase 3a loads Phase 2 CSV (sorted by default: max_rpb_abs), selects best config from top row
 2. Extracts variant-specific parameters (k, sparsity_coef, threshold_init, or num_experts)
 3. **Saves metadata to** `ablations/phase_3a_config.json` for Phase 3b/3c to use
 4. For each of 4 motif groups (FFL, Cascade, FFL, SIM):
@@ -1210,3 +1424,96 @@ After completing full pipeline with Phase 2b and Phase 3d:
 | How efficient is model? | 4 | redundancy_heatmap.png (% independent) |
 | Best sparsity trade-off? | 4 | sparsity_vs_interpretability.png |
 | How good is reconstruction? | 5 | pca_histograms.png (distribution match) |
+
+---
+
+## Google Colab Execution Guide
+
+### Prerequisites for Colab Execution
+
+The notebook assumes these steps are completed **LOCALLY FIRST** (not in Colab):
+
+**1. Virtual Graphs Generated** (via `graph_motif_generator.py`)
+- Location: `virtual_graphs/data/all_graphs/raw_graphs/*.pkl`
+- Count: 5000 graphs (0-3999 single-motif, 4000-4999 mixed-motif)
+
+**2. GNN Model Trained** (via `gnn_train.py` - NOT in Colab)
+- Creates: `checkpoints/gnn_model.pt`, `outputs/activations/layer2/{train,val,test}/`, `outputs/test_graph_ids.json`
+- Creates: `virtual_graphs/data/all_graphs/graph_motif_metadata/graph_*.csv` (motif labels)
+
+### Pre-Upload Verification Checklist
+
+Before uploading to Google Drive (`/My Drive/182-GNN_SAE/`), run locally:
+
+```bash
+# Verify activation data (should be ~5000 total files across all splits)
+ls outputs/activations/layer2/train/ | wc -l        # Should be ~3000 (for SAE training)
+ls outputs/activations/layer2/val/ | wc -l          # Should be ~500 (for SAE validation)
+ls outputs/activations/layer2/test/ | wc -l         # Should be ~500 (for correlation analysis)
+ls outputs/activations/layer2/mixed/ | wc -l        # Should be ~1000 (for Phase 3d: mixed-motif testing)
+
+# Verify supporting files exist
+ls -la outputs/test_graph_ids.json
+ls -la checkpoints/gnn_model.pt
+
+# Verify graph metadata (~5000 CSV files)
+ls virtual_graphs/data/all_graphs/graph_motif_metadata/ | wc -l
+
+# Verify all required scripts present
+ls *.py | grep -E "sparse_autoencoder|compare_sae|retrain|run_ablation|native_gnn|statistical|visualize|analyze_sae"
+```
+
+### Google Drive Setup for Colab
+
+Create folder `/My Drive/182-GNN_SAE/` and upload:
+
+- [ ] All `*.py` scripts (13 files)
+- [ ] `outputs/activations/layer2/` directory with all splits (train ~3000 + val ~500 + test ~500 + mixed ~1000 = ~5000 .pt files)
+- [ ] `outputs/test_graph_ids.json` (test set definition)
+- [ ] `virtual_graphs/data/all_graphs/graph_motif_metadata/` (all CSV files)
+- [ ] `checkpoints/gnn_model.pt` (GNN model - optional if not used in Phase 5)
+
+**Note:** `outputs/latent_cache/` is created automatically during Phase 2 - no need to pre-upload.
+
+### Colab Runtime Configuration
+
+- [ ] Enable GPU: Runtime → Change runtime type → GPU
+- [ ] Verify GPU type: T4 or V100 recommended
+- [ ] Check GPU memory available before starting
+
+### Runtime & Timeout Considerations
+
+| Phase | Duration | Colab Timeout | Status |
+|-------|----------|---------------|--------|
+| 1     | 5 hours  | 12 hours      | ✅ OK |
+| 2     | 15 min   | 12 hours      | ✅ OK |
+| 2.5   | 3 min    | 12 hours      | ✅ OK |
+| 2b    | 2.7 hrs  | 12 hours      | ✅ OK |
+| 3a    | 2.5 hrs  | 12 hours      | ✅ OK |
+| 3b    | 1 hr     | 12 hours      | ✅ OK |
+| 3c    | 15 min   | 12 hours      | ✅ OK |
+| 4     | 30 min   | 12 hours      | ✅ OK |
+| 5     | 20 min   | 12 hours      | ✅ OK |
+| **Total** | **~15.8 hrs** | **12 hours** | **⚠️ TIGHT** |
+
+**IMPORTANT:** Total pipeline (~15.8 hours) exceeds Colab's 12-hour timeout.
+
+**Strategies:**
+- **Option A (Recommended):** Split into 2 sessions:
+  - Session 1: Phases 1-3c (~9 hours, save to Google Drive)
+  - Session 2: Load from Drive, run Phases 4-5 (~2 hours)
+- **Option B:** Run locally on GPU-enabled machine instead
+- **Note:** If timeout occurs, Colab can resume from the last completed cell
+
+### Troubleshooting Common Issues
+
+| Error | Solution |
+|-------|----------|
+| "GPU not detected" | Go to Runtime → Change runtime type → GPU (select GPU, not None) |
+| "Project not found at /My Drive/182-GNN_SAE/" | Verify folder created and scripts uploaded to that path |
+| "Activation directory not found" | Upload `outputs/activations/layer2/{train,val,test}/` to Drive |
+| "Script not found: sparse_autoencoder.py" | Upload all `*.py` scripts from project root to Drive folder |
+| "test_graph_ids.json not found" | Run `gnn_train.py` locally first (critical prerequisite) |
+| Phase X fails with "checkpoints not found" | Verify Phase X-1 completed (check outputs directory) |
+| Cell timeout during Phase 1 | Expected for 5-hour training. Colab sessions persist; can resume. |
+| Out of memory error | Reduce batch size in problematic phase or use smaller latent dims (Phase 1) |

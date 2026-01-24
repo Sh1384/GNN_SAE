@@ -346,3 +346,80 @@ After completing full pipeline:
 - [ ] Phase 3 results include variant in filenames
 - [ ] Phase 4 statistical plots generated (feature_stability.png, etc.)
 - [ ] Ready for publication analysis ✅
+
+---
+
+## ☁️ Google Colab Execution Checklist
+
+### Before Running on Colab
+
+1. **Complete Local Prerequisites** (MUST be done locally, not in Colab)
+   - [ ] Run `graph_motif_generator.py` → generates 5000 graphs
+   - [ ] Run `gnn_train.py` → generates GNN model + activations
+   - [ ] Verify all prerequisite data exists (see Pre-Upload Verification below)
+
+2. **Pre-Upload Verification** (run locally before uploading)
+
+```bash
+# Check activation counts (should be ~5000 total across all splits)
+ls outputs/activations/layer2/train/ | wc -l        # ~3000
+ls outputs/activations/layer2/val/ | wc -l          # ~500
+ls outputs/activations/layer2/test/ | wc -l         # ~500
+ls outputs/activations/layer2/mixed/ | wc -l        # ~1000 (for Phase 3d)
+
+# Check required files exist
+ls -la outputs/test_graph_ids.json
+ls -la checkpoints/gnn_model.pt
+ls virtual_graphs/data/all_graphs/graph_motif_metadata/ | wc -l  # ~5000
+
+# Check all scripts present
+ls *.py | grep -E "sparse_autoencoder|compare_sae|retrain|run_ablation|native_gnn|statistical|visualize|analyze_sae"
+```
+
+3. **Upload to Google Drive** (`/My Drive/182-GNN_SAE/`)
+   - [ ] All `*.py` scripts (13 files)
+   - [ ] `outputs/activations/layer2/` directory (train + val + test + mixed splits, ~5000 .pt files total)
+   - [ ] `outputs/test_graph_ids.json`
+   - [ ] `virtual_graphs/data/all_graphs/graph_motif_metadata/` (all CSV files)
+   - [ ] `checkpoints/gnn_model.pt` (optional: only needed if Phase 5 uses it)
+
+4. **Colab Runtime Setup**
+   - [ ] Enable GPU: Runtime → Change runtime type → GPU (T4 or V100)
+   - [ ] Verify GPU memory available
+   - [ ] Note: Full pipeline is ~15.8 hours (Colab timeout is 12 hours)
+
+### Phase-Specific Prerequisites
+
+Before running each phase in Colab, verify previous outputs exist:
+
+- [ ] **Phase 1:** GPU is enabled
+- [ ] **Phase 2:** `checkpoints/` has 30 .pt files
+- [ ] **Phase 2.5:** Phase 1 completed
+- [ ] **Phase 2b:** `outputs/sae_config_comparison.csv` exists
+- [ ] **Phase 3a:** `outputs/latent_correlations.csv` exists + Phase 2 metric choice (max_rpb_abs or composite_score)
+- [ ] **Phase 3b:** `checkpoints/` has 30 files (Phase 1 output)
+- [ ] **Phase 3c:** Both Phase 3a AND 3b outputs exist
+- [ ] **Phase 4:** Phase 2b preferred (for multi-seed reproducibility analysis)
+- [ ] **Phase 5:** Optional visualization phase
+
+### Timeout Strategy ⚠️
+
+Full pipeline (~15.8 hours) exceeds Colab 12-hour timeout.
+
+**Recommended approach: Split into 2 Colab sessions**
+
+**Session 1** (~9 hours): Phases 1-3c
+```bash
+# Run Phases 1, 2, 2.5, 2b, 3a, 3b, 3c
+# After completion, export results to Google Drive
+```
+
+**Session 2** (~2 hours): Load Phase 1-3c outputs, run Phases 4-5
+```bash
+# Load outputs from Google Drive
+# Run Phases 4 and 5 (statistical analysis + visualization)
+```
+
+**Alternative:** If timeout occurs mid-phase, Colab can resume from the last completed cell.
+
+---
