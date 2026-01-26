@@ -892,6 +892,21 @@ Strategy 2 (NEW - Native r_pb Guided):
                        default='topk', help='SAE variant to analyze (for Strategy 1)')
     parser.add_argument('--latent_dim', type=int, default=512, help='Latent dimension')
     parser.add_argument('--k', type=int, default=8, help='TopK sparsity (for TopK variant)')
+
+    # Variant-specific hyperparameters (required to match Phase 2 best config)
+    parser.add_argument('--sparsity_coef', type=float, default=1e-3,
+                       help='Sparsity coefficient (for Gated variant)')
+    parser.add_argument('--threshold_init', type=float, default=0.01,
+                       help='Threshold initialization (for JumpReLU variant)')
+    parser.add_argument('--bandwidth', type=float, default=0.01,
+                       help='Bandwidth for STE (for JumpReLU variant)')
+    parser.add_argument('--num_experts', type=int, default=8,
+                       help='Number of experts (for Switch variant)')
+    parser.add_argument('--latent_per_expert', type=int, default=64,
+                       help='Latent dimension per expert (for Switch variant)')
+    parser.add_argument('--k_per_expert', type=int, default=8,
+                       help='Sparsity k per expert (for Switch variant)')
+
     parser.add_argument('--feature', type=int, help='Specific SAE feature to ablate (0-indexed, Strategy 1)')
     parser.add_argument('--all-features', action='store_true', help='Ablate all SAE features (Strategy 1)')
     parser.add_argument('--top-nodes-k', type=int, default=5, help='Number of top nodes to patch (Strategy 1)')
@@ -1030,14 +1045,14 @@ Strategy 2 (NEW - Native r_pb Guided):
         if args.variant == 'topk':
             config['k'] = args.k
         elif args.variant == 'gated':
-            config['sparsity_coef'] = 1e-3
+            config['sparsity_coef'] = args.sparsity_coef
         elif args.variant == 'jumprelu':
-            config['threshold_init'] = 0.01
-            config['bandwidth'] = 0.01
+            config['threshold_init'] = args.threshold_init
+            config['bandwidth'] = args.bandwidth
         elif args.variant == 'switch':
-            config['num_experts'] = 8
-            config['latent_per_expert'] = 64
-            config['k_per_expert'] = 8
+            config['num_experts'] = args.num_experts
+            config['latent_per_expert'] = args.latent_per_expert
+            config['k_per_expert'] = args.k_per_expert
 
         # Load test graph IDs
         try:
@@ -1102,14 +1117,14 @@ Strategy 2 (NEW - Native r_pb Guided):
     if args.variant == 'topk':
         config['k'] = args.k
     elif args.variant == 'gated':
-        config['sparsity_coef'] = 1e-3
+        config['sparsity_coef'] = args.sparsity_coef
     elif args.variant == 'jumprelu':
-        config['threshold_init'] = 0.01
-        config['bandwidth'] = 0.01
+        config['threshold_init'] = args.threshold_init
+        config['bandwidth'] = args.bandwidth
     elif args.variant == 'switch':
-        config['num_experts'] = 8
-        config['latent_per_expert'] = 64
-        config['k_per_expert'] = 8
+        config['num_experts'] = args.num_experts
+        config['latent_per_expert'] = args.latent_per_expert
+        config['k_per_expert'] = args.k_per_expert
 
     # Load test graph IDs
     try:
