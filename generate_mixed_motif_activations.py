@@ -20,10 +20,10 @@ import networkx as nx
 from tqdm import tqdm
 from typing import Optional
 
-# Import GCN model from gnn_train_copy
+# Import GCN model from gnn_train
 import sys
 sys.path.insert(0, str(Path(__file__).parent))
-from gnn_train_copy import GCNModel
+from gnn_train import GCNModel
 
 
 def load_graph_from_pickle(graph_path: Path) -> Optional[Data]:
