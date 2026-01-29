@@ -1,0 +1,60 @@
+[2026-01-26 21:15:10] ======================================================================
+[2026-01-26 21:15:10] MULTI-GPU SAE PIPELINE
+[2026-01-26 21:15:10] ======================================================================
+[2026-01-26 21:15:10] GPUs: [0, 1, 2, 3]
+[2026-01-26 21:15:10] Phases: 2 to 2
+[2026-01-26 21:15:10] Log: outputs/pipeline_logs/pipeline_20260126_211510.log
+
+[2026-01-26 21:15:10] Checking prerequisites...
+[2026-01-26 21:15:10]   ✓ Train: 3200 files
+[2026-01-26 21:15:10]   ✓ Val: 400 files
+[2026-01-26 21:15:10]   ✓ Test: 400 files
+[2026-01-26 21:15:10]   ✓ Found 4 CUDA devices
+[2026-01-26 21:15:10]     GPU 0: NVIDIA TITAN V
+[2026-01-26 21:15:10]     GPU 1: NVIDIA TITAN V
+[2026-01-26 21:15:10]     GPU 2: NVIDIA TITAN V
+[2026-01-26 21:15:10]     GPU 3: NVIDIA TITAN V
+[2026-01-26 21:15:10] ✓ All prerequisites met
+[2026-01-26 21:15:10] 
+======================================================================
+[2026-01-26 21:15:10] PHASE 2: CONFIGURATION COMPARISON
+[2026-01-26 21:15:10] ======================================================================
+
+[2026-01-26 21:15:10] Running: compare_sae_configs.py 
+[2026-01-26 21:15:15] ✗ compare_sae_configs.py failed
+[2026-01-26 21:15:15] Error: 
+topk configs:   0%|          | 0/11 [00:00<?, ?it/s]
+topk configs:   0%|          | 0/11 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 931, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 675, in main
+    config_result, df_corr = analyze_topk_configuration(latent_dim, k)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 348, in analyze_topk_configuration
+    return analyze_configuration(latent_dim, k)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 258, in analyze_configuration
+    model, df, latent_dim = load_data_and_model(latent_dim, k)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 137, in load_data_and_model
+    df = pd.merge(df_latents, df_motifs, on=['graph_id', 'node_idx'])
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 169, in merge
+    op = _MergeOperation(
+         ^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 791, in __init__
+    ) = self._get_merge_keys()
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/reshape/merge.py", line 1269, in _get_merge_keys
+    right_keys.append(right._get_label_or_level_values(rk))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 1844, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'graph_id'
+
+[2026-01-26 21:15:15] 
+======================================================================
+[2026-01-26 21:15:15] PIPELINE COMPLETE
+[2026-01-26 21:15:15] ======================================================================
+[2026-01-26 21:15:15] Log saved to: outputs/pipeline_logs/pipeline_20260126_211510.log

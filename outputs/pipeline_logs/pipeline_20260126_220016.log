@@ -1,0 +1,120 @@
+[2026-01-26 22:00:16] ======================================================================
+[2026-01-26 22:00:16] MULTI-GPU SAE PIPELINE
+[2026-01-26 22:00:16] ======================================================================
+[2026-01-26 22:00:16] GPUs: [0, 1, 2, 3]
+[2026-01-26 22:00:16] Phases: 2.5 to 5
+[2026-01-26 22:00:16] Log: outputs/pipeline_logs/pipeline_20260126_220016.log
+
+[2026-01-26 22:00:16] Checking prerequisites...
+[2026-01-26 22:00:16]   ✓ Train: 3200 files
+[2026-01-26 22:00:16]   ✓ Val: 400 files
+[2026-01-26 22:00:16]   ✓ Test: 400 files
+[2026-01-26 22:00:16]   ✓ Found 4 CUDA devices
+[2026-01-26 22:00:16]     GPU 0: NVIDIA TITAN V
+[2026-01-26 22:00:16]     GPU 1: NVIDIA TITAN V
+[2026-01-26 22:00:16]     GPU 2: NVIDIA TITAN V
+[2026-01-26 22:00:16]     GPU 3: NVIDIA TITAN V
+[2026-01-26 22:00:16] ✓ All prerequisites met
+[2026-01-26 22:00:16] 
+======================================================================
+[2026-01-26 22:00:16] PHASE 2.5: CROSS-VARIANT COMPARISON
+[2026-01-26 22:00:16] ======================================================================
+
+[2026-01-26 22:00:16] Running: compare_sae_variants.py 
+[2026-01-26 22:00:22] ✗ compare_sae_variants.py failed
+[2026-01-26 22:00:22] Error: Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_variants.py", line 457, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_variants.py", line 439, in main
+    report_text = create_summary_report(comparison_df)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_variants.py", line 374, in create_summary_report
+    best_recon = comparison_df.loc[comparison_df['test_mse'].idxmin()]
+                 ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1153, in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1393, in _getitem_axis
+    return self._get_label(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1343, in _get_label
+    return self.obj.xs(label, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 4236, in xs
+    loc = index.get_loc(key)
+          ^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/range.py", line 418, in get_loc
+    raise KeyError(key)
+KeyError: nan
+
+[2026-01-26 22:00:22] 
+======================================================================
+[2026-01-26 22:00:22] PHASE 2b: MULTI-SEED RETRAINING
+[2026-01-26 22:00:22] ======================================================================
+
+[2026-01-26 22:00:22] Running: retrain_best_configs.py 
+[2026-01-26 22:00:25] ✗ retrain_best_configs.py failed
+[2026-01-26 22:00:25] Error: /data/users/goodarzilab/shervin/182-GNN_SAE/sae/retrain_best_configs.py:104: FutureWarning: The behavior of Series.idxmin with all-NA values, or any-NA and skipna=False, is deprecated. In a future version this will raise ValueError
+  best_idx = variant_df['test_mse'].idxmin()
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/retrain_best_configs.py", line 601, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/retrain_best_configs.py", line 500, in main
+    best_configs = identify_best_configs()
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/retrain_best_configs.py", line 110, in identify_best_configs
+    best_row = df.loc[best_idx]
+               ~~~~~~^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1153, in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1393, in _getitem_axis
+    return self._get_label(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1343, in _get_label
+    return self.obj.xs(label, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/generic.py", line 4236, in xs
+    loc = index.get_loc(key)
+          ^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/range.py", line 418, in get_loc
+    raise KeyError(key)
+KeyError: nan
+
+[2026-01-26 22:00:25] 
+======================================================================
+[2026-01-26 22:00:25] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-26 22:00:25] ======================================================================
+
+[2026-01-26 22:00:25] Running: run_interpretability_experiments.py 
+[2026-01-26 22:00:26] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-26 22:00:26] ERROR: Either --variant OR (--latent_dim AND --k) must be specified
+
+[2026-01-26 22:00:26] 
+======================================================================
+[2026-01-26 22:00:26] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-26 22:00:26] ======================================================================
+
+[2026-01-26 22:00:26] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-26 22:00:26] 
+======================================================================
+[2026-01-26 22:00:26] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-26 22:00:26] ======================================================================
+
+[2026-01-26 22:00:26] Running: compare_ablation_strategies.py --motif-mode
+[2026-01-26 22:00:27] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-26 22:00:27] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+Error: --motif-mode requires --variant or --all-variants
+
+[2026-01-26 22:00:27] 
+======================================================================
+[2026-01-26 22:00:27] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-26 22:00:27] ======================================================================
+
+[2026-01-26 22:00:27] Running: generate_mixed_motif_activations.py 

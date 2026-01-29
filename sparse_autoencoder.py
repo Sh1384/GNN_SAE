@@ -460,23 +460,24 @@ def main():
     NUM_EPOCHS = 200  # Increased from 100
     LEARNING_RATE = 5e-4
 
-    INPUT_DIM = 80
+    INPUT_DIM = 64  # Layer 3 activations (updated from 80)
 
     latent_dims = [128, 256, 512]
     k_values = [4, 8, 16, 32]
 
     print("=" * 60)
-    print("Sparse Autoencoder Training for GNN Layer2 Activations")
+    print("Sparse Autoencoder Training for GNN Layer3 Activations")
     print("=" * 60)
     print(f"Device: {DEVICE}")
+    print(f"Input dim: {INPUT_DIM} (layer 3 hidden activations)")
     print(f"Latent dims to sweep: {latent_dims}")
     print(f"k values to sweep: {k_values}")
     print()
 
     print("Loading activation datasets...")
-    train_dir = Path("outputs/activations/layer1_new/train")
-    val_dir = Path("outputs/activations/layer1_new/val")
-    test_dir = Path("outputs/activations/layer1_new/test")
+    train_dir = Path("outputs/activations/layer3_new/train")
+    val_dir = Path("outputs/activations/layer3_new/val")
+    test_dir = Path("outputs/activations/layer3_new/test")
 
     if not train_dir.exists():
         print(f"Error: {train_dir} not found. Please run gnn_train.py first.")

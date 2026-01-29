@@ -1,0 +1,227 @@
+[2026-01-27 02:28:05] ======================================================================
+[2026-01-27 02:28:05] MULTI-GPU SAE PIPELINE
+[2026-01-27 02:28:05] ======================================================================
+[2026-01-27 02:28:05] GPUs: [0, 1, 2, 3]
+[2026-01-27 02:28:05] Phases: 3 to 3
+[2026-01-27 02:28:05] Log: outputs/pipeline_logs/pipeline_20260127_022805.log
+
+[2026-01-27 02:28:05] Checking prerequisites...
+[2026-01-27 02:28:05]   ✓ Train: 3200 files
+[2026-01-27 02:28:05]   ✓ Val: 400 files
+[2026-01-27 02:28:05]   ✓ Test: 400 files
+[2026-01-27 02:28:06]   ✓ Found 4 CUDA devices
+[2026-01-27 02:28:06]     GPU 0: NVIDIA TITAN V
+[2026-01-27 02:28:06]     GPU 1: NVIDIA TITAN V
+[2026-01-27 02:28:06]     GPU 2: NVIDIA TITAN V
+[2026-01-27 02:28:06]     GPU 3: NVIDIA TITAN V
+[2026-01-27 02:28:06] ✓ All prerequisites met
+[2026-01-27 02:28:06] 
+======================================================================
+[2026-01-27 02:28:06] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 02:28:06] ======================================================================
+
+[2026-01-27 02:28:06] Using best variant from Phase 2: topk
+[2026-01-27 02:28:06] Running feature significance analysis for variant: topk
+[2026-01-27 02:28:06] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 02:33:47] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 02:33:47] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 02:33:47] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 02:37:09] ✗ run_interpretability_experiments.py failed
+[2026-01-27 02:37:09] Error: 
+Random trials (40 features):   0%|          | 0/20 [00:00<?, ?it/s]
+Random trials (40 features):   5%|▌         | 1/20 [00:04<01:19,  4.18s/it]
+Random trials (40 features):  10%|█         | 2/20 [00:08<01:18,  4.34s/it]
+Random trials (40 features):  15%|█▌        | 3/20 [00:12<01:13,  4.35s/it]
+Random trials (40 features):  20%|██        | 4/20 [00:17<01:12,  4.56s/it]
+Random trials (40 features):  25%|██▌       | 5/20 [00:22<01:08,  4.56s/it]
+Random trials (40 features):  30%|███       | 6/20 [00:27<01:05,  4.66s/it]
+Random trials (40 features):  35%|███▌      | 7/20 [00:31<00:59,  4.58s/it]
+Random trials (40 features):  40%|████      | 8/20 [00:36<00:54,  4.55s/it]
+Random trials (40 features):  45%|████▌     | 9/20 [00:41<00:51,  4.64s/it]
+Random trials (40 features):  50%|█████     | 10/20 [00:45<00:44,  4.50s/it]
+Random trials (40 features):  55%|█████▌    | 11/20 [00:50<00:42,  4.69s/it]
+Random trials (40 features):  60%|██████    | 12/20 [00:54<00:36,  4.62s/it]
+Random trials (40 features):  65%|██████▌   | 13/20 [00:59<00:32,  4.66s/it]
+Random trials (40 features):  70%|███████   | 14/20 [01:04<00:28,  4.71s/it]
+Random trials (40 features):  75%|███████▌  | 15/20 [01:08<00:22,  4.54s/it]
+Random trials (40 features):  80%|████████  | 16/20 [01:12<00:17,  4.45s/it]
+Random trials (40 features):  85%|████████▌ | 17/20 [01:17<00:13,  4.39s/it]
+Random trials (40 features):  90%|█████████ | 18/20 [01:21<00:08,  4.42s/it]
+Random trials (40 features):  95%|█████████▌| 19/20 [01:25<00:04,  4.42s/it]
+Random trials (40 features): 100%|██████████| 20/20 [01:30<00:00,  4.46s/it]
+Random trials (40 features): 100%|██████████| 20/20 [01:30<00:00,  4.52s/it]
+
+Random trials (41 features):   0%|          | 0/20 [00:00<?, ?it/s]
+Random trials (41 features):   5%|▌         | 1/20 [00:05<01:40,  5.27s/it]
+Random trials (41 features):  10%|█         | 2/20 [00:09<01:27,  4.85s/it]
+Random trials (41 features):  15%|█▌        | 3/20 [00:14<01:21,  4.77s/it]
+Random trials (41 features):  20%|██        | 4/20 [00:18<01:12,  4.56s/it]
+Random trials (41 features):  25%|██▌       | 5/20 [00:23<01:08,  4.59s/it]
+Random trials (41 features):  30%|███       | 6/20 [00:27<01:03,  4.54s/it]
+Random trials (41 features):  35%|███▌      | 7/20 [00:32<00:59,  4.56s/it]
+Random trials (41 features):  40%|████      | 8/20 [00:37<00:56,  4.68s/it]
+Random trials (41 features):  45%|████▌     | 9/20 [00:42<00:52,  4.74s/it]
+Random trials (41 features):  50%|█████     | 10/20 [00:46<00:46,  4.66s/it]
+Random trials (41 features):  55%|█████▌    | 11/20 [00:50<00:40,  4.54s/it]
+Random trials (41 features):  60%|██████    | 12/20 [00:54<00:34,  4.30s/it]
+Random trials (41 features):  65%|██████▌   | 13/20 [00:58<00:28,  4.05s/it]
+Random trials (41 features):  70%|███████   | 14/20 [01:02<00:25,  4.18s/it]
+Random trials (41 features):  75%|███████▌  | 15/20 [01:07<00:21,  4.28s/it]
+Random trials (41 features):  80%|████████  | 16/20 [01:11<00:17,  4.36s/it]
+Random trials (41 features):  85%|████████▌ | 17/20 [01:15<00:12,  4.29s/it]
+Random trials (41 features):  90%|█████████ | 18/20 [01:21<00:09,  4.74s/it]
+Random trials (41 features):  95%|█████████▌| 19/20 [01:26<00:04,  4.80s/it]
+Random trials (41 features): 100%|██████████| 20/20 [01:30<00:00,  4.62s/it]
+Random trials (41 features): 100%|██████████| 20/20 [01:30<00:00,  4.54s/it]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/run_interpretability_experiments.py", line 682, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/run_interpretability_experiments.py", line 628, in main
+    sig_df = compute_statistical_significance(motif_specific_df, combined_random)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/run_interpretability_experiments.py", line 365, in compute_statistical_significance
+    for feature_set in motif_specific_results['Feature_Set'].unique():
+                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/frame.py", line 3896, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/range.py", line 418, in get_loc
+    raise KeyError(key)
+KeyError: 'Feature_Set'
+
+[2026-01-27 02:37:09] 
+======================================================================
+[2026-01-27 02:37:09] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 02:37:09] ======================================================================
+
+[2026-01-27 02:37:09] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-27 02:37:09] 
+======================================================================
+[2026-01-27 02:37:09] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 02:37:09] ======================================================================
+
+[2026-01-27 02:37:09] Using best variant from Phase 2: topk
+[2026-01-27 02:37:09] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 02:37:11] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 02:37:11] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 02:37:11] 
+======================================================================
+[2026-01-27 02:37:11] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 02:37:11] ======================================================================
+
+[2026-01-27 02:37:11] Running: generate_mixed_motif_activations.py 
+[2026-01-27 02:37:20] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 02:37:20] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 02:37:20] Mixed-motif generalization requires manual feature selection
+[2026-01-27 02:37:20] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 02:37:20] 
+======================================================================
+[2026-01-27 02:37:20] PIPELINE COMPLETE
+[2026-01-27 02:37:20] ======================================================================
+[2026-01-27 02:37:20] Log saved to: outputs/pipeline_logs/pipeline_20260127_022805.log

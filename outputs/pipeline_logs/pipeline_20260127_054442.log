@@ -1,0 +1,443 @@
+[2026-01-27 05:44:42] ======================================================================
+[2026-01-27 05:44:42] MULTI-GPU SAE PIPELINE
+[2026-01-27 05:44:42] ======================================================================
+[2026-01-27 05:44:42] GPUs: [0, 1, 2, 3]
+[2026-01-27 05:44:42] Phases: 3 to 3
+[2026-01-27 05:44:42] Log: outputs/pipeline_logs/pipeline_20260127_054442.log
+
+[2026-01-27 05:44:42] Checking prerequisites...
+[2026-01-27 05:44:42]   ✓ Train: 3200 files
+[2026-01-27 05:44:42]   ✓ Val: 400 files
+[2026-01-27 05:44:42]   ✓ Test: 400 files
+[2026-01-27 05:44:43]   ✓ Found 4 CUDA devices
+[2026-01-27 05:44:43]     GPU 0: NVIDIA TITAN V
+[2026-01-27 05:44:43]     GPU 1: NVIDIA TITAN V
+[2026-01-27 05:44:43]     GPU 2: NVIDIA TITAN V
+[2026-01-27 05:44:43]     GPU 3: NVIDIA TITAN V
+[2026-01-27 05:44:43] ✓ All prerequisites met
+[2026-01-27 05:44:43] 
+======================================================================
+[2026-01-27 05:44:43] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 05:44:43] ======================================================================
+
+[2026-01-27 05:44:43] Using best variant from Phase 2: topk
+[2026-01-27 05:44:43] Running feature significance analysis for variant: topk
+[2026-01-27 05:44:43] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 05:50:28] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 05:50:28] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 05:50:28] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 05:58:58] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 05:58:58] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+
+Filtering criteria:
+  - FDR < 0.05: 163 pairs
+  - |rpb| >= 0: 192 pairs
+  - Both criteria: 163 pairs
+Saved feature mapping to: ablations/interpretability_topk_latent256_k16_rpb0.00_results/feature_motif_mapping.json
+
+Non-filtered features available for random controls: 1
+
+Filtered features per motif:
+  Cascade: 40 features
+  Feedback Loop: 41 features
+  Feedforward Loop: 41 features
+  Single Input Module: 41 features
+
+======================================================================
+MONOSEMANTICITY ANALYSIS
+======================================================================
+
+Feature specificity (after filtering):
+  Monosemantic (1 motif only): 6
+  Polysemantic (2 motifs): 0
+  Polysemantic (3 motifs): 7
+  Polysemantic (4 motifs): 34
+
+  Total unique features: 47
+  Monosemantic rate: 12.8%
+  Polysemantic rate: 87.2%
+
+Most polysemantic features (top 10):
+  z117: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.129, 0.361, -0.128, -0.062]
+  z118: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.042]
+  z122: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.082, 0.244, -0.082, -0.054]
+  z125: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.114, 0.333, -0.113, -0.071]
+  z126: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.294, -0.735, 0.293, 0.046]
+  z129: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.118, 0.343, -0.117, -0.071]
+  z131: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.043]
+  z132: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.087, 0.253, -0.086, -0.053]
+  z136: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.083, 0.242, -0.083, -0.050]
+  z154: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.115, 0.344, -0.114, -0.079]
+
+======================================================================
+STEP 1: Motif-Specific Ablations
+======================================================================
+
+Ablating Cascade features (40)...
+
+Ablating Feedback Loop features (41)...
+
+Ablating Feedforward Loop features (41)...
+
+Ablating Single Input Module features (41)...
+
+======================================================================
+STEP 2: Random Control Trials
+======================================================================
+
+Running 20 random control trials (ablating 40 features each)...
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+
+Running 20 random control trials (ablating 41 features each)...
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+
+======================================================================
+STEP 3: Statistical Comparison
+======================================================================
+
+Statistical Significance Results:
+            Feature_Set                Motif  N_Features  Specific_Impact   Random_Mean    Random_Std       Z_Score  Percentile  P_Value  Significant
+0               Cascade  Single Input Module          40     2.115014e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+1               Cascade        Feedback Loop          40     2.085027e-05 -3.004691e-08  6.617445e-24  3.155344e+18       100.0      0.0         True
+2               Cascade              Cascade          40    -6.182598e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+3               Cascade     Feedforward Loop          40    -8.720955e-09  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+4         Feedback Loop  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+5         Feedback Loop        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+6         Feedback Loop              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+7         Feedback Loop     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+8      Feedforward Loop  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+9      Feedforward Loop        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+10     Feedforward Loop              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+11     Feedforward Loop     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+12  Single Input Module  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+13  Single Input Module        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+14  Single Input Module              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+15  Single Input Module     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+
+======================================================================
+STEP 4: Generate Visualizations
+======================================================================
+Saved: ablations/interpretability_topk_latent256_k16_rpb0.00_plots/interpretability_vs_random_controls.png
+
+Saved phase_3a_config.json to both current directory and ablations/ for Phase 3b/3c to use
+
+======================================================================
+EXPERIMENTS COMPLETE
+======================================================================
+Configuration:
+  SAE: latent_dim=256, k=16
+  Filtering: FDR<0.05 and |rpb|>=0
+  Random trials: 20 per feature count
+
+Total features tested: 163
+Monosemantic features: 6
+
+Output directories:
+  Results: ablations/interpretability_topk_latent256_k16_rpb0.00_results
+  Plots: ablations/interpretability_topk_latent256_k16_rpb0.00_plots
+
+[2026-01-27 05:58:58] 
+======================================================================
+[2026-01-27 05:58:58] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 05:58:58] ======================================================================
+
+[2026-01-27 05:58:58] Running native ablation for motif: in_feedback_loop
+[2026-01-27 05:58:58] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedback_loop --use-rpb --k 16
+[2026-01-27 05:59:11] ✗ native_gnn_ablation.py failed
+[2026-01-27 05:59:11] Error: 
+Features:   0%|          | 0/5 [00:00<?, ?it/s]
+
+Ablating feature 125:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 125:  13%|█▎        | 13/100 [00:00<00:00, 129.04it/s][A
+
+Ablating feature 125:  29%|██▉       | 29/100 [00:00<00:00, 142.35it/s][A
+
+Ablating feature 125:  45%|████▌     | 45/100 [00:00<00:00, 148.86it/s][A
+
+Ablating feature 125:  60%|██████    | 60/100 [00:00<00:00, 139.55it/s][A
+
+Ablating feature 125:  75%|███████▌  | 75/100 [00:00<00:00, 135.43it/s][A
+
+Ablating feature 125:  89%|████████▉ | 89/100 [00:00<00:00, 133.54it/s][A
+Ablating feature 125: 100%|██████████| 100/100 [00:00<00:00, 138.20it/s]
+
+Features:  20%|██        | 1/5 [00:04<00:17,  4.37s/it]
+
+Ablating feature 211:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 211:  13%|█▎        | 13/100 [00:00<00:00, 121.71it/s][A
+
+Ablating feature 211:  26%|██▌       | 26/100 [00:00<00:00, 121.49it/s][A
+
+Ablating feature 211:  39%|███▉      | 39/100 [00:00<00:00, 123.22it/s][A
+
+Ablating feature 211:  53%|█████▎    | 53/100 [00:00<00:00, 129.34it/s][A
+
+Ablating feature 211:  68%|██████▊   | 68/100 [00:00<00:00, 133.32it/s][A
+
+Ablating feature 211:  82%|████████▏ | 82/100 [00:00<00:00, 129.66it/s][A
+
+Ablating feature 211:  95%|█████████▌| 95/100 [00:00<00:00, 129.07it/s][A
+Ablating feature 211: 100%|██████████| 100/100 [00:00<00:00, 127.81it/s]
+
+Features:  40%|████      | 2/5 [00:05<00:06,  2.27s/it]
+
+Ablating feature 186:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 186:  12%|█▏        | 12/100 [00:00<00:00, 117.25it/s][A
+
+Ablating feature 186:  25%|██▌       | 25/100 [00:00<00:00, 123.26it/s][A
+
+Ablating feature 186:  39%|███▉      | 39/100 [00:00<00:00, 128.81it/s][A
+
+Ablating feature 186:  52%|█████▏    | 52/100 [00:00<00:00, 125.87it/s][A
+
+Ablating feature 186:  65%|██████▌   | 65/100 [00:00<00:00, 125.54it/s][A
+
+Ablating feature 186:  80%|████████  | 80/100 [00:00<00:00, 131.76it/s][A
+
+Ablating feature 186:  95%|█████████▌| 95/100 [00:00<00:00, 135.39it/s][A
+Ablating feature 186: 100%|██████████| 100/100 [00:00<00:00, 130.53it/s]
+
+Features:  60%|██████    | 3/5 [00:05<00:03,  1.59s/it]
+
+Ablating feature 35:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 35:  13%|█▎        | 13/100 [00:00<00:00, 129.96it/s][A
+
+Ablating feature 35:  26%|██▌       | 26/100 [00:00<00:00, 125.73it/s][A
+
+Ablating feature 35:  39%|███▉      | 39/100 [00:00<00:00, 120.14it/s][A
+
+Ablating feature 35:  52%|█████▏    | 52/100 [00:00<00:00, 113.84it/s][A
+
+Ablating feature 35:  64%|██████▍   | 64/100 [00:00<00:00, 111.00it/s][A
+
+Ablating feature 35:  77%|███████▋  | 77/100 [00:00<00:00, 116.24it/s][A
+
+Ablating feature 35:  96%|█████████▌| 96/100 [00:00<00:00, 137.09it/s][A
+Ablating feature 35: 100%|██████████| 100/100 [00:00<00:00, 127.85it/s]
+
+Features:  80%|████████  | 4/5 [00:06<00:01,  1.28s/it]
+
+Ablating feature 76:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 76:  21%|██        | 21/100 [00:00<00:00, 206.79it/s][A
+
+Ablating feature 76:  42%|████▏     | 42/100 [00:00<00:00, 186.66it/s][A
+
+Ablating feature 76:  61%|██████    | 61/100 [00:00<00:00, 156.08it/s][A
+
+Ablating feature 76:  78%|███████▊  | 78/100 [00:00<00:00, 142.30it/s][A
+
+Ablating feature 76:  93%|█████████▎| 93/100 [00:00<00:00, 136.17it/s][A
+Ablating feature 76: 100%|██████████| 100/100 [00:00<00:00, 146.10it/s]
+
+Features: 100%|██████████| 5/5 [00:07<00:00,  1.07s/it]
+Features: 100%|██████████| 5/5 [00:07<00:00,  1.49s/it]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 1185, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 1086, in main
+    plot_native_ablation_results(results_by_feature)
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 856, in plot_native_ablation_results
+    ax.bar(x_pos - width/2, delta_losses_with, width, label='With motif', alpha=0.7, edgecolor='black')
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/matplotlib/__init__.py", line 1473, in inner
+    return func(
+           ^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/matplotlib/axes/_axes.py", line 2520, in bar
+    x, height, width, y, linewidth, hatch = np.broadcast_arrays(
+                                            ^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py", line 540, in broadcast_arrays
+    shape = _broadcast_shape(*args)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py", line 422, in _broadcast_shape
+    b = np.broadcast(*args[:32])
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (5,) and arg 1 with shape (0,).
+
+[2026-01-27 05:59:11] Failed on motif: in_feedback_loop
+[2026-01-27 05:59:11] 
+======================================================================
+[2026-01-27 05:59:11] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 05:59:11] ======================================================================
+
+[2026-01-27 05:59:11] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 05:59:13] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 05:59:13] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 05:59:13] 
+======================================================================
+[2026-01-27 05:59:13] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 05:59:13] ======================================================================
+
+[2026-01-27 05:59:13] Running: generate_mixed_motif_activations.py 
+[2026-01-27 05:59:22] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 05:59:22] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 05:59:22] Mixed-motif generalization requires manual feature selection
+[2026-01-27 05:59:22] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 05:59:22] 
+======================================================================
+[2026-01-27 05:59:22] PIPELINE COMPLETE
+[2026-01-27 05:59:22] ======================================================================
+[2026-01-27 05:59:22] Log saved to: outputs/pipeline_logs/pipeline_20260127_054442.log

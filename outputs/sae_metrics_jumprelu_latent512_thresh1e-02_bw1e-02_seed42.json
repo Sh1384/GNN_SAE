@@ -1,0 +1,46 @@
+{
+  "best_val_loss": 9.503480032435618e-05,
+  "test_metrics": {
+    "total": 9.325665087089874e-05,
+    "reconstruction": 2.1671701233572094e-05,
+    "sparsity": 0.0018203987856395543,
+    "l0_sparsity": 0.07158494833856821
+  },
+  "train_history": {
+    "train_loss": [
+      0.00023292829473575694
+    ],
+    "train_recon": [
+      0.0001553878952336163
+    ],
+    "train_sparsity": [
+      0.0017888374750327785
+    ],
+    "train_l0": [
+      0.07754039764404297
+    ],
+    "val_loss": [
+      9.503480032435618e-05
+    ],
+    "val_recon": [
+      2.1651614815709763e-05
+    ],
+    "val_sparsity": [
+      0.001873680332209915
+    ],
+    "val_l0": [
+      0.07338318414986134
+    ]
+  },
+  "config": {
+    "input_dim": 80,
+    "latent_dim": 512,
+    "threshold_init": 0.011183124966919422,
+    "bandwidth": 0.01,
+    "l0_coef": 0.001,
+    "sparsity_method": "jumprelu",
+    "target_sparsity": null,
+    "variant_name": "jumprelu_latent512_thresh1e-02_bw1e-02",
+    "seed": 42
+  }
+}

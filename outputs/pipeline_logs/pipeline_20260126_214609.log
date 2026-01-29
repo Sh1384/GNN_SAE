@@ -1,0 +1,362 @@
+[2026-01-26 21:46:09] ======================================================================
+[2026-01-26 21:46:09] MULTI-GPU SAE PIPELINE
+[2026-01-26 21:46:09] ======================================================================
+[2026-01-26 21:46:09] GPUs: [0, 1, 2, 3]
+[2026-01-26 21:46:09] Phases: 2 to 2
+[2026-01-26 21:46:09] Log: outputs/pipeline_logs/pipeline_20260126_214609.log
+
+[2026-01-26 21:46:09] Checking prerequisites...
+[2026-01-26 21:46:09]   ✓ Train: 3200 files
+[2026-01-26 21:46:09]   ✓ Val: 400 files
+[2026-01-26 21:46:09]   ✓ Test: 400 files
+[2026-01-26 21:46:09]   ✓ Found 4 CUDA devices
+[2026-01-26 21:46:09]     GPU 0: NVIDIA TITAN V
+[2026-01-26 21:46:09]     GPU 1: NVIDIA TITAN V
+[2026-01-26 21:46:09]     GPU 2: NVIDIA TITAN V
+[2026-01-26 21:46:09]     GPU 3: NVIDIA TITAN V
+[2026-01-26 21:46:09] ✓ All prerequisites met
+[2026-01-26 21:46:09] 
+======================================================================
+[2026-01-26 21:46:09] PHASE 2: CONFIGURATION COMPARISON
+[2026-01-26 21:46:09] ======================================================================
+
+[2026-01-26 21:46:09] Running: compare_sae_configs.py 
+[2026-01-26 21:49:34] ✓ compare_sae_configs.py completed successfully
+[2026-01-26 21:49:34] ======================================================================
+SAE HYPERPARAMETER COMPARISON
+======================================================================
+
+Testing 30 configurations across all variants...
+NOTE: Skipping significance testing for speed
+RANKING METRIC: max_rpb_abs
+
+======================================================================
+VARIANT: TOPK
+======================================================================
+
+Analyzing: latent_dim=128, k=4 (3.12% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent128_k4.pkl
+  Size: 4000 nodes × 128 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+
+======================================================================
+SANITY CHECK: Topology-Motif Correlations
+======================================================================
+High correlations indicate potential confounding:
+(SAE features may be detecting topology rather than motif semantics)
+
+Top 12 strongest correlations:
+  cascade              ~ betweenness_centrality   : rpb= 0.667, p=0.00e+00
+  feedback_loop        ~ degree                   : rpb= 0.290, p=1.27e-78
+  feedforward_loop     ~ degree                   : rpb= 0.271, p=2.50e-68
+  feedback_loop        ~ in_degree                : rpb= 0.208, p=1.99e-40
+  feedforward_loop     ~ in_degree                : rpb= 0.194, p=2.46e-35
+  feedback_loop        ~ betweenness_centrality   : rpb=-0.192, p=1.12e-34
+  feedforward_loop     ~ betweenness_centrality   : rpb=-0.180, p=2.38e-30
+  single_input_module  ~ betweenness_centrality   : rpb=-0.179, p=3.50e-30
+  feedback_loop        ~ out_closeness_centrality : rpb= 0.157, p=1.80e-23
+  feedforward_loop     ~ out_closeness_centrality : rpb= 0.146, p=1.29e-20
+  feedback_loop        ~ out_degree               : rpb= 0.134, p=2.17e-17
+  feedforward_loop     ~ out_degree               : rpb= 0.125, p=2.50e-15
+
+Breakdown by feature type:
+  Degree features: max |rpb|=0.290
+  Centrality features: max |rpb|=0.667
+
+Interpretation:
+  ⚠ Strong confounding detected (max |rpb|=0.667)
+    → Partial correlations are CRITICAL for valid interpretation
+======================================================================
+
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.287
+  ✓ Best F1: 0.312
+  ✓ Composite score: 0.413
+
+Analyzing: latent_dim=128, k=8 (6.25% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent128_k8.pkl
+  Size: 4000 nodes × 128 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.336
+  ✓ Best F1: 0.315
+  ✓ Composite score: 0.480
+
+Analyzing: latent_dim=128, k=16 (12.50% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent128_k16.pkl
+  Size: 4000 nodes × 128 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.687
+  ✓ Best F1: 0.315
+  ✓ Composite score: 0.664
+
+Analyzing: latent_dim=256, k=4 (1.56% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent256_k4.pkl
+  Size: 4000 nodes × 256 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.357
+  ✓ Best F1: 0.313
+  ✓ Composite score: 0.474
+
+Analyzing: latent_dim=256, k=8 (3.12% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent256_k8.pkl
+  Size: 4000 nodes × 256 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.417
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.542
+
+Analyzing: latent_dim=256, k=16 (6.25% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent256_k16.pkl
+  Size: 4000 nodes × 256 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.695
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.639
+
+Analyzing: latent_dim=256, k=32 (12.50% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent256_k32.pkl
+  Size: 4000 nodes × 256 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.686
+  ✓ Best F1: 0.320
+  ✓ Composite score: 0.664
+
+Analyzing: latent_dim=512, k=4 (0.78% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent512_k4.pkl
+  Size: 4000 nodes × 512 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.460
+  ✓ Best F1: 0.307
+  ✓ Composite score: 0.573
+
+Analyzing: latent_dim=512, k=8 (1.56% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent512_k8.pkl
+  Size: 4000 nodes × 512 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.681
+  ✓ Best F1: 0.312
+  ✓ Composite score: 0.620
+
+Analyzing: latent_dim=512, k=16 (3.12% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent512_k16.pkl
+  Size: 4000 nodes × 512 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.397
+  ✓ Best F1: 0.313
+  ✓ Composite score: 0.525
+
+Analyzing: latent_dim=512, k=32 (6.25% active)
+
+✓ Cached latents to outputs/latent_cache/latents_topk_latent512_k32.pkl
+  Size: 4000 nodes × 512 latent dims
+  This avoids re-encoding during Phase 4a (latent caching optimization)
+  Using partial correlations (controlling for degree + centrality)
+  Skipping significance testing...
+  ✓ Max |rpb|: 0.687
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.645
+
+======================================================================
+VARIANT: GATED
+======================================================================
+
+Analyzing: Gated SAE - latent_dim=128, sparsity_coef=1e-04
+  ✓ Max |rpb|: 0.215
+  ✓ Best F1: 0.186
+  ✓ Composite score: 0.359
+
+Analyzing: Gated SAE - latent_dim=128, sparsity_coef=5e-04
+  ✓ Max |rpb|: 0.212
+  ✓ Best F1: 0.186
+  ✓ Composite score: 0.346
+
+Analyzing: Gated SAE - latent_dim=128, sparsity_coef=1e-03
+  ✓ Max |rpb|: 0.222
+  ✓ Best F1: 0.206
+  ✓ Composite score: 0.361
+
+Analyzing: Gated SAE - latent_dim=256, sparsity_coef=1e-04
+  ✓ Max |rpb|: 0.224
+  ✓ Best F1: 0.198
+  ✓ Composite score: 0.383
+
+Analyzing: Gated SAE - latent_dim=256, sparsity_coef=5e-04
+  ✓ Max |rpb|: 0.217
+  ✓ Best F1: 0.187
+  ✓ Composite score: 0.362
+
+Analyzing: Gated SAE - latent_dim=256, sparsity_coef=1e-03
+  ✓ Max |rpb|: 0.194
+  ✓ Best F1: 0.151
+  ✓ Composite score: 0.322
+
+Analyzing: Gated SAE - latent_dim=512, sparsity_coef=1e-04
+  ✓ Max |rpb|: 0.271
+  ✓ Best F1: 0.280
+  ✓ Composite score: 0.451
+
+Analyzing: Gated SAE - latent_dim=512, sparsity_coef=5e-04
+  ✓ Max |rpb|: 0.226
+  ✓ Best F1: 0.214
+  ✓ Composite score: 0.371
+
+Analyzing: Gated SAE - latent_dim=512, sparsity_coef=1e-03
+  ✓ Max |rpb|: 0.217
+  ✓ Best F1: 0.194
+  ✓ Composite score: 0.346
+
+======================================================================
+VARIANT: JUMPRELU
+======================================================================
+
+Analyzing: JumpReLU SAE - latent_dim=128, threshold_init=1e-02
+  ✓ Max |rpb|: 0.420
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.655
+
+Analyzing: JumpReLU SAE - latent_dim=128, threshold_init=1e-01
+  ✓ Max |rpb|: 0.345
+  ✓ Best F1: 0.315
+  ✓ Composite score: 0.544
+
+Analyzing: JumpReLU SAE - latent_dim=256, threshold_init=1e-02
+  ✓ Max |rpb|: 0.545
+  ✓ Best F1: 0.322
+  ✓ Composite score: 0.738
+
+Analyzing: JumpReLU SAE - latent_dim=256, threshold_init=1e-01
+  ✓ Max |rpb|: 0.360
+  ✓ Best F1: 0.320
+  ✓ Composite score: 0.529
+
+Analyzing: JumpReLU SAE - latent_dim=512, threshold_init=1e-02
+  ✓ Max |rpb|: 0.586
+  ✓ Best F1: 0.320
+  ✓ Composite score: 0.737
+
+Analyzing: JumpReLU SAE - latent_dim=512, threshold_init=1e-01
+  ✓ Max |rpb|: 0.390
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.558
+
+======================================================================
+VARIANT: SWITCH
+======================================================================
+
+Analyzing: Switch SAE - experts=4, latent_per_expert=64, k=8
+  ✓ Max |rpb|: 0.420
+  ✓ Best F1: 0.322
+  ✓ Composite score: 0.547
+
+Analyzing: Switch SAE - experts=4, latent_per_expert=128, k=16
+  ✓ Max |rpb|: 0.524
+  ✓ Best F1: 0.317
+  ✓ Composite score: 0.627
+
+Analyzing: Switch SAE - experts=8, latent_per_expert=64, k=8
+  ✓ Max |rpb|: 0.464
+  ✓ Best F1: 0.285
+  ✓ Composite score: 0.572
+
+Analyzing: Switch SAE - experts=8, latent_per_expert=128, k=16
+  ✓ Max |rpb|: 0.694
+  ✓ Best F1: 0.307
+  ✓ Composite score: 0.616
+✓ Sorted configurations by max_rpb_abs
+
+✓ Saved detailed results to outputs/sae_config_comparison.csv
+✓ Saved correlation data to outputs/latent_correlations.csv
+  Total feature-motif pairs: 12468
+  Significant pairs (p < 0.05): 9059
+
+======================================================================
+SUMMARY: Top 5 Configurations by Composite Score
+======================================================================
+ latent_dim    k  sparsity_pct  max_rpb_abs  best_f1  dead_feature_rate  composite_score
+        256 16.0          6.25        0.695    0.317              0.812            0.639
+       1024  NaN         12.50        0.694    0.307              0.942            0.616
+        512 32.0          6.25        0.687    0.317              0.771            0.645
+        128 16.0         12.50        0.687    0.315              0.641            0.664
+        256 32.0         12.50        0.686    0.320              0.652            0.664
+
+======================================================================
+RECOMMENDED CONFIGURATION
+======================================================================
+
+  latent_dim = 256
+  k = 16
+  Sparsity: 6.25% (Medium capacity, moderate sparsity)
+
+  Key Metrics:
+    • Max correlation: |rpb| = 0.695
+    • Best F1 score: 0.317
+    • Active features: 48/256 (18.8%)
+    • Composite score: 0.639
+
+======================================================================
+INTERPRETATION GUIDE
+======================================================================
+
+  Ranking Metric Used: max_rpb_abs
+
+  Metric Descriptions:
+
+    max_rpb_abs (Default):
+      • Direct measure of feature-motif correlation strength
+      • Simpler, more interpretable
+      • Recommended for most use cases
+      • Selects config with strongest feature-motif alignment
+
+    composite_score:
+      • Weighted combination: 50% max_rpb_abs + 35% F1 + 15% capacity
+      • Balances effect size with predictive performance and efficiency
+      • Use if you want to optimize for multiple factors simultaneously
+
+  To use a different metric:
+    python compare_sae_configs.py --metric composite_score
+
+  Good Configuration Indicators:
+    ✓ Max |rpb| > 0.3
+    ✓ Best F1 > 0.3
+    ✓ Dead feature rate < 0.5
+    ✓ Composite score > 0.5 (if using composite_score metric)
+
+  To use the recommended configuration, update your notebook:
+    LATENT_DIM = 256
+    K = 16
+    
+
+[2026-01-26 21:49:34] 
+======================================================================
+[2026-01-26 21:49:34] PIPELINE COMPLETE
+[2026-01-26 21:49:34] ======================================================================
+[2026-01-26 21:49:34] Log saved to: outputs/pipeline_logs/pipeline_20260126_214609.log

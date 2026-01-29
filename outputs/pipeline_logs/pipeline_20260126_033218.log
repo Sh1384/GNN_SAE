@@ -1,0 +1,344 @@
+[2026-01-26 03:32:18] ======================================================================
+[2026-01-26 03:32:18] MULTI-GPU SAE PIPELINE
+[2026-01-26 03:32:18] ======================================================================
+[2026-01-26 03:32:18] GPUs: [0, 1, 2, 3]
+[2026-01-26 03:32:18] Phases: 1 to 1
+[2026-01-26 03:32:18] Log: outputs/pipeline_logs/pipeline_20260126_033218.log
+
+[2026-01-26 03:32:18] Checking prerequisites...
+[2026-01-26 03:32:18]   ✓ Train: 3200 files
+[2026-01-26 03:32:18]   ✓ Val: 400 files
+[2026-01-26 03:32:18]   ✓ Test: 400 files
+[2026-01-26 03:32:18]   ✓ Found 4 CUDA devices
+[2026-01-26 03:32:18]     GPU 0: NVIDIA TITAN V
+[2026-01-26 03:32:18]     GPU 1: NVIDIA TITAN V
+[2026-01-26 03:32:18]     GPU 2: NVIDIA TITAN V
+[2026-01-26 03:32:18]     GPU 3: NVIDIA TITAN V
+[2026-01-26 03:32:18] ✓ All prerequisites met
+[2026-01-26 03:32:18] 
+======================================================================
+[2026-01-26 03:32:18] PHASE 1: PARALLEL SAE TRAINING
+[2026-01-26 03:32:18] ======================================================================
+[2026-01-26 03:32:18] Training 30 configurations
+[2026-01-26 03:32:18] Using GPUs: [0, 1, 2, 3]
+
+[2026-01-26 03:32:20] [GPU 0] Starting: topk_latent128_k4
+[2026-01-26 03:32:22] [GPU 1] Starting: topk_latent128_k8
+[2026-01-26 03:32:24] [GPU 2] Starting: topk_latent128_k16
+[2026-01-26 03:32:26] [GPU 3] Starting: topk_latent256_k4
+[2026-01-26 03:33:31] [GPU 1] topk_latent128_k8 Epoch 10/200 Train: 0.000002 Val: 0.000002
+[2026-01-26 03:33:32] [GPU 0] topk_latent128_k4 Epoch 10/200 Train: 0.000005 Val: 0.000004
+[2026-01-26 03:33:33] [GPU 2] topk_latent128_k16 Epoch 10/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:33:35] [GPU 3] topk_latent256_k4 Epoch 10/200 Train: 0.000003 Val: 0.000003
+[2026-01-26 03:34:36] [GPU 1] topk_latent128_k8 Epoch 20/200 Train: 0.000001 Val: 0.000000
+[2026-01-26 03:34:37] [GPU 0] topk_latent128_k4 Epoch 20/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:34:39] [GPU 2] topk_latent128_k16 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:34:42] [GPU 3] topk_latent256_k4 Epoch 20/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:35:43] [GPU 0] topk_latent128_k4 Epoch 30/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:35:43] [GPU 1] topk_latent128_k8 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:35:45] [GPU 2] topk_latent128_k16 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:35:49] [GPU 3] topk_latent256_k4 Epoch 30/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:36:49] [GPU 1] topk_latent128_k8 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:36:49] [GPU 0] topk_latent128_k4 Epoch 40/200 Train: 0.000001 Val: 0.000000
+[2026-01-26 03:36:51] [GPU 2] topk_latent128_k16 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:36:56] [GPU 3] topk_latent256_k4 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:37:56] [GPU 1] topk_latent128_k8 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:37:56] [GPU 2] topk_latent128_k16 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:37:56] [GPU 0] topk_latent128_k4 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:38:03] [GPU 3] topk_latent256_k4 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:39:02] [GPU 0] topk_latent128_k4 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:39:02] [GPU 1] topk_latent128_k8 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:39:03] [GPU 2] topk_latent128_k16 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:39:09] [GPU 3] topk_latent256_k4 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:40:09] [GPU 0] topk_latent128_k4 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:40:09] [GPU 2] topk_latent128_k16 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:40:10] [GPU 1] topk_latent128_k8 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:40:16] [GPU 3] topk_latent256_k4 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:41:12] [GPU 0] topk_latent128_k4 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:41:16] [GPU 1] topk_latent128_k8 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:41:17] [GPU 2] topk_latent128_k16 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:41:24] [GPU 3] topk_latent256_k4 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:42:18] [GPU 0] topk_latent128_k4 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:42:22] [GPU 1] topk_latent128_k8 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:42:23] [GPU 2] topk_latent128_k16 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:42:30] [GPU 3] topk_latent256_k4 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:43:24] [GPU 0] topk_latent128_k4 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:43:30] [GPU 1] topk_latent128_k8 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:43:30] [GPU 2] topk_latent128_k16 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:43:36] [GPU 3] topk_latent256_k4 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:44:31] [GPU 0] topk_latent128_k4 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:44:36] [GPU 2] topk_latent128_k16 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:44:37] [GPU 1] topk_latent128_k8 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:44:43] [GPU 3] topk_latent256_k4 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:45:37] [GPU 0] topk_latent128_k4 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:45:43] [GPU 2] topk_latent128_k16 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:45:43] [GPU 1] topk_latent128_k8 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:45:51] [GPU 3] topk_latent256_k4 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:46:43] [GPU 0] topk_latent128_k4 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:46:50] [GPU 1] topk_latent128_k8 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:46:50] [GPU 2] topk_latent128_k16 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:46:58] [GPU 3] topk_latent256_k4 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:47:51] [GPU 0] topk_latent128_k4 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:47:57] [GPU 2] topk_latent128_k16 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:47:58] [GPU 1] topk_latent128_k8 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:48:05] [GPU 3] topk_latent256_k4 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:48:56] [GPU 0] topk_latent128_k4 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:49:05] [GPU 2] topk_latent128_k16 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:49:06] [GPU 1] topk_latent128_k8 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:49:11] [GPU 3] topk_latent256_k4 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:50:02] [GPU 0] topk_latent128_k4 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:50:11] [GPU 1] topk_latent128_k8 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:50:11] [GPU 2] topk_latent128_k16 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:50:17] [GPU 3] topk_latent256_k4 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:50:58] [GPU 3] Early stopping at epoch 166
+[2026-01-26 03:51:00] [GPU 3] ✓ Completed: topk_latent256_k4 Test Loss: 0.000000
+[2026-01-26 03:51:06] Process completed: topk_latent256_k4, GPU 3, Success: True
+[2026-01-26 03:51:09] [GPU 0] topk_latent128_k4 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:51:16] [GPU 2] topk_latent128_k16 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:51:17] [GPU 1] topk_latent128_k8 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:51:18] [GPU 3] Starting: topk_latent256_k8
+[2026-01-26 03:52:15] [GPU 0] topk_latent128_k4 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:52:23] [GPU 2] topk_latent128_k16 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:52:25] [GPU 1] topk_latent128_k8 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:52:29] [GPU 3] topk_latent256_k8 Epoch 10/200 Train: 0.000002 Val: 0.000002
+[2026-01-26 03:53:19] [GPU 0] topk_latent128_k4 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:53:32] [GPU 2] topk_latent128_k16 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:53:32] [GPU 1] topk_latent128_k8 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:53:35] [GPU 3] topk_latent256_k8 Epoch 20/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:54:24] [GPU 0] topk_latent128_k4 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:54:26] [GPU 0] ✓ Completed: topk_latent128_k4 Test Loss: 0.000000
+[2026-01-26 03:54:28] Process completed: topk_latent128_k4, GPU 0, Success: True
+[2026-01-26 03:54:38] [GPU 2] topk_latent128_k16 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:54:39] [GPU 1] topk_latent128_k8 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:54:40] [GPU 3] Starting: topk_latent256_k16
+[2026-01-26 03:54:41] [GPU 2] ✓ Completed: topk_latent128_k16 Test Loss: 0.000000
+[2026-01-26 03:54:41] [GPU 1] ✓ Completed: topk_latent128_k8 Test Loss: 0.000000
+[2026-01-26 03:54:42] [GPU 3] topk_latent256_k8 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:54:50] Process completed: topk_latent128_k8, GPU 1, Success: True
+[2026-01-26 03:54:50] Process completed: topk_latent128_k16, GPU 2, Success: True
+[2026-01-26 03:55:02] [GPU 2] Starting: topk_latent256_k32
+[2026-01-26 03:55:04] [GPU 3] Starting: topk_latent512_k4
+[2026-01-26 03:55:47] [GPU 3] topk_latent256_k16 Epoch 10/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 03:55:48] [GPU 3] topk_latent256_k8 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:56:12] [GPU 2] topk_latent256_k32 Epoch 10/200 Train: 0.000001 Val: 0.000000
+[2026-01-26 03:56:16] [GPU 3] topk_latent512_k4 Epoch 10/200 Train: 0.000002 Val: 0.000002
+[2026-01-26 03:56:55] [GPU 3] topk_latent256_k16 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:56:55] [GPU 3] topk_latent256_k8 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:57:18] [GPU 2] topk_latent256_k32 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:57:23] [GPU 3] topk_latent512_k4 Epoch 20/200 Train: 0.000001 Val: 0.000000
+[2026-01-26 03:58:02] [GPU 3] topk_latent256_k16 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:58:03] [GPU 3] topk_latent256_k8 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:58:25] [GPU 2] topk_latent256_k32 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:58:29] [GPU 3] topk_latent512_k4 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:59:09] [GPU 3] topk_latent256_k16 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:59:10] [GPU 3] topk_latent256_k8 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:59:30] [GPU 2] topk_latent256_k32 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 03:59:37] [GPU 3] topk_latent512_k4 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:00:17] [GPU 3] topk_latent256_k8 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:00:18] [GPU 3] topk_latent256_k16 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:00:36] [GPU 2] topk_latent256_k32 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:00:44] [GPU 3] topk_latent512_k4 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:01:25] [GPU 3] topk_latent256_k8 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:01:26] [GPU 3] topk_latent256_k16 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:01:42] [GPU 2] topk_latent256_k32 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:01:52] [GPU 3] topk_latent512_k4 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:02:33] [GPU 3] topk_latent256_k8 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:02:33] [GPU 3] topk_latent256_k16 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:02:48] [GPU 2] topk_latent256_k32 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:02:59] [GPU 3] topk_latent512_k4 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:03:40] [GPU 3] topk_latent256_k8 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:03:41] [GPU 3] topk_latent256_k16 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:03:54] [GPU 2] topk_latent256_k32 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:04:07] [GPU 3] topk_latent512_k4 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:04:48] [GPU 3] topk_latent256_k8 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:04:49] [GPU 3] topk_latent256_k16 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:05:01] [GPU 2] topk_latent256_k32 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:05:14] [GPU 3] topk_latent512_k4 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:05:55] [GPU 3] topk_latent256_k8 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:05:56] [GPU 3] topk_latent256_k16 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:06:08] [GPU 2] topk_latent256_k32 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:06:21] [GPU 3] topk_latent512_k4 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:07:02] [GPU 3] topk_latent256_k8 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:07:03] [GPU 3] topk_latent256_k16 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:07:15] [GPU 2] topk_latent256_k32 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:07:28] [GPU 3] topk_latent512_k4 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:08:10] [GPU 3] topk_latent256_k8 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:08:11] [GPU 3] topk_latent256_k16 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:08:21] [GPU 2] topk_latent256_k32 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:08:35] [GPU 3] topk_latent512_k4 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:09:02] [GPU 3] Early stopping at epoch 124
+[2026-01-26 04:09:04] [GPU 3] ✓ Completed: topk_latent512_k4 Test Loss: 0.000000
+[2026-01-26 04:09:14] Process completed: topk_latent512_k4, GPU 3, Success: True
+[2026-01-26 04:09:17] [GPU 3] topk_latent256_k8 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:09:18] [GPU 3] topk_latent256_k16 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:09:25] [GPU 2] topk_latent256_k32 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:09:26] [GPU 3] Starting: topk_latent512_k8
+[2026-01-26 04:10:24] [GPU 3] topk_latent256_k8 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:10:26] [GPU 3] topk_latent256_k16 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:10:31] [GPU 2] topk_latent256_k32 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:10:37] [GPU 3] topk_latent512_k8 Epoch 10/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 04:11:31] [GPU 3] topk_latent256_k8 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:11:32] [GPU 3] topk_latent256_k16 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:11:36] [GPU 2] topk_latent256_k32 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:11:45] [GPU 3] topk_latent512_k8 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:12:38] [GPU 3] topk_latent256_k8 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:12:40] [GPU 3] topk_latent256_k16 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:12:43] [GPU 2] topk_latent256_k32 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:12:51] [GPU 3] topk_latent512_k8 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:13:46] [GPU 3] topk_latent256_k8 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:13:48] [GPU 3] topk_latent256_k16 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:13:49] [GPU 3] ✓ Completed: topk_latent256_k8 Test Loss: 0.000000
+[2026-01-26 04:13:49] [GPU 2] topk_latent256_k32 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:13:56] Process completed: topk_latent256_k8, GPU 3, Success: True
+[2026-01-26 04:13:57] [GPU 3] topk_latent512_k8 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:14:08] [GPU 3] Starting: topk_latent512_k16
+[2026-01-26 04:14:54] [GPU 2] topk_latent256_k32 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:14:55] [GPU 3] topk_latent256_k16 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:15:03] [GPU 3] topk_latent512_k8 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:15:18] [GPU 3] topk_latent512_k16 Epoch 10/200 Train: 0.000001 Val: 0.000001
+[2026-01-26 04:16:01] [GPU 2] topk_latent256_k32 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:16:02] [GPU 3] topk_latent256_k16 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:16:10] [GPU 3] topk_latent512_k8 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:16:26] [GPU 3] topk_latent512_k16 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:17:09] [GPU 2] topk_latent256_k32 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:17:09] [GPU 3] topk_latent256_k16 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:17:12] [GPU 2] ✓ Completed: topk_latent256_k32 Test Loss: 0.000000
+[2026-01-26 04:17:12] [GPU 3] ✓ Completed: topk_latent256_k16 Test Loss: 0.000000
+[2026-01-26 04:17:16] [GPU 3] topk_latent512_k8 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:17:18] Process completed: topk_latent256_k16, GPU 3, Success: True
+[2026-01-26 04:17:18] Process completed: topk_latent256_k32, GPU 2, Success: True
+[2026-01-26 04:17:30] [GPU 2] Starting: topk_latent512_k32
+[2026-01-26 04:17:32] [GPU 3] topk_latent512_k16 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:17:32] [GPU 3] Starting: gated_latent128_lambda1e-04
+[2026-01-26 04:18:22] [GPU 3] topk_latent512_k8 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:18:39] [GPU 3] topk_latent512_k16 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:18:40] [GPU 2] topk_latent512_k32 Epoch 10/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:18:43] [GPU 3] gated_latent128_lambda1e-04 Epoch 10/200 Train: 0.000047 Val: 0.000044
+[2026-01-26 04:19:29] [GPU 3] topk_latent512_k8 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:19:44] [GPU 3] Early stopping at epoch 19
+[2026-01-26 04:19:46] [GPU 3] topk_latent512_k16 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:19:46] [GPU 2] topk_latent512_k32 Epoch 20/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:19:46] [GPU 3] ✓ Completed: gated_latent128_lambda1e-04 Test Loss: 0.000038
+[2026-01-26 04:19:52] Process completed: gated_latent128_lambda1e-04, GPU 3, Success: True
+[2026-01-26 04:20:04] [GPU 3] Starting: gated_latent128_lambda5e-04
+[2026-01-26 04:20:35] [GPU 3] topk_latent512_k8 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:20:51] [GPU 2] topk_latent512_k32 Epoch 30/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:20:52] [GPU 3] topk_latent512_k16 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:21:15] [GPU 3] gated_latent128_lambda5e-04 Epoch 10/200 Train: 0.000074 Val: 0.000066
+[2026-01-26 04:21:42] [GPU 3] topk_latent512_k8 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:21:58] [GPU 2] topk_latent512_k32 Epoch 40/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:22:00] [GPU 3] topk_latent512_k16 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:22:08] [GPU 3] Early stopping at epoch 18
+[2026-01-26 04:22:11] [GPU 3] ✓ Completed: gated_latent128_lambda5e-04 Test Loss: 0.000062
+[2026-01-26 04:22:14] Process completed: gated_latent128_lambda5e-04, GPU 3, Success: True
+[2026-01-26 04:22:26] [GPU 3] Starting: gated_latent128_lambda1e-03
+[2026-01-26 04:22:48] [GPU 3] topk_latent512_k8 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:23:03] [GPU 2] topk_latent512_k32 Epoch 50/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:23:07] [GPU 3] topk_latent512_k16 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:23:38] [GPU 3] gated_latent128_lambda1e-03 Epoch 10/200 Train: 0.000086 Val: 0.000077
+[2026-01-26 04:23:56] [GPU 3] topk_latent512_k8 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:24:09] [GPU 2] topk_latent512_k32 Epoch 60/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:24:14] [GPU 3] topk_latent512_k16 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:24:26] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:24:28] [GPU 3] ✓ Completed: gated_latent128_lambda1e-03 Test Loss: 0.000072
+[2026-01-26 04:24:36] Process completed: gated_latent128_lambda1e-03, GPU 3, Success: True
+[2026-01-26 04:24:48] [GPU 3] Starting: gated_latent256_lambda1e-04
+[2026-01-26 04:25:03] [GPU 3] topk_latent512_k8 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:25:03] [GPU 3] Early stopping at epoch 140
+[2026-01-26 04:25:06] [GPU 3] ✓ Completed: topk_latent512_k8 Test Loss: 0.000000
+[2026-01-26 04:25:08] Process completed: topk_latent512_k8, GPU 3, Success: True
+[2026-01-26 04:25:14] [GPU 2] topk_latent512_k32 Epoch 70/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:25:19] [GPU 3] topk_latent512_k16 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:25:20] [GPU 3] Starting: gated_latent256_lambda5e-04
+[2026-01-26 04:25:59] [GPU 3] gated_latent256_lambda1e-04 Epoch 10/200 Train: 0.000036 Val: 0.000033
+[2026-01-26 04:26:19] [GPU 2] topk_latent512_k32 Epoch 80/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:26:27] [GPU 3] topk_latent512_k16 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:26:32] [GPU 3] gated_latent256_lambda5e-04 Epoch 10/200 Train: 0.000068 Val: 0.000064
+[2026-01-26 04:26:53] [GPU 3] Early stopping at epoch 18
+[2026-01-26 04:26:55] [GPU 3] ✓ Completed: gated_latent256_lambda1e-04 Test Loss: 0.000022
+[2026-01-26 04:27:00] Process completed: gated_latent256_lambda1e-04, GPU 3, Success: True
+[2026-01-26 04:27:12] [GPU 3] Starting: gated_latent256_lambda1e-03
+[2026-01-26 04:27:19] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:27:22] [GPU 3] ✓ Completed: gated_latent256_lambda5e-04 Test Loss: 0.000038
+[2026-01-26 04:27:25] [GPU 2] topk_latent512_k32 Epoch 90/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:27:32] Process completed: gated_latent256_lambda5e-04, GPU 3, Success: True
+[2026-01-26 04:27:34] [GPU 3] topk_latent512_k16 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:27:44] [GPU 3] Starting: gated_latent512_lambda1e-04
+[2026-01-26 04:28:22] [GPU 3] gated_latent256_lambda1e-03 Epoch 10/200 Train: 0.000084 Val: 0.000076
+[2026-01-26 04:28:30] [GPU 2] topk_latent512_k32 Epoch 100/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:28:40] [GPU 3] topk_latent512_k16 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:28:54] [GPU 3] gated_latent512_lambda1e-04 Epoch 10/200 Train: 0.000029 Val: 0.000028
+[2026-01-26 04:29:10] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:29:12] [GPU 3] ✓ Completed: gated_latent256_lambda1e-03 Test Loss: 0.000047
+[2026-01-26 04:29:14] Process completed: gated_latent256_lambda1e-03, GPU 3, Success: True
+[2026-01-26 04:29:26] [GPU 3] Starting: gated_latent512_lambda5e-04
+[2026-01-26 04:29:36] [GPU 2] topk_latent512_k32 Epoch 110/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:29:41] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:29:43] [GPU 3] ✓ Completed: gated_latent512_lambda1e-04 Test Loss: 0.000016
+[2026-01-26 04:29:46] Process completed: gated_latent512_lambda1e-04, GPU 3, Success: True
+[2026-01-26 04:29:47] [GPU 3] topk_latent512_k16 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:29:58] [GPU 3] Starting: gated_latent512_lambda1e-03
+[2026-01-26 04:30:37] [GPU 3] gated_latent512_lambda5e-04 Epoch 10/200 Train: 0.000059 Val: 0.000055
+[2026-01-26 04:30:41] [GPU 2] topk_latent512_k32 Epoch 120/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:30:56] [GPU 3] topk_latent512_k16 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:31:10] [GPU 3] gated_latent512_lambda1e-03 Epoch 10/200 Train: 0.000074 Val: 0.000070
+[2026-01-26 04:31:24] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:31:27] [GPU 3] ✓ Completed: gated_latent512_lambda5e-04 Test Loss: 0.000027
+[2026-01-26 04:31:28] Process completed: gated_latent512_lambda5e-04, GPU 3, Success: True
+[2026-01-26 04:31:40] [GPU 3] Starting: jumprelu_latent128_thresh1e-02_bw1e-02
+[2026-01-26 04:31:46] [GPU 2] topk_latent512_k32 Epoch 130/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:31:48] [GPU 3] ✗ Error training jumprelu_latent128_thresh1e-02_bw1e-02: 'sparsity'
+[2026-01-26 04:31:50] Process completed: jumprelu_latent128_thresh1e-02_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:31:55] [GPU 3] Early stopping at epoch 17
+[2026-01-26 04:31:58] [GPU 3] ✓ Completed: gated_latent512_lambda1e-03 Test Loss: 0.000036
+[2026-01-26 04:32:02] [GPU 3] topk_latent512_k16 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:32:02] [GPU 3] Starting: jumprelu_latent128_thresh1e-01_bw1e-02
+[2026-01-26 04:32:02] Process completed: gated_latent512_lambda1e-03, GPU 3, Success: True
+[2026-01-26 04:32:09] [GPU 3] ✗ Error training jumprelu_latent128_thresh1e-01_bw1e-02: 'sparsity'
+[2026-01-26 04:32:14] [GPU 3] Starting: jumprelu_latent256_thresh1e-02_bw1e-02
+[2026-01-26 04:32:14] Process completed: jumprelu_latent128_thresh1e-01_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:32:21] [GPU 3] ✗ Error training jumprelu_latent256_thresh1e-02_bw1e-02: 'sparsity'
+[2026-01-26 04:32:26] [GPU 3] Starting: jumprelu_latent256_thresh1e-01_bw1e-02
+[2026-01-26 04:32:26] Process completed: jumprelu_latent256_thresh1e-02_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:32:33] [GPU 3] ✗ Error training jumprelu_latent256_thresh1e-01_bw1e-02: 'sparsity'
+[2026-01-26 04:32:38] [GPU 3] Starting: jumprelu_latent512_thresh1e-02_bw1e-02
+[2026-01-26 04:32:38] Process completed: jumprelu_latent256_thresh1e-01_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:32:45] [GPU 3] ✗ Error training jumprelu_latent512_thresh1e-02_bw1e-02: 'sparsity'
+[2026-01-26 04:32:48] [GPU 2] topk_latent512_k32 Epoch 140/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:32:50] [GPU 3] Starting: jumprelu_latent512_thresh1e-01_bw1e-02
+[2026-01-26 04:32:50] Process completed: jumprelu_latent512_thresh1e-02_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:32:58] [GPU 3] ✗ Error training jumprelu_latent512_thresh1e-01_bw1e-02: 'sparsity'
+[2026-01-26 04:33:02] [GPU 3] Starting: switch_experts4_latent256_k8
+[2026-01-26 04:33:02] Process completed: jumprelu_latent512_thresh1e-01_bw1e-02, GPU 3, Success: False
+[2026-01-26 04:33:05] [GPU 3] topk_latent512_k16 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:33:10] [GPU 3] ✗ Error training switch_experts4_latent256_k8: 'sparsity'
+[2026-01-26 04:33:14] [GPU 3] Starting: switch_experts4_latent512_k16
+[2026-01-26 04:33:14] Process completed: switch_experts4_latent256_k8, GPU 3, Success: False
+[2026-01-26 04:33:22] [GPU 3] ✗ Error training switch_experts4_latent512_k16: 'sparsity'
+[2026-01-26 04:33:26] [GPU 3] Starting: switch_experts8_latent512_k8
+[2026-01-26 04:33:26] Process completed: switch_experts4_latent512_k16, GPU 3, Success: False
+[2026-01-26 04:33:35] [GPU 3] ✗ Error training switch_experts8_latent512_k8: 'sparsity'
+[2026-01-26 04:33:38] [GPU 3] Starting: switch_experts8_latent1024_k16
+[2026-01-26 04:33:38] Process completed: switch_experts8_latent512_k8, GPU 3, Success: False
+[2026-01-26 04:33:46] [GPU 3] ✗ Error training switch_experts8_latent1024_k16: 'sparsity'
+[2026-01-26 04:33:48] Process completed: switch_experts8_latent1024_k16, GPU 3, Success: False
+[2026-01-26 04:33:51] [GPU 2] topk_latent512_k32 Epoch 150/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:34:08] [GPU 3] topk_latent512_k16 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:34:51] [GPU 2] topk_latent512_k32 Epoch 160/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:35:10] [GPU 3] topk_latent512_k16 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:35:50] [GPU 2] topk_latent512_k32 Epoch 170/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:36:12] [GPU 3] topk_latent512_k16 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:36:14] [GPU 3] ✓ Completed: topk_latent512_k16 Test Loss: 0.000000
+[2026-01-26 04:36:18] Process completed: topk_latent512_k16, GPU 3, Success: True
+[2026-01-26 04:36:49] [GPU 2] topk_latent512_k32 Epoch 180/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:37:46] [GPU 2] topk_latent512_k32 Epoch 190/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:38:43] [GPU 2] topk_latent512_k32 Epoch 200/200 Train: 0.000000 Val: 0.000000
+[2026-01-26 04:38:46] [GPU 2] ✓ Completed: topk_latent512_k32 Test Loss: 0.000000
+[2026-01-26 04:38:48] Process completed: topk_latent512_k32, GPU 2, Success: True
+[2026-01-26 04:38:48] 
+Phase 1 Summary: 20/30 completed
+[2026-01-26 04:38:48] 
+======================================================================
+[2026-01-26 04:38:48] PIPELINE COMPLETE
+[2026-01-26 04:38:48] ======================================================================
+[2026-01-26 04:38:48] Log saved to: outputs/pipeline_logs/pipeline_20260126_033218.log

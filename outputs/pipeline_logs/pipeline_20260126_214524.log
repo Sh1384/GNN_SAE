@@ -1,0 +1,40 @@
+[2026-01-26 21:45:24] ======================================================================
+[2026-01-26 21:45:24] MULTI-GPU SAE PIPELINE
+[2026-01-26 21:45:24] ======================================================================
+[2026-01-26 21:45:24] GPUs: [0, 1, 2, 3]
+[2026-01-26 21:45:24] Phases: 2 to 2
+[2026-01-26 21:45:24] Log: outputs/pipeline_logs/pipeline_20260126_214524.log
+
+[2026-01-26 21:45:24] Checking prerequisites...
+[2026-01-26 21:45:24]   ✓ Train: 3200 files
+[2026-01-26 21:45:24]   ✓ Val: 400 files
+[2026-01-26 21:45:24]   ✓ Test: 400 files
+[2026-01-26 21:45:24]   ✓ Found 4 CUDA devices
+[2026-01-26 21:45:24]     GPU 0: NVIDIA TITAN V
+[2026-01-26 21:45:24]     GPU 1: NVIDIA TITAN V
+[2026-01-26 21:45:24]     GPU 2: NVIDIA TITAN V
+[2026-01-26 21:45:24]     GPU 3: NVIDIA TITAN V
+[2026-01-26 21:45:24] ✓ All prerequisites met
+[2026-01-26 21:45:24] 
+======================================================================
+[2026-01-26 21:45:24] PHASE 2: CONFIGURATION COMPARISON
+[2026-01-26 21:45:24] ======================================================================
+
+[2026-01-26 21:45:24] Running: compare_sae_configs.py 
+[2026-01-26 21:45:28] ✗ compare_sae_configs.py failed
+[2026-01-26 21:45:28] Error: 
+topk configs:   0%|          | 0/11 [00:00<?, ?it/s]
+topk configs:   0%|          | 0/11 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 1172, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 912, in main
+    config_result, df_corr = analyze_topk_configuration(latent_dim, k, run_sanity_check=run_sanity)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: analyze_topk_configuration() got an unexpected keyword argument 'run_sanity_check'
+
+[2026-01-26 21:45:28] 
+======================================================================
+[2026-01-26 21:45:28] PIPELINE COMPLETE
+[2026-01-26 21:45:28] ======================================================================
+[2026-01-26 21:45:28] Log saved to: outputs/pipeline_logs/pipeline_20260126_214524.log

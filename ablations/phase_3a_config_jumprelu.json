@@ -1,0 +1,14 @@
+{
+  "variant": "jumprelu",
+  "latent_dim": 512,
+  "variant_kwargs": {
+    "threshold_init": 0.01,
+    "bandwidth": 0.01
+  },
+  "min_rpb": 0,
+  "n_random_trials": 20,
+  "use_mixed_motifs": false,
+  "results_dir": "ablations/interpretability_jumprelu_latent512_k8_rpb0.00_results",
+  "plots_dir": "ablations/interpretability_jumprelu_latent512_k8_rpb0.00_plots",
+  "status": "incomplete_no_results"
+}

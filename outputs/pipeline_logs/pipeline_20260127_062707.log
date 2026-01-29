@@ -1,0 +1,706 @@
+[2026-01-27 06:27:07] ======================================================================
+[2026-01-27 06:27:07] MULTI-GPU SAE PIPELINE
+[2026-01-27 06:27:07] ======================================================================
+[2026-01-27 06:27:07] GPUs: [0, 1, 2, 3]
+[2026-01-27 06:27:07] Phases: 3 to 3
+[2026-01-27 06:27:07] Log: outputs/pipeline_logs/pipeline_20260127_062707.log
+
+[2026-01-27 06:27:07] Checking prerequisites...
+[2026-01-27 06:27:07]   ✓ Train: 3200 files
+[2026-01-27 06:27:07]   ✓ Val: 400 files
+[2026-01-27 06:27:07]   ✓ Test: 400 files
+[2026-01-27 06:27:07]   ✓ Found 4 CUDA devices
+[2026-01-27 06:27:07]     GPU 0: NVIDIA TITAN V
+[2026-01-27 06:27:07]     GPU 1: NVIDIA TITAN V
+[2026-01-27 06:27:07]     GPU 2: NVIDIA TITAN V
+[2026-01-27 06:27:07]     GPU 3: NVIDIA TITAN V
+[2026-01-27 06:27:07] ✓ All prerequisites met
+[2026-01-27 06:27:07] 
+======================================================================
+[2026-01-27 06:27:07] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 06:27:07] ======================================================================
+
+[2026-01-27 06:27:08] Using best variant from Phase 2: topk
+[2026-01-27 06:27:08] Running feature significance analysis for variant: topk
+[2026-01-27 06:27:08] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 06:31:21] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 06:31:21] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 06:31:21] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 06:37:44] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 06:37:44] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+
+Filtering criteria:
+  - FDR < 0.05: 163 pairs
+  - |rpb| >= 0: 192 pairs
+  - Both criteria: 163 pairs
+Saved feature mapping to: ablations/interpretability_topk_latent256_k16_rpb0.00_results/feature_motif_mapping.json
+
+Non-filtered features available for random controls: 1
+
+Filtered features per motif:
+  Cascade: 40 features
+  Feedback Loop: 41 features
+  Feedforward Loop: 41 features
+  Single Input Module: 41 features
+
+======================================================================
+MONOSEMANTICITY ANALYSIS
+======================================================================
+
+Feature specificity (after filtering):
+  Monosemantic (1 motif only): 6
+  Polysemantic (2 motifs): 0
+  Polysemantic (3 motifs): 7
+  Polysemantic (4 motifs): 34
+
+  Total unique features: 47
+  Monosemantic rate: 12.8%
+  Polysemantic rate: 87.2%
+
+Most polysemantic features (top 10):
+  z117: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.129, 0.361, -0.128, -0.062]
+  z118: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.042]
+  z122: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.082, 0.244, -0.082, -0.054]
+  z125: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.114, 0.333, -0.113, -0.071]
+  z126: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.294, -0.735, 0.293, 0.046]
+  z129: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.118, 0.343, -0.117, -0.071]
+  z131: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.043]
+  z132: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.087, 0.253, -0.086, -0.053]
+  z136: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.083, 0.242, -0.083, -0.050]
+  z154: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.115, 0.344, -0.114, -0.079]
+
+======================================================================
+STEP 1: Motif-Specific Ablations
+======================================================================
+
+Ablating Cascade features (40)...
+
+Ablating Feedback Loop features (41)...
+
+Ablating Feedforward Loop features (41)...
+
+Ablating Single Input Module features (41)...
+
+======================================================================
+STEP 2: Random Control Trials
+======================================================================
+
+Running 20 random control trials (ablating 40 features each)...
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+Warning: Only 1 non-filtered features available, need 40
+
+Running 20 random control trials (ablating 41 features each)...
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+Warning: Only 1 non-filtered features available, need 41
+
+======================================================================
+STEP 3: Statistical Comparison
+======================================================================
+
+Statistical Significance Results:
+            Feature_Set                Motif  N_Features  Specific_Impact   Random_Mean    Random_Std       Z_Score  Percentile  P_Value  Significant
+0               Cascade  Single Input Module          40     2.115014e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+1               Cascade        Feedback Loop          40     2.085027e-05 -3.004691e-08  6.617445e-24  3.155344e+18       100.0      0.0         True
+2               Cascade              Cascade          40    -6.182598e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+3               Cascade     Feedforward Loop          40    -8.720955e-09  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+4         Feedback Loop  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+5         Feedback Loop        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+6         Feedback Loop              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+7         Feedback Loop     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+8      Feedforward Loop  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+9      Feedforward Loop        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+10     Feedforward Loop              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+11     Feedforward Loop     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+12  Single Input Module  Single Input Module          41     2.751083e-08  0.000000e+00  0.000000e+00  0.000000e+00       100.0      0.0         True
+13  Single Input Module        Feedback Loop          41     5.993892e-04 -3.004691e-08  6.617445e-24  9.058167e+19       100.0      0.0         True
+14  Single Input Module              Cascade          41    -7.993709e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+15  Single Input Module     Feedforward Loop          41    -1.109630e-08  0.000000e+00  0.000000e+00  0.000000e+00         0.0      0.0         True
+
+======================================================================
+STEP 4: Generate Visualizations
+======================================================================
+Saved: ablations/interpretability_topk_latent256_k16_rpb0.00_plots/interpretability_vs_random_controls.png
+
+Saved phase_3a_config.json to both current directory and ablations/ for Phase 3b/3c to use
+
+======================================================================
+EXPERIMENTS COMPLETE
+======================================================================
+Configuration:
+  SAE: latent_dim=256, k=16
+  Filtering: FDR<0.05 and |rpb|>=0
+  Random trials: 20 per feature count
+
+Total features tested: 163
+Monosemantic features: 6
+
+Output directories:
+  Results: ablations/interpretability_topk_latent256_k16_rpb0.00_results
+  Plots: ablations/interpretability_topk_latent256_k16_rpb0.00_plots
+
+[2026-01-27 06:37:44] 
+======================================================================
+[2026-01-27 06:37:44] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 06:37:44] ======================================================================
+
+[2026-01-27 06:37:44] Running native ablation for motif: in_feedback_loop
+[2026-01-27 06:37:44] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedback_loop --use-rpb --k 16
+[2026-01-27 06:37:53] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 06:37:53] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedback_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedback_loop
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.735
+  Features with |r_pb| > 0.3: 16
+
+Top 5 features by |r_pb| to in_feedback_loop:
+  1. Feature 125: |r_pb| = 0.735
+  2. Feature 211: |r_pb| = 0.432
+  3. Feature 186: |r_pb| = 0.430
+  4. Feature 35: |r_pb| = 0.423
+  5. Feature 76: |r_pb| = 0.399
+Running native ablation for feature 125, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 211, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 186, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 35, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 76, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+✓ Saved native_ablation_results.png
+
+✓ Saved r_pb-guided ablation results to outputs/native_gnn_ablations/native_ablation_topk_rpb_in_feedback_loop.csv
+✓ Saved SAE feature r_pb rankings to outputs/native_gnn_ablations/sae_rpb_rankings_in_feedback_loop.csv
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 06:37:53] Running native ablation for motif: in_cascade
+[2026-01-27 06:37:53] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_cascade --use-rpb --k 16
+[2026-01-27 06:38:03] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 06:38:03] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_cascade
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_cascade
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.102
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_cascade:
+  1. Feature 223: |r_pb| = 0.102
+  2. Feature 187: |r_pb| = 0.100
+  3. Feature 64: |r_pb| = 0.099
+  4. Feature 186: |r_pb| = 0.094
+  5. Feature 211: |r_pb| = 0.092
+Running native ablation for feature 223, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 187, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 64, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 186, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 211, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+✓ Saved native_ablation_results.png
+
+✓ Saved r_pb-guided ablation results to outputs/native_gnn_ablations/native_ablation_topk_rpb_in_cascade.csv
+✓ Saved SAE feature r_pb rankings to outputs/native_gnn_ablations/sae_rpb_rankings_in_cascade.csv
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 06:38:03] Running native ablation for motif: in_feedforward_loop
+[2026-01-27 06:38:03] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedforward_loop --use-rpb --k 16
+[2026-01-27 06:38:12] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 06:38:12] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedforward_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedforward_loop
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.294
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_feedforward_loop:
+  1. Feature 125: |r_pb| = 0.294
+  2. Feature 211: |r_pb| = 0.147
+  3. Feature 35: |r_pb| = 0.147
+  4. Feature 186: |r_pb| = 0.146
+  5. Feature 76: |r_pb| = 0.142
+Running native ablation for feature 125, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 211, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 35, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 186, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 76, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+✓ Saved native_ablation_results.png
+
+✓ Saved r_pb-guided ablation results to outputs/native_gnn_ablations/native_ablation_topk_rpb_in_feedforward_loop.csv
+✓ Saved SAE feature r_pb rankings to outputs/native_gnn_ablations/sae_rpb_rankings_in_feedforward_loop.csv
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 06:38:12] Running native ablation for motif: in_single_input_module
+[2026-01-27 06:38:12] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_single_input_module --use-rpb --k 16
+[2026-01-27 06:38:22] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 06:38:22] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_single_input_module
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_single_input_module
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.293
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_single_input_module:
+  1. Feature 125: |r_pb| = 0.293
+  2. Feature 211: |r_pb| = 0.147
+  3. Feature 35: |r_pb| = 0.146
+  4. Feature 186: |r_pb| = 0.145
+  5. Feature 76: |r_pb| = 0.142
+Running native ablation for feature 125, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 211, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 35, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 186, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+Running native ablation for feature 76, motif=in_feedback_loop
+Error: Non-finite loss values for graph 1682
+Error: Non-finite loss values for graph 1259
+Error: Non-finite loss values for graph 3119
+Error: Non-finite loss values for graph 1281
+Error: Non-finite loss values for graph 3667
+
+Processing Summary:
+  Successfully processed: 95 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 5 graphs
+
+✓ Saved native_ablation_results.png
+
+✓ Saved r_pb-guided ablation results to outputs/native_gnn_ablations/native_ablation_topk_rpb_in_single_input_module.csv
+✓ Saved SAE feature r_pb rankings to outputs/native_gnn_ablations/sae_rpb_rankings_in_single_input_module.csv
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 06:38:22] 
+======================================================================
+[2026-01-27 06:38:22] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 06:38:22] ======================================================================
+
+[2026-01-27 06:38:22] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 06:38:23] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 06:38:23] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 06:38:23] 
+======================================================================
+[2026-01-27 06:38:23] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 06:38:23] ======================================================================
+
+[2026-01-27 06:38:23] Running: generate_mixed_motif_activations.py 
+[2026-01-27 06:38:31] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 06:38:31] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 64])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 06:38:31] Mixed-motif generalization requires manual feature selection
+[2026-01-27 06:38:31] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 06:38:31] 
+======================================================================
+[2026-01-27 06:38:31] PIPELINE COMPLETE
+[2026-01-27 06:38:31] ======================================================================
+[2026-01-27 06:38:31] Log saved to: outputs/pipeline_logs/pipeline_20260127_062707.log

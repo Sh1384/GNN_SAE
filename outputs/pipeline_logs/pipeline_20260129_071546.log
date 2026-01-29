@@ -1,0 +1,226 @@
+[2026-01-29 07:15:46] ======================================================================
+[2026-01-29 07:15:46] MULTI-GPU SAE PIPELINE
+[2026-01-29 07:15:46] ======================================================================
+[2026-01-29 07:15:46] GPUs: [0, 1, 2, 3]
+[2026-01-29 07:15:46] Phases: 3 to 3
+[2026-01-29 07:15:46] Log: outputs/pipeline_logs/pipeline_20260129_071546.log
+
+[2026-01-29 07:15:46] Checking prerequisites...
+[2026-01-29 07:15:46]   ✓ Train: 3200 files
+[2026-01-29 07:15:46]   ✓ Val: 400 files
+[2026-01-29 07:15:46]   ✓ Test: 400 files
+[2026-01-29 07:15:47]   ✓ Found 4 CUDA devices
+[2026-01-29 07:15:47]     GPU 0: NVIDIA TITAN V
+[2026-01-29 07:15:47]     GPU 1: NVIDIA TITAN V
+[2026-01-29 07:15:47]     GPU 2: NVIDIA TITAN V
+[2026-01-29 07:15:47]     GPU 3: NVIDIA TITAN V
+[2026-01-29 07:15:47] ✓ All prerequisites met
+[2026-01-29 07:15:47] 
+======================================================================
+[2026-01-29 07:15:47] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-29 07:15:47] ======================================================================
+
+[2026-01-29 07:15:47] Using best variant from Phase 2: switch
+[2026-01-29 07:15:47] Running feature significance analysis for variant: switch
+[2026-01-29 07:15:47] Running: analyze_feature_significance.py --variant switch --source-csv outputs/sae_config_comparison.csv
+[2026-01-29 07:15:50] ✗ analyze_feature_significance.py failed
+[2026-01-29 07:15:50] Error: Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 605, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 519, in main
+    model = load_sae_model(args.variant, best_config)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 74, in load_sae_model
+    raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
+FileNotFoundError: Checkpoint not found: checkpoints/sae_switch_experts8_latent64_k8_seed42.pt
+
+[2026-01-29 07:15:50] Warning: Feature significance analysis failed, but continuing...
+[2026-01-29 07:15:50] Running: run_interpretability_experiments.py --variant switch
+[2026-01-29 07:15:52] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-29 07:15:52] ✓ Auto-loaded best config for SWITCH:
+  latent_dim=512
+  num_experts=8
+  latent_per_expert=64
+  k_per_expert=8
+  composite_score=0.581703125
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=512, k=8
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+ERROR: Correlation data not found at outputs/feature_analysis_switch/latent_correlations.csv
+  Have you run: python analyze_feature_significance.py --variant switch?
+ERROR: Could not load correlation data
+
+[2026-01-29 07:15:52] 
+======================================================================
+[2026-01-29 07:15:52] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-29 07:15:52] ======================================================================
+
+[2026-01-29 07:15:52] Running native ablation for motif: in_feedback_loop
+[2026-01-29 07:15:52] Running: native_gnn_ablation.py --variant gated --latent_dim 512 --motif in_feedback_loop --use-rpb
+[2026-01-29 07:15:56] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 07:15:56] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedback_loop
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'sparsity_coef': 0.0001}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedback_loop
+  Variant: gated, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Invalid activation shape torch.Size([10, 80]), expected (N, 64)
+ERROR: Could not compute r_pb for variant gated
+
+[2026-01-29 07:15:56] Running native ablation for motif: in_cascade
+[2026-01-29 07:15:56] Running: native_gnn_ablation.py --variant gated --latent_dim 512 --motif in_cascade --use-rpb
+[2026-01-29 07:16:00] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 07:16:00] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_cascade
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'sparsity_coef': 0.0001}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_cascade
+  Variant: gated, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Invalid activation shape torch.Size([10, 80]), expected (N, 64)
+ERROR: Could not compute r_pb for variant gated
+
+[2026-01-29 07:16:00] Running native ablation for motif: in_feedforward_loop
+[2026-01-29 07:16:00] Running: native_gnn_ablation.py --variant gated --latent_dim 512 --motif in_feedforward_loop --use-rpb
+[2026-01-29 07:16:04] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 07:16:04] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedforward_loop
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'sparsity_coef': 0.0001}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedforward_loop
+  Variant: gated, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Invalid activation shape torch.Size([10, 80]), expected (N, 64)
+ERROR: Could not compute r_pb for variant gated
+
+[2026-01-29 07:16:04] Running native ablation for motif: in_single_input_module
+[2026-01-29 07:16:04] Running: native_gnn_ablation.py --variant gated --latent_dim 512 --motif in_single_input_module --use-rpb
+[2026-01-29 07:16:08] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 07:16:08] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_single_input_module
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'sparsity_coef': 0.0001}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_single_input_module
+  Variant: gated, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Invalid activation shape torch.Size([10, 80]), expected (N, 64)
+ERROR: Could not compute r_pb for variant gated
+
+[2026-01-29 07:16:08] 
+======================================================================
+[2026-01-29 07:16:08] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-29 07:16:08] ======================================================================
+
+[2026-01-29 07:16:08] Running: compare_ablation_strategies.py --motif-mode --variant gated
+[2026-01-29 07:16:09] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-29 07:16:09] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: GATED
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-29 07:16:09] 
+======================================================================
+[2026-01-29 07:16:09] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-29 07:16:09] ======================================================================
+
+[2026-01-29 07:16:09] Running: generate_mixed_motif_activations.py 
+[2026-01-29 07:16:16] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-29 07:16:16] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer2_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-29 07:16:16] Mixed-motif generalization requires manual feature selection
+[2026-01-29 07:16:16] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-29 07:16:16] 
+======================================================================
+[2026-01-29 07:16:16] PIPELINE COMPLETE
+[2026-01-29 07:16:16] ======================================================================
+[2026-01-29 07:16:16] Log saved to: outputs/pipeline_logs/pipeline_20260129_071546.log

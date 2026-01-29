@@ -1,0 +1,460 @@
+[2026-01-27 05:12:57] ======================================================================
+[2026-01-27 05:12:57] MULTI-GPU SAE PIPELINE
+[2026-01-27 05:12:57] ======================================================================
+[2026-01-27 05:12:57] GPUs: [0, 1, 2, 3]
+[2026-01-27 05:12:57] Phases: 3 to 3
+[2026-01-27 05:12:57] Log: outputs/pipeline_logs/pipeline_20260127_051257.log
+
+[2026-01-27 05:12:57] Checking prerequisites...
+[2026-01-27 05:12:57]   ✓ Train: 3200 files
+[2026-01-27 05:12:57]   ✓ Val: 400 files
+[2026-01-27 05:12:57]   ✓ Test: 400 files
+[2026-01-27 05:12:57]   ✓ Found 4 CUDA devices
+[2026-01-27 05:12:57]     GPU 0: NVIDIA TITAN V
+[2026-01-27 05:12:57]     GPU 1: NVIDIA TITAN V
+[2026-01-27 05:12:57]     GPU 2: NVIDIA TITAN V
+[2026-01-27 05:12:57]     GPU 3: NVIDIA TITAN V
+[2026-01-27 05:12:57] ✓ All prerequisites met
+[2026-01-27 05:12:57] 
+======================================================================
+[2026-01-27 05:12:57] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 05:12:57] ======================================================================
+
+[2026-01-27 05:12:58] Using best variant from Phase 2: topk
+[2026-01-27 05:12:58] Running feature significance analysis for variant: topk
+[2026-01-27 05:12:58] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 05:18:07] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 05:18:07] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 05:18:07] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 05:18:30] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 05:18:30] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+
+Filtering criteria:
+  - FDR < 0.05: 163 pairs
+  - |rpb| >= 0: 192 pairs
+  - Both criteria: 163 pairs
+Saved feature mapping to: ablations/interpretability_topk_latent256_k16_rpb0.00_results/feature_motif_mapping.json
+
+Non-filtered features available for random controls: 1
+
+Filtered features per motif:
+  Cascade: 40 features
+  Feedback Loop: 41 features
+  Feedforward Loop: 41 features
+  Single Input Module: 41 features
+
+======================================================================
+MONOSEMANTICITY ANALYSIS
+======================================================================
+
+Feature specificity (after filtering):
+  Monosemantic (1 motif only): 6
+  Polysemantic (2 motifs): 0
+  Polysemantic (3 motifs): 7
+  Polysemantic (4 motifs): 34
+
+  Total unique features: 47
+  Monosemantic rate: 12.8%
+  Polysemantic rate: 87.2%
+
+Most polysemantic features (top 10):
+  z117: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.129, 0.361, -0.128, -0.062]
+  z118: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.042]
+  z122: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.082, 0.244, -0.082, -0.054]
+  z125: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.114, 0.333, -0.113, -0.071]
+  z126: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.294, -0.735, 0.293, 0.046]
+  z129: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.118, 0.343, -0.117, -0.071]
+  z131: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.043]
+  z132: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.087, 0.253, -0.086, -0.053]
+  z136: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.083, 0.242, -0.083, -0.050]
+  z154: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.115, 0.344, -0.114, -0.079]
+
+======================================================================
+STEP 1: Motif-Specific Ablations
+======================================================================
+
+Ablating Cascade features (40)...
+Error in ablation cascade_topk_l256_k16:
+
+  0%|          | 0/400 [00:00<?, ?it/s]
+  0%|          | 0/400 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 466, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 432, in main
+    df = run_ablation_experiment(args.latent_dim, args.k, ablate_indices, experiment_name,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 228, in run_ablation_experiment
+    latents_full = sae_model.encode(original_acts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sparse_autoencoder.py", line 82, in encode
+    z = self.encoder(x)
+        ^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (10x80 and 64x256)
+
+  Warning: Ablation experiment returned no results for Cascade
+
+Ablating Feedback Loop features (41)...
+Error in ablation feedback_loop_topk_l256_k16:
+
+  0%|          | 0/400 [00:00<?, ?it/s]
+  0%|          | 0/400 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 466, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 432, in main
+    df = run_ablation_experiment(args.latent_dim, args.k, ablate_indices, experiment_name,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 228, in run_ablation_experiment
+    latents_full = sae_model.encode(original_acts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sparse_autoencoder.py", line 82, in encode
+    z = self.encoder(x)
+        ^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (10x80 and 64x256)
+
+  Warning: Ablation experiment returned no results for Feedback Loop
+
+Ablating Feedforward Loop features (41)...
+Error in ablation feedforward_loop_topk_l256_k16:
+
+  0%|          | 0/400 [00:00<?, ?it/s]
+  0%|          | 0/400 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 466, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 432, in main
+    df = run_ablation_experiment(args.latent_dim, args.k, ablate_indices, experiment_name,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 228, in run_ablation_experiment
+    latents_full = sae_model.encode(original_acts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sparse_autoencoder.py", line 82, in encode
+    z = self.encoder(x)
+        ^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (10x80 and 64x256)
+
+  Warning: Ablation experiment returned no results for Feedforward Loop
+
+Ablating Single Input Module features (41)...
+Error in ablation single_input_module_topk_l256_k16:
+
+  0%|          | 0/400 [00:00<?, ?it/s]
+  0%|          | 0/400 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 466, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 432, in main
+    df = run_ablation_experiment(args.latent_dim, args.k, ablate_indices, experiment_name,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/run_ablation.py", line 228, in run_ablation_experiment
+    latents_full = sae_model.encode(original_acts)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sparse_autoencoder.py", line 82, in encode
+    z = self.encoder(x)
+        ^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (10x80 and 64x256)
+
+  Warning: Ablation experiment returned no results for Single Input Module
+
+WARNING: No motif-specific ablation results collected!
+This may be because:
+  1. No features met the filtering criteria
+  2. Ablation experiments failed
+Skipping statistical analysis and plotting.
+
+Saved phase_3a_config.json (status: incomplete)
+
+[2026-01-27 05:18:30] 
+======================================================================
+[2026-01-27 05:18:30] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 05:18:30] ======================================================================
+
+[2026-01-27 05:18:30] Running native ablation for motif: in_feedback_loop
+[2026-01-27 05:18:30] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedback_loop --use-rpb --k 16
+[2026-01-27 05:18:42] ✗ native_gnn_ablation.py failed
+[2026-01-27 05:18:42] Error: 
+Features:   0%|          | 0/5 [00:00<?, ?it/s]
+
+Ablating feature 125:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 125:   3%|▎         | 3/100 [00:00<00:03, 28.58it/s][A
+
+Ablating feature 125:  23%|██▎       | 23/100 [00:00<00:00, 125.13it/s][A
+
+Ablating feature 125:  43%|████▎     | 43/100 [00:00<00:00, 158.56it/s][A
+
+Ablating feature 125:  63%|██████▎   | 63/100 [00:00<00:00, 171.55it/s][A
+
+Ablating feature 125:  81%|████████  | 81/100 [00:00<00:00, 173.38it/s][A
+Ablating feature 125: 100%|██████████| 100/100 [00:00<00:00, 163.22it/s]
+
+Features:  20%|██        | 1/5 [00:04<00:16,  4.16s/it]
+
+Ablating feature 211:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 211:  17%|█▋        | 17/100 [00:00<00:00, 164.38it/s][A
+
+Ablating feature 211:  34%|███▍      | 34/100 [00:00<00:00, 152.44it/s][A
+
+Ablating feature 211:  50%|█████     | 50/100 [00:00<00:00, 146.01it/s][A
+
+Ablating feature 211:  65%|██████▌   | 65/100 [00:00<00:00, 131.98it/s][A
+
+Ablating feature 211:  79%|███████▉  | 79/100 [00:00<00:00, 131.05it/s][A
+
+Ablating feature 211:  93%|█████████▎| 93/100 [00:00<00:00, 128.89it/s][A
+Ablating feature 211: 100%|██████████| 100/100 [00:00<00:00, 134.10it/s]
+
+Features:  40%|████      | 2/5 [00:04<00:06,  2.16s/it]
+
+Ablating feature 186:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 186:  13%|█▎        | 13/100 [00:00<00:00, 128.12it/s][A
+
+Ablating feature 186:  30%|███       | 30/100 [00:00<00:00, 152.50it/s][A
+
+Ablating feature 186:  47%|████▋     | 47/100 [00:00<00:00, 158.06it/s][A
+
+Ablating feature 186:  67%|██████▋   | 67/100 [00:00<00:00, 172.87it/s][A
+
+Ablating feature 186:  87%|████████▋ | 87/100 [00:00<00:00, 180.23it/s][A
+Ablating feature 186: 100%|██████████| 100/100 [00:00<00:00, 172.43it/s]
+
+Features:  60%|██████    | 3/5 [00:05<00:02,  1.45s/it]
+
+Ablating feature 35:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 35:  18%|█▊        | 18/100 [00:00<00:00, 179.73it/s][A
+
+Ablating feature 35:  36%|███▌      | 36/100 [00:00<00:00, 170.23it/s][A
+
+Ablating feature 35:  54%|█████▍    | 54/100 [00:00<00:00, 161.42it/s][A
+
+Ablating feature 35:  71%|███████   | 71/100 [00:00<00:00, 156.81it/s][A
+
+Ablating feature 35:  89%|████████▉ | 89/100 [00:00<00:00, 163.58it/s][A
+Ablating feature 35: 100%|██████████| 100/100 [00:00<00:00, 161.48it/s]
+
+Features:  80%|████████  | 4/5 [00:06<00:01,  1.13s/it]
+
+Ablating feature 76:   0%|          | 0/100 [00:00<?, ?it/s][A
+
+Ablating feature 76:  14%|█▍        | 14/100 [00:00<00:00, 139.10it/s][A
+
+Ablating feature 76:  28%|██▊       | 28/100 [00:00<00:00, 138.93it/s][A
+
+Ablating feature 76:  44%|████▍     | 44/100 [00:00<00:00, 145.80it/s][A
+
+Ablating feature 76:  60%|██████    | 60/100 [00:00<00:00, 149.22it/s][A
+
+Ablating feature 76:  75%|███████▌  | 75/100 [00:00<00:00, 147.88it/s][A
+
+Ablating feature 76:  95%|█████████▌| 95/100 [00:00<00:00, 164.74it/s][A
+Ablating feature 76: 100%|██████████| 100/100 [00:00<00:00, 156.83it/s]
+
+Features: 100%|██████████| 5/5 [00:06<00:00,  1.05it/s]
+Features: 100%|██████████| 5/5 [00:06<00:00,  1.36s/it]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 1185, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 1086, in main
+    plot_native_ablation_results(results_by_feature)
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/native_gnn_ablation.py", line 856, in plot_native_ablation_results
+    ax.bar(x_pos - width/2, delta_losses_with, width, label='With motif', alpha=0.7, edgecolor='black')
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/matplotlib/__init__.py", line 1473, in inner
+    return func(
+           ^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/matplotlib/axes/_axes.py", line 2520, in bar
+    x, height, width, y, linewidth, hatch = np.broadcast_arrays(
+                                            ^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py", line 540, in broadcast_arrays
+    shape = _broadcast_shape(*args)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/numpy/lib/stride_tricks.py", line 422, in _broadcast_shape
+    b = np.broadcast(*args[:32])
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (5,) and arg 1 with shape (0,).
+
+[2026-01-27 05:18:42] Failed on motif: in_feedback_loop
+[2026-01-27 05:18:42] 
+======================================================================
+[2026-01-27 05:18:42] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 05:18:42] ======================================================================
+
+[2026-01-27 05:18:42] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 05:18:44] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 05:18:44] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 05:18:44] 
+======================================================================
+[2026-01-27 05:18:44] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 05:18:44] ======================================================================
+
+[2026-01-27 05:18:44] Running: generate_mixed_motif_activations.py 
+[2026-01-27 05:18:55] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 05:18:55] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 05:18:55] Mixed-motif generalization requires manual feature selection
+[2026-01-27 05:18:55] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 05:18:55] 
+======================================================================
+[2026-01-27 05:18:55] PIPELINE COMPLETE
+[2026-01-27 05:18:55] ======================================================================
+[2026-01-27 05:18:55] Log saved to: outputs/pipeline_logs/pipeline_20260127_051257.log

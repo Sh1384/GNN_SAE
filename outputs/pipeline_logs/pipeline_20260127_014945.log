@@ -1,0 +1,125 @@
+[2026-01-27 01:49:45] ======================================================================
+[2026-01-27 01:49:45] MULTI-GPU SAE PIPELINE
+[2026-01-27 01:49:45] ======================================================================
+[2026-01-27 01:49:45] GPUs: [0, 1, 2, 3]
+[2026-01-27 01:49:45] Phases: 3 to 3
+[2026-01-27 01:49:45] Log: outputs/pipeline_logs/pipeline_20260127_014945.log
+
+[2026-01-27 01:49:45] Checking prerequisites...
+[2026-01-27 01:49:45]   ✓ Train: 3200 files
+[2026-01-27 01:49:45]   ✓ Val: 400 files
+[2026-01-27 01:49:45]   ✓ Test: 400 files
+[2026-01-27 01:49:46]   ✓ Found 4 CUDA devices
+[2026-01-27 01:49:46]     GPU 0: NVIDIA TITAN V
+[2026-01-27 01:49:46]     GPU 1: NVIDIA TITAN V
+[2026-01-27 01:49:46]     GPU 2: NVIDIA TITAN V
+[2026-01-27 01:49:46]     GPU 3: NVIDIA TITAN V
+[2026-01-27 01:49:46] ✓ All prerequisites met
+[2026-01-27 01:49:46] 
+======================================================================
+[2026-01-27 01:49:46] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 01:49:46] ======================================================================
+
+[2026-01-27 01:49:46] Using best variant from Phase 2: topk
+[2026-01-27 01:49:46] Running feature significance analysis for variant: topk
+[2026-01-27 01:49:46] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 01:49:51] ✗ analyze_feature_significance.py failed
+[2026-01-27 01:49:51] Error: Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3790, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'config_name'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 573, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 483, in main
+    print(f"  Config: {best_config['config_name']}")
+                       ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/series.py", line 1040, in __getitem__
+    return self._get_value(key)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/series.py", line 1156, in _get_value
+    loc = self.index.get_loc(label)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3797, in get_loc
+    raise KeyError(key) from err
+KeyError: 'config_name'
+
+[2026-01-27 01:49:51] Warning: Feature significance analysis failed, but continuing...
+[2026-01-27 01:49:51] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 01:49:53] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 01:49:53] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+ERROR: Correlation data not found at outputs/feature_analysis_topk/latent_correlations.csv
+  Have you run: python analyze_feature_significance.py --variant topk?
+ERROR: Could not load correlation data
+
+[2026-01-27 01:49:53] 
+======================================================================
+[2026-01-27 01:49:53] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 01:49:53] ======================================================================
+
+[2026-01-27 01:49:53] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-27 01:49:53] 
+======================================================================
+[2026-01-27 01:49:53] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 01:49:53] ======================================================================
+
+[2026-01-27 01:49:53] Using best variant from Phase 2: topk
+[2026-01-27 01:49:53] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 01:49:54] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 01:49:54] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 01:49:54] 
+======================================================================
+[2026-01-27 01:49:54] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 01:49:54] ======================================================================
+
+[2026-01-27 01:49:54] Running: generate_mixed_motif_activations.py 

@@ -1,0 +1,557 @@
+[2026-01-27 02:44:06] ======================================================================
+[2026-01-27 02:44:06] MULTI-GPU SAE PIPELINE
+[2026-01-27 02:44:06] ======================================================================
+[2026-01-27 02:44:06] GPUs: [0, 1, 2, 3]
+[2026-01-27 02:44:06] Phases: 3 to 3
+[2026-01-27 02:44:06] Log: outputs/pipeline_logs/pipeline_20260127_024406.log
+
+[2026-01-27 02:44:06] Checking prerequisites...
+[2026-01-27 02:44:06]   ✓ Train: 3200 files
+[2026-01-27 02:44:06]   ✓ Val: 400 files
+[2026-01-27 02:44:06]   ✓ Test: 400 files
+[2026-01-27 02:44:06]   ✓ Found 4 CUDA devices
+[2026-01-27 02:44:06]     GPU 0: NVIDIA TITAN V
+[2026-01-27 02:44:06]     GPU 1: NVIDIA TITAN V
+[2026-01-27 02:44:06]     GPU 2: NVIDIA TITAN V
+[2026-01-27 02:44:06]     GPU 3: NVIDIA TITAN V
+[2026-01-27 02:44:06] ✓ All prerequisites met
+[2026-01-27 02:44:06] 
+======================================================================
+[2026-01-27 02:44:06] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 02:44:06] ======================================================================
+
+[2026-01-27 02:44:07] Using best variant from Phase 2: topk
+[2026-01-27 02:44:07] Running feature significance analysis for variant: topk
+[2026-01-27 02:44:07] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 02:49:55] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 02:49:55] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 02:49:55] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 02:50:15] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 02:50:15] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+
+Filtering criteria:
+  - FDR < 0.05: 163 pairs
+  - |rpb| >= 0: 192 pairs
+  - Both criteria: 163 pairs
+Saved feature mapping to: ablations/interpretability_topk_latent256_k16_rpb0.00_results/feature_motif_mapping.json
+
+Non-filtered features available for random controls: 1
+
+Filtered features per motif:
+  Cascade: 40 features
+  Feedback Loop: 41 features
+  Feedforward Loop: 41 features
+  Single Input Module: 41 features
+
+======================================================================
+MONOSEMANTICITY ANALYSIS
+======================================================================
+
+Feature specificity (after filtering):
+  Monosemantic (1 motif only): 6
+  Polysemantic (2 motifs): 0
+  Polysemantic (3 motifs): 7
+  Polysemantic (4 motifs): 34
+
+  Total unique features: 47
+  Monosemantic rate: 12.8%
+  Polysemantic rate: 87.2%
+
+Most polysemantic features (top 10):
+  z117: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.129, 0.361, -0.128, -0.062]
+  z118: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.042]
+  z122: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.082, 0.244, -0.082, -0.054]
+  z125: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.114, 0.333, -0.113, -0.071]
+  z126: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.294, -0.735, 0.293, 0.046]
+  z129: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.118, 0.343, -0.117, -0.071]
+  z131: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.081, 0.231, -0.081, -0.043]
+  z132: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.087, 0.253, -0.086, -0.053]
+  z136: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.083, 0.242, -0.083, -0.050]
+  z154: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: -0.115, 0.344, -0.114, -0.079]
+
+======================================================================
+STEP 1: Motif-Specific Ablations
+======================================================================
+
+Ablating Cascade features (40)...
+Error in ablation cascade_topk_l256_k16:
+usage: run_ablation.py [-h] --latent_dim LATENT_DIM --k K --feature FEATURE
+                       [--motif_type MOTIF_TYPE]
+                       [--experiment_name EXPERIMENT_NAME]
+                       [--use_mixed_motifs]
+run_ablation.py: error: unrecognized arguments: --variant topk
+
+  Warning: Ablation experiment returned no results for Cascade
+
+Ablating Feedback Loop features (41)...
+Error in ablation feedback_loop_topk_l256_k16:
+usage: run_ablation.py [-h] --latent_dim LATENT_DIM --k K --feature FEATURE
+                       [--motif_type MOTIF_TYPE]
+                       [--experiment_name EXPERIMENT_NAME]
+                       [--use_mixed_motifs]
+run_ablation.py: error: unrecognized arguments: --variant topk
+
+  Warning: Ablation experiment returned no results for Feedback Loop
+
+Ablating Feedforward Loop features (41)...
+Error in ablation feedforward_loop_topk_l256_k16:
+usage: run_ablation.py [-h] --latent_dim LATENT_DIM --k K --feature FEATURE
+                       [--motif_type MOTIF_TYPE]
+                       [--experiment_name EXPERIMENT_NAME]
+                       [--use_mixed_motifs]
+run_ablation.py: error: unrecognized arguments: --variant topk
+
+  Warning: Ablation experiment returned no results for Feedforward Loop
+
+Ablating Single Input Module features (41)...
+Error in ablation single_input_module_topk_l256_k16:
+usage: run_ablation.py [-h] --latent_dim LATENT_DIM --k K --feature FEATURE
+                       [--motif_type MOTIF_TYPE]
+                       [--experiment_name EXPERIMENT_NAME]
+                       [--use_mixed_motifs]
+run_ablation.py: error: unrecognized arguments: --variant topk
+
+  Warning: Ablation experiment returned no results for Single Input Module
+
+WARNING: No motif-specific ablation results collected!
+This may be because:
+  1. No features met the filtering criteria
+  2. Ablation experiments failed
+Skipping statistical analysis and plotting.
+
+Saved phase_3a_config.json (status: incomplete)
+
+[2026-01-27 02:50:15] 
+======================================================================
+[2026-01-27 02:50:15] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 02:50:15] ======================================================================
+
+[2026-01-27 02:50:15] Running native ablation for motif: in_feedback_loop
+[2026-01-27 02:50:15] Running: native_gnn_ablation.py --variant topk --motif in_feedback_loop --use-rpb
+[2026-01-27 02:50:21] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 02:50:21] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedback_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedback_loop
+  Variant: topk, Latent dim: 512
+  ✓ Loading cached latents from latents_topk_latent512_k8.pkl
+  ✓ Loaded 4000 nodes × 512 latent dims (CACHED)
+  Max |r_pb|: 0.722
+  Features with |r_pb| > 0.3: 3
+
+Top 5 features by |r_pb| to in_feedback_loop:
+  1. Feature 505: |r_pb| = 0.722
+  2. Feature 501: |r_pb| = 0.356
+  3. Feature 204: |r_pb| = 0.353
+  4. Feature 247: |r_pb| = 0.254
+  5. Feature 281: |r_pb| = 0.253
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 505, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 501, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 204, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 247, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 281, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 02:50:21] Running native ablation for motif: in_cascade
+[2026-01-27 02:50:21] Running: native_gnn_ablation.py --variant topk --motif in_cascade --use-rpb
+[2026-01-27 02:50:26] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 02:50:26] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_cascade
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_cascade
+  Variant: topk, Latent dim: 512
+  ✓ Loading cached latents from latents_topk_latent512_k8.pkl
+  ✓ Loaded 4000 nodes × 512 latent dims (CACHED)
+  Max |r_pb|: 0.100
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_cascade:
+  1. Feature 275: |r_pb| = 0.100
+  2. Feature 165: |r_pb| = 0.080
+  3. Feature 501: |r_pb| = 0.078
+  4. Feature 204: |r_pb| = 0.076
+  5. Feature 408: |r_pb| = 0.071
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 275, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 165, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 501, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 204, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 408, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 02:50:26] Running native ablation for motif: in_feedforward_loop
+[2026-01-27 02:50:26] Running: native_gnn_ablation.py --variant topk --motif in_feedforward_loop --use-rpb
+[2026-01-27 02:50:31] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 02:50:31] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedforward_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedforward_loop
+  Variant: topk, Latent dim: 512
+  ✓ Loading cached latents from latents_topk_latent512_k8.pkl
+  ✓ Loaded 4000 nodes × 512 latent dims (CACHED)
+  Max |r_pb|: 0.288
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_feedforward_loop:
+  1. Feature 505: |r_pb| = 0.288
+  2. Feature 501: |r_pb| = 0.120
+  3. Feature 204: |r_pb| = 0.120
+  4. Feature 111: |r_pb| = 0.089
+  5. Feature 268: |r_pb| = 0.088
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 505, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 501, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 204, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 111, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 268, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 02:50:31] Running native ablation for motif: in_single_input_module
+[2026-01-27 02:50:31] Running: native_gnn_ablation.py --variant topk --motif in_single_input_module --use-rpb
+[2026-01-27 02:50:37] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 02:50:37] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_single_input_module
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_single_input_module
+  Variant: topk, Latent dim: 512
+  ✓ Loading cached latents from latents_topk_latent512_k8.pkl
+  ✓ Loaded 4000 nodes × 512 latent dims (CACHED)
+  Max |r_pb|: 0.287
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_single_input_module:
+  1. Feature 505: |r_pb| = 0.287
+  2. Feature 501: |r_pb| = 0.120
+  3. Feature 204: |r_pb| = 0.120
+  4. Feature 111: |r_pb| = 0.088
+  5. Feature 268: |r_pb| = 0.088
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 505, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 501, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 204, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 111, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Could not import GCNModel: No module named 'gnn_train'
+Running native ablation for feature 268, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 02:50:37] 
+======================================================================
+[2026-01-27 02:50:37] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 02:50:37] ======================================================================
+
+[2026-01-27 02:50:37] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 02:50:39] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 02:50:39] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 02:50:39] 
+======================================================================
+[2026-01-27 02:50:39] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 02:50:39] ======================================================================
+
+[2026-01-27 02:50:39] Running: generate_mixed_motif_activations.py 
+[2026-01-27 02:50:49] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 02:50:49] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 02:50:49] Mixed-motif generalization requires manual feature selection
+[2026-01-27 02:50:49] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 02:50:49] 
+======================================================================
+[2026-01-27 02:50:49] PIPELINE COMPLETE
+[2026-01-27 02:50:49] ======================================================================
+[2026-01-27 02:50:49] Log saved to: outputs/pipeline_logs/pipeline_20260127_024406.log

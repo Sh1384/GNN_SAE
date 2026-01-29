@@ -1,0 +1,429 @@
+======================================================================
+GNNExplainer COMPARISON - ALL SAE VARIANTS
+======================================================================
+
+Timestamp: 20260127_074832
+Variants to run: jumprelu, topk, switch, gated
+
+
+======================================================================
+VARIANT: JUMPRELU
+======================================================================
+
+Running: /data/users/goodarzilab/shervin/miniconda3/bin/python3 /data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py --variant jumprelu
+Using device: cuda
+
+======================================================================
+RUNNING COMPARISON FOR VARIANT: JUMPRELU
+======================================================================
+
+1. Loading GNN model...
+   ✓ GNN loaded
+
+2. Loading SAE configuration...
+   Using config: {'latent_dim': 512, 'threshold_init': 0.01, 'bandwidth': 0.01}
+
+3. Loading SAE model...
+   ✓ Loaded SAE from checkpoints/sae_jumprelu_latent512_thresh1e-02_bw1e-02_seed42.pt
+
+4. Loading top features from Phase 2...
+WARNING: Correlation file not found: outputs/feature_analysis_jumprelu/latent_correlations.csv
+  Falling back to default features
+
+5. Loading test graphs...
+Loading test graphs (filtering for 20%-80% motif edge ratio)...
+
+Loading graphs:   0%|          | 0/200 [00:00<?, ?it/s]
+Loading graphs:  58%|█████▊    | 117/200 [00:00<00:00, 1167.72it/s]
+Loading graphs: 100%|██████████| 200/200 [00:00<00:00, 1238.51it/s]
+Loaded 50 test graphs with mixed edges
+
+6. Running comparison...
+
+======================================================================
+Analyzing Motif: in_feedback_loop
+SAE Feature: z0 (Variant: jumprelu)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedback_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_feedforward_loop
+SAE Feature: z0 (Variant: jumprelu)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedforward_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_single_input_module
+SAE Feature: z0 (Variant: jumprelu)
+======================================================================
+
+Found 20 graphs with mixed edges for in_single_input_module
+
+in_single_input_module:   0%|          | 0/20 [00:00<?, ?it/s]
+in_single_input_module:   5%|▌         | 1/20 [00:02<00:51,  2.70s/it]
+in_single_input_module:  10%|█         | 2/20 [00:04<00:41,  2.32s/it]
+in_single_input_module:  15%|█▌        | 3/20 [00:06<00:35,  2.12s/it]
+in_single_input_module:  20%|██        | 4/20 [00:08<00:29,  1.83s/it]
+in_single_input_module:  25%|██▌       | 5/20 [00:09<00:28,  1.87s/it]
+in_single_input_module:  30%|███       | 6/20 [00:12<00:27,  1.93s/it]
+in_single_input_module:  35%|███▌      | 7/20 [00:14<00:25,  1.97s/it]
+in_single_input_module:  40%|████      | 8/20 [00:16<00:24,  2.01s/it]
+in_single_input_module:  45%|████▌     | 9/20 [00:18<00:22,  2.02s/it]
+in_single_input_module:  50%|█████     | 10/20 [00:20<00:19,  1.96s/it]
+in_single_input_module:  55%|█████▌    | 11/20 [00:20<00:14,  1.56s/it]
+in_single_input_module:  60%|██████    | 12/20 [00:21<00:10,  1.30s/it]
+in_single_input_module:  65%|██████▌   | 13/20 [00:22<00:07,  1.10s/it]
+in_single_input_module:  70%|███████   | 14/20 [00:22<00:05,  1.03it/s]
+in_single_input_module:  75%|███████▌  | 15/20 [00:23<00:04,  1.14it/s]
+in_single_input_module:  80%|████████  | 16/20 [00:24<00:03,  1.23it/s]
+in_single_input_module:  85%|████████▌ | 17/20 [00:24<00:02,  1.30it/s]
+in_single_input_module:  90%|█████████ | 18/20 [00:25<00:01,  1.36it/s]
+in_single_input_module:  95%|█████████▌| 19/20 [00:26<00:00,  1.31it/s]
+in_single_input_module: 100%|██████████| 20/20 [00:26<00:00,  1.37it/s]
+in_single_input_module: 100%|██████████| 20/20 [00:26<00:00,  1.34s/it]
+
+======================================================================
+Analyzing Motif: in_cascade
+SAE Feature: z0 (Variant: jumprelu)
+======================================================================
+
+Found 0 graphs with mixed edges for in_cascade
+⚠ No suitable graphs found, skipping...
+
+✓ Saved results to outputs/gnnexplainer_comparison/comparison_all_variants.csv
+
+======================================================================
+SUMMARY STATISTICS
+======================================================================
+
+                                 gnn_auroc            sae_auroc      gnn_auprc        sae_auprc       
+                                     mean  std count      mean  std      mean    std      mean    std
+variant  motif                                                                                       
+jumprelu in_single_input_module       0.5  0.0    20       0.5  0.0     0.529  0.036     0.529  0.036
+
+======================================================================
+STATISTICAL SIGNIFICANCE (Paired t-test)
+======================================================================
+
+JUMPRELU:
+  in_single_input_module:
+    AUROC: SAE vs GNN, t=nan, p=nan
+    AUPRC: SAE vs GNN, t=nan, p=nan
+
+======================================================================
+COMPARISON COMPLETE!
+======================================================================
+
+
+✓ jumprelu comparison completed successfully
+
+======================================================================
+VARIANT: TOPK
+======================================================================
+
+Running: /data/users/goodarzilab/shervin/miniconda3/bin/python3 /data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py --variant topk
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3790, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latent_idx'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py", line 645, in main
+    df_variant = run_variant_comparison(variant, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py", line 609, in run_variant_comparison
+    top_features = load_top_features_from_phase2(variant)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py", line 329, in load_top_features_from_phase2
+    feature_name = df_motif.loc[best_idx, 'latent_idx']
+                   ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexing.py", line 1146, in __getitem__
+    return self.obj._get_value(*key, takeable=self._takeable)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/frame.py", line 4008, in _get_value
+    series = self._get_item_cache(col)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/frame.py", line 4417, in _get_item_cache
+    loc = self.columns.get_loc(item)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3797, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latent_idx'
+Using device: cuda
+
+======================================================================
+RUNNING COMPARISON FOR VARIANT: TOPK
+======================================================================
+
+1. Loading GNN model...
+   ✓ GNN loaded
+
+2. Loading SAE configuration...
+   Using config: {'latent_dim': 256, 'k': 16}
+
+3. Loading SAE model...
+   ✓ Loaded SAE from checkpoints/sae_topk_latent256_k16_seed42.pt
+
+4. Loading top features from Phase 2...
+
+ERROR running variant topk: 'latent_idx'
+
+ERROR: No results generated!
+
+
+✓ topk comparison completed successfully
+
+======================================================================
+VARIANT: SWITCH
+======================================================================
+
+Running: /data/users/goodarzilab/shervin/miniconda3/bin/python3 /data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py --variant switch
+Using device: cuda
+
+======================================================================
+RUNNING COMPARISON FOR VARIANT: SWITCH
+======================================================================
+
+1. Loading GNN model...
+   ✓ GNN loaded
+
+2. Loading SAE configuration...
+   Using config: {'latent_dim': 1024, 'num_experts': 8, 'latent_per_expert': 128, 'k_per_expert': 16}
+
+3. Loading SAE model...
+   ✓ Loaded SAE from checkpoints/sae_switch_experts8_latent1024_k16_seed42.pt
+
+4. Loading top features from Phase 2...
+WARNING: Correlation file not found: outputs/feature_analysis_switch/latent_correlations.csv
+  Falling back to default features
+
+5. Loading test graphs...
+Loading test graphs (filtering for 20%-80% motif edge ratio)...
+
+Loading graphs:   0%|          | 0/200 [00:00<?, ?it/s]
+Loading graphs:  67%|██████▋   | 134/200 [00:00<00:00, 1336.72it/s]
+Loading graphs: 100%|██████████| 200/200 [00:00<00:00, 1340.41it/s]
+Loaded 50 test graphs with mixed edges
+
+6. Running comparison...
+
+======================================================================
+Analyzing Motif: in_feedback_loop
+SAE Feature: z0 (Variant: switch)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedback_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_feedforward_loop
+SAE Feature: z0 (Variant: switch)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedforward_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_single_input_module
+SAE Feature: z0 (Variant: switch)
+======================================================================
+
+Found 20 graphs with mixed edges for in_single_input_module
+
+in_single_input_module:   0%|          | 0/20 [00:00<?, ?it/s]
+in_single_input_module:   5%|▌         | 1/20 [00:02<00:49,  2.63s/it]
+in_single_input_module:  10%|█         | 2/20 [00:04<00:40,  2.26s/it]
+in_single_input_module:  15%|█▌        | 3/20 [00:06<00:37,  2.18s/it]
+in_single_input_module:  20%|██        | 4/20 [00:08<00:35,  2.19s/it]
+in_single_input_module:  25%|██▌       | 5/20 [00:11<00:32,  2.19s/it]
+in_single_input_module:  30%|███       | 6/20 [00:12<00:29,  2.08s/it]
+in_single_input_module:  35%|███▌      | 7/20 [00:13<00:22,  1.70s/it]
+in_single_input_module:  40%|████      | 8/20 [00:15<00:19,  1.65s/it]
+in_single_input_module:  45%|████▌     | 9/20 [00:17<00:18,  1.71s/it]
+in_single_input_module:  50%|█████     | 10/20 [00:19<00:17,  1.75s/it]
+in_single_input_module:  55%|█████▌    | 11/20 [00:21<00:16,  1.86s/it]
+in_single_input_module:  60%|██████    | 12/20 [00:22<00:14,  1.82s/it]
+in_single_input_module:  65%|██████▌   | 13/20 [00:23<00:10,  1.53s/it]
+in_single_input_module:  70%|███████   | 14/20 [00:24<00:08,  1.33s/it]
+in_single_input_module:  75%|███████▌  | 15/20 [00:25<00:05,  1.20s/it]
+in_single_input_module:  80%|████████  | 16/20 [00:26<00:04,  1.10s/it]
+in_single_input_module:  85%|████████▌ | 17/20 [00:27<00:03,  1.03s/it]
+in_single_input_module:  90%|█████████ | 18/20 [00:28<00:01,  1.01it/s]
+in_single_input_module:  95%|█████████▌| 19/20 [00:29<00:01,  1.03s/it]
+in_single_input_module: 100%|██████████| 20/20 [00:31<00:00,  1.36s/it]
+in_single_input_module: 100%|██████████| 20/20 [00:31<00:00,  1.57s/it]
+
+======================================================================
+Analyzing Motif: in_cascade
+SAE Feature: z0 (Variant: switch)
+======================================================================
+
+Found 0 graphs with mixed edges for in_cascade
+⚠ No suitable graphs found, skipping...
+
+✓ Saved results to outputs/gnnexplainer_comparison/comparison_all_variants.csv
+
+======================================================================
+SUMMARY STATISTICS
+======================================================================
+
+                                gnn_auroc            sae_auroc      gnn_auprc        sae_auprc       
+                                    mean  std count      mean  std      mean    std      mean    std
+variant motif                                                                                       
+switch  in_single_input_module       0.5  0.0    20       0.5  0.0     0.529  0.036     0.529  0.036
+
+======================================================================
+STATISTICAL SIGNIFICANCE (Paired t-test)
+======================================================================
+
+SWITCH:
+  in_single_input_module:
+    AUROC: SAE vs GNN, t=nan, p=nan
+    AUPRC: SAE vs GNN, t=nan, p=nan
+
+======================================================================
+COMPARISON COMPLETE!
+======================================================================
+
+
+✓ switch comparison completed successfully
+
+======================================================================
+VARIANT: GATED
+======================================================================
+
+Running: /data/users/goodarzilab/shervin/miniconda3/bin/python3 /data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_vs_gnnexplainer.py --variant gated
+Using device: cuda
+
+======================================================================
+RUNNING COMPARISON FOR VARIANT: GATED
+======================================================================
+
+1. Loading GNN model...
+   ✓ GNN loaded
+
+2. Loading SAE configuration...
+   Using config: {'latent_dim': 512, 'sparsity_coef': 0.0001}
+
+3. Loading SAE model...
+   ✓ Loaded SAE from checkpoints/sae_gated_latent512_lambda1e-04_seed42.pt
+
+4. Loading top features from Phase 2...
+WARNING: Correlation file not found: outputs/feature_analysis_gated/latent_correlations.csv
+  Falling back to default features
+
+5. Loading test graphs...
+Loading test graphs (filtering for 20%-80% motif edge ratio)...
+
+Loading graphs:   0%|          | 0/200 [00:00<?, ?it/s]
+Loading graphs:  66%|██████▌   | 132/200 [00:00<00:00, 1313.85it/s]
+Loading graphs: 100%|██████████| 200/200 [00:00<00:00, 1374.57it/s]
+Loaded 50 test graphs with mixed edges
+
+6. Running comparison...
+
+======================================================================
+Analyzing Motif: in_feedback_loop
+SAE Feature: z0 (Variant: gated)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedback_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_feedforward_loop
+SAE Feature: z0 (Variant: gated)
+======================================================================
+
+Found 0 graphs with mixed edges for in_feedforward_loop
+⚠ No suitable graphs found, skipping...
+
+======================================================================
+Analyzing Motif: in_single_input_module
+SAE Feature: z0 (Variant: gated)
+======================================================================
+
+Found 20 graphs with mixed edges for in_single_input_module
+
+in_single_input_module:   0%|          | 0/20 [00:00<?, ?it/s]
+in_single_input_module:   5%|▌         | 1/20 [00:02<00:51,  2.74s/it]
+in_single_input_module:  10%|█         | 2/20 [00:04<00:42,  2.35s/it]
+in_single_input_module:  15%|█▌        | 3/20 [00:06<00:32,  1.90s/it]
+in_single_input_module:  20%|██        | 4/20 [00:07<00:27,  1.70s/it]
+in_single_input_module:  25%|██▌       | 5/20 [00:09<00:28,  1.87s/it]
+in_single_input_module:  30%|███       | 6/20 [00:11<00:26,  1.89s/it]
+in_single_input_module:  35%|███▌      | 7/20 [00:13<00:25,  1.94s/it]
+in_single_input_module:  40%|████      | 8/20 [00:15<00:23,  2.00s/it]
+in_single_input_module:  45%|████▌     | 9/20 [00:17<00:22,  2.03s/it]
+in_single_input_module:  50%|█████     | 10/20 [00:20<00:20,  2.06s/it]
+in_single_input_module:  55%|█████▌    | 11/20 [00:22<00:18,  2.06s/it]
+in_single_input_module:  60%|██████    | 12/20 [00:23<00:15,  2.00s/it]
+in_single_input_module:  65%|██████▌   | 13/20 [00:25<00:13,  1.88s/it]
+in_single_input_module:  70%|███████   | 14/20 [00:26<00:09,  1.58s/it]
+in_single_input_module:  75%|███████▌  | 15/20 [00:27<00:07,  1.52s/it]
+in_single_input_module:  80%|████████  | 16/20 [00:29<00:06,  1.55s/it]
+in_single_input_module:  85%|████████▌ | 17/20 [00:31<00:05,  1.73s/it]
+in_single_input_module:  90%|█████████ | 18/20 [00:33<00:03,  1.86s/it]
+in_single_input_module:  95%|█████████▌| 19/20 [00:35<00:01,  1.92s/it]
+in_single_input_module: 100%|██████████| 20/20 [00:37<00:00,  1.88s/it]
+in_single_input_module: 100%|██████████| 20/20 [00:37<00:00,  1.88s/it]
+
+======================================================================
+Analyzing Motif: in_cascade
+SAE Feature: z0 (Variant: gated)
+======================================================================
+
+Found 0 graphs with mixed edges for in_cascade
+⚠ No suitable graphs found, skipping...
+
+✓ Saved results to outputs/gnnexplainer_comparison/comparison_all_variants.csv
+
+======================================================================
+SUMMARY STATISTICS
+======================================================================
+
+                                gnn_auroc            sae_auroc      gnn_auprc        sae_auprc       
+                                    mean  std count      mean  std      mean    std      mean    std
+variant motif                                                                                       
+gated   in_single_input_module       0.5  0.0    20       0.5  0.0     0.529  0.036     0.529  0.036
+
+======================================================================
+STATISTICAL SIGNIFICANCE (Paired t-test)
+======================================================================
+
+GATED:
+  in_single_input_module:
+    AUROC: SAE vs GNN, t=nan, p=nan
+    AUPRC: SAE vs GNN, t=nan, p=nan
+
+======================================================================
+COMPARISON COMPLETE!
+======================================================================
+
+
+✓ gated comparison completed successfully
+
+======================================================================
+SUMMARY
+======================================================================
+
+Total variants: 4
+Successful: 4
+Failed: 0
+
+======================================================================
+SUCCESS: All comparisons completed!
+======================================================================
+
+Results saved to: outputs/gnnexplainer_comparison/comparison_all_variants.csv

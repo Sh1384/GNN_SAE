@@ -1,0 +1,155 @@
+[2026-01-26 06:18:39] ======================================================================
+[2026-01-26 06:18:39] MULTI-GPU SAE PIPELINE
+[2026-01-26 06:18:39] ======================================================================
+[2026-01-26 06:18:39] GPUs: [0, 1, 2, 3]
+[2026-01-26 06:18:39] Phases: 1 to 1
+[2026-01-26 06:18:39] Log: outputs/pipeline_logs/pipeline_20260126_061839.log
+
+[2026-01-26 06:18:39] Checking prerequisites...
+[2026-01-26 06:18:39]   ✓ Train: 3200 files
+[2026-01-26 06:18:39]   ✓ Val: 400 files
+[2026-01-26 06:18:39]   ✓ Test: 400 files
+[2026-01-26 06:18:39]   ✓ Found 4 CUDA devices
+[2026-01-26 06:18:39]     GPU 0: NVIDIA TITAN V
+[2026-01-26 06:18:39]     GPU 1: NVIDIA TITAN V
+[2026-01-26 06:18:39]     GPU 2: NVIDIA TITAN V
+[2026-01-26 06:18:39]     GPU 3: NVIDIA TITAN V
+[2026-01-26 06:18:39] ✓ All prerequisites met
+[2026-01-26 06:18:39] 
+======================================================================
+[2026-01-26 06:18:39] PHASE 1: PARALLEL SAE TRAINING
+[2026-01-26 06:18:39] ======================================================================
+[2026-01-26 06:18:39] Skipping 20 already trained configs
+[2026-01-26 06:18:39] Training 10 configurations
+[2026-01-26 06:18:39] Using GPUs: [0, 1, 2, 3]
+
+[2026-01-26 06:18:41] [GPU 0] Starting: jumprelu_latent128_thresh1e-02_bw1e-02
+[2026-01-26 06:18:43] [GPU 1] Starting: jumprelu_latent128_thresh1e-01_bw1e-02
+[2026-01-26 06:18:45] [GPU 2] Starting: jumprelu_latent256_thresh1e-02_bw1e-02
+[2026-01-26 06:18:47] [GPU 3] Starting: jumprelu_latent256_thresh1e-01_bw1e-02
+[2026-01-26 06:19:51] [GPU 0] jumprelu_latent128_thresh1e-02_bw1e-02 Epoch 10/200 Train: 0.000153 Val: 0.000152
+[2026-01-26 06:19:52] [GPU 1] jumprelu_latent128_thresh1e-01_bw1e-02 Epoch 10/200 Train: 0.000068 Val: 0.000075
+[2026-01-26 06:19:54] [GPU 2] jumprelu_latent256_thresh1e-02_bw1e-02 Epoch 10/200 Train: 0.000146 Val: 0.000141
+[2026-01-26 06:19:56] [GPU 3] jumprelu_latent256_thresh1e-01_bw1e-02 Epoch 10/200 Train: 0.000026 Val: 0.000024
+[2026-01-26 06:20:31] [GPU 0] Early stopping at epoch 16
+[2026-01-26 06:20:33] [GPU 0] ✓ Completed: jumprelu_latent128_thresh1e-02_bw1e-02 Test Loss: 0.000082
+[2026-01-26 06:20:34] [GPU 2] Early stopping at epoch 16
+[2026-01-26 06:20:36] [GPU 2] ✓ Completed: jumprelu_latent256_thresh1e-02_bw1e-02 Test Loss: 0.000066
+[2026-01-26 06:20:37] Process completed: jumprelu_latent128_thresh1e-02_bw1e-02, GPU 0, Success: True
+[2026-01-26 06:20:37] Process completed: jumprelu_latent256_thresh1e-02_bw1e-02, GPU 2, Success: True
+[2026-01-26 06:20:49] [GPU 1] Early stopping at epoch 19
+[2026-01-26 06:20:49] [GPU 2] Starting: jumprelu_latent512_thresh1e-02_bw1e-02
+[2026-01-26 06:20:51] [GPU 3] Starting: jumprelu_latent512_thresh1e-01_bw1e-02
+[2026-01-26 06:20:51] [GPU 1] ✓ Completed: jumprelu_latent128_thresh1e-01_bw1e-02 Test Loss: 0.000026
+[2026-01-26 06:20:54] [GPU 3] Early stopping at epoch 19
+[2026-01-26 06:20:57] [GPU 3] ✓ Completed: jumprelu_latent256_thresh1e-01_bw1e-02 Test Loss: 0.000017
+[2026-01-26 06:21:01] Process completed: jumprelu_latent128_thresh1e-01_bw1e-02, GPU 1, Success: True
+[2026-01-26 06:21:01] Process completed: jumprelu_latent256_thresh1e-01_bw1e-02, GPU 3, Success: True
+[2026-01-26 06:21:13] [GPU 2] Starting: switch_experts4_latent256_k8
+[2026-01-26 06:21:15] [GPU 3] Starting: switch_experts4_latent512_k16
+[2026-01-26 06:21:56] [GPU 2] jumprelu_latent512_thresh1e-02_bw1e-02 Epoch 10/200 Train: 0.000110 Val: 0.000115
+[2026-01-26 06:21:59] [GPU 3] jumprelu_latent512_thresh1e-01_bw1e-02 Epoch 10/200 Train: 0.000018 Val: 0.000018
+[2026-01-26 06:22:33] [GPU 2] Early stopping at epoch 16
+[2026-01-26 06:22:36] [GPU 2] ✓ Completed: jumprelu_latent512_thresh1e-02_bw1e-02 Test Loss: 0.000033
+[2026-01-26 06:22:45] Process completed: jumprelu_latent512_thresh1e-02_bw1e-02, GPU 2, Success: True
+[2026-01-26 06:22:57] [GPU 3] Starting: switch_experts8_latent512_k8
+[2026-01-26 06:23:01] [GPU 3] jumprelu_latent512_thresh1e-01_bw1e-02 Epoch 20/200 Train: 0.000020 Val: 0.000021
+[2026-01-26 06:23:01] [GPU 3] Early stopping at epoch 20
+[2026-01-26 06:23:04] [GPU 3] ✓ Completed: jumprelu_latent512_thresh1e-01_bw1e-02 Test Loss: 0.000013
+[2026-01-26 06:23:07] Process completed: jumprelu_latent512_thresh1e-01_bw1e-02, GPU 3, Success: True
+[2026-01-26 06:23:19] [GPU 3] Starting: switch_experts8_latent1024_k16
+[2026-01-26 06:26:36] [GPU 2] switch_experts4_latent256_k8 Epoch 10/200 Train: 0.002510 Val: 0.002505
+[2026-01-26 06:27:49] [GPU 3] switch_experts4_latent512_k16 Epoch 10/200 Train: 0.002495 Val: 0.002493
+[2026-01-26 06:31:45] [GPU 2] switch_experts4_latent256_k8 Epoch 20/200 Train: 0.002494 Val: 0.002492
+[2026-01-26 06:34:50] [GPU 3] switch_experts4_latent512_k16 Epoch 20/200 Train: 0.002490 Val: 0.002489
+[2026-01-26 06:37:05] [GPU 2] switch_experts4_latent256_k8 Epoch 30/200 Train: 0.002489 Val: 0.002489
+[2026-01-26 06:37:28] [GPU 3] switch_experts8_latent512_k8 Epoch 10/200 Train: 0.001202 Val: 0.001191
+[2026-01-26 06:37:41] [GPU 3] switch_experts8_latent1024_k16 Epoch 10/200 Train: 0.001169 Val: 0.001164
+[2026-01-26 06:41:55] [GPU 3] switch_experts4_latent512_k16 Epoch 30/200 Train: 0.002488 Val: 0.002488
+[2026-01-26 06:42:19] [GPU 2] switch_experts4_latent256_k8 Epoch 40/200 Train: 0.002488 Val: 0.002488
+[2026-01-26 06:47:44] [GPU 2] switch_experts4_latent256_k8 Epoch 50/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 06:49:02] [GPU 3] switch_experts4_latent512_k16 Epoch 40/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 06:51:56] [GPU 3] switch_experts8_latent1024_k16 Epoch 20/200 Train: 0.001160 Val: 0.001159
+[2026-01-26 06:51:59] [GPU 3] switch_experts8_latent512_k8 Epoch 20/200 Train: 0.001171 Val: 0.001168
+[2026-01-26 06:52:55] [GPU 2] switch_experts4_latent256_k8 Epoch 60/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 06:56:07] [GPU 3] switch_experts4_latent512_k16 Epoch 50/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 06:58:01] [GPU 2] switch_experts4_latent256_k8 Epoch 70/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:03:08] [GPU 3] switch_experts4_latent512_k16 Epoch 60/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:03:14] [GPU 2] switch_experts4_latent256_k8 Epoch 80/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:06:19] [GPU 3] switch_experts8_latent1024_k16 Epoch 30/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:06:38] [GPU 3] switch_experts8_latent512_k8 Epoch 30/200 Train: 0.001161 Val: 0.001160
+[2026-01-26 07:08:37] [GPU 2] switch_experts4_latent256_k8 Epoch 90/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:10:12] [GPU 3] switch_experts4_latent512_k16 Epoch 70/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:14:02] [GPU 2] switch_experts4_latent256_k8 Epoch 100/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:17:14] [GPU 3] switch_experts4_latent512_k16 Epoch 80/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:19:15] [GPU 2] switch_experts4_latent256_k8 Epoch 110/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:20:28] [GPU 3] switch_experts8_latent1024_k16 Epoch 40/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:21:10] [GPU 3] switch_experts8_latent512_k8 Epoch 40/200 Train: 0.001159 Val: 0.001159
+[2026-01-26 07:24:13] [GPU 3] switch_experts4_latent512_k16 Epoch 90/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:24:23] [GPU 2] switch_experts4_latent256_k8 Epoch 120/200 Train: 0.002487 Val: 0.002487
+[2026-01-26 07:29:38] [GPU 2] switch_experts4_latent256_k8 Epoch 130/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:31:16] [GPU 3] switch_experts4_latent512_k16 Epoch 100/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:34:35] [GPU 3] switch_experts8_latent1024_k16 Epoch 50/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:35:00] [GPU 2] switch_experts4_latent256_k8 Epoch 140/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:35:45] [GPU 3] switch_experts8_latent512_k8 Epoch 50/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:38:19] [GPU 3] switch_experts4_latent512_k16 Epoch 110/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:40:24] [GPU 2] switch_experts4_latent256_k8 Epoch 150/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:45:29] [GPU 3] switch_experts4_latent512_k16 Epoch 120/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:45:50] [GPU 2] switch_experts4_latent256_k8 Epoch 160/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:49:04] [GPU 3] switch_experts8_latent1024_k16 Epoch 60/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:50:14] [GPU 3] switch_experts8_latent512_k8 Epoch 60/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 07:51:03] [GPU 2] switch_experts4_latent256_k8 Epoch 170/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:52:34] [GPU 3] switch_experts4_latent512_k16 Epoch 130/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:56:13] [GPU 2] switch_experts4_latent256_k8 Epoch 180/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 07:59:36] [GPU 3] switch_experts4_latent512_k16 Epoch 140/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:01:35] [GPU 2] switch_experts4_latent256_k8 Epoch 190/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:03:23] [GPU 3] switch_experts8_latent1024_k16 Epoch 70/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 08:04:51] [GPU 3] switch_experts8_latent512_k8 Epoch 70/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 08:06:39] [GPU 3] switch_experts4_latent512_k16 Epoch 150/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:06:44] [GPU 2] switch_experts4_latent256_k8 Epoch 200/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:06:47] [GPU 2] ✓ Completed: switch_experts4_latent256_k8 Test Loss: 0.002486
+[2026-01-26 08:06:49] Process completed: switch_experts4_latent256_k8, GPU 2, Success: True
+[2026-01-26 08:13:45] [GPU 3] switch_experts4_latent512_k16 Epoch 160/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:17:40] [GPU 3] switch_experts8_latent1024_k16 Epoch 80/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 08:19:20] [GPU 3] switch_experts8_latent512_k8 Epoch 80/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 08:20:57] [GPU 3] switch_experts4_latent512_k16 Epoch 170/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:28:05] [GPU 3] switch_experts4_latent512_k16 Epoch 180/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:31:56] [GPU 3] switch_experts8_latent1024_k16 Epoch 90/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 08:33:39] [GPU 3] switch_experts8_latent512_k8 Epoch 90/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 08:35:09] [GPU 3] switch_experts4_latent512_k16 Epoch 190/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:42:14] [GPU 3] switch_experts4_latent512_k16 Epoch 200/200 Train: 0.002486 Val: 0.002486
+[2026-01-26 08:42:18] [GPU 3] ✓ Completed: switch_experts4_latent512_k16 Test Loss: 0.002486
+[2026-01-26 08:42:19] Process completed: switch_experts4_latent512_k16, GPU 3, Success: True
+[2026-01-26 08:45:03] [GPU 3] switch_experts8_latent1024_k16 Epoch 100/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 08:46:30] [GPU 3] switch_experts8_latent512_k8 Epoch 100/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 08:55:34] [GPU 3] switch_experts8_latent1024_k16 Epoch 110/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 08:56:46] [GPU 3] switch_experts8_latent512_k8 Epoch 110/200 Train: 0.001158 Val: 0.001158
+[2026-01-26 09:05:46] [GPU 3] switch_experts8_latent1024_k16 Epoch 120/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:06:58] [GPU 3] switch_experts8_latent512_k8 Epoch 120/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:16:15] [GPU 3] switch_experts8_latent1024_k16 Epoch 130/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:17:11] [GPU 3] switch_experts8_latent512_k8 Epoch 130/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:26:32] [GPU 3] switch_experts8_latent1024_k16 Epoch 140/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:27:26] [GPU 3] switch_experts8_latent512_k8 Epoch 140/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:37:08] [GPU 3] switch_experts8_latent1024_k16 Epoch 150/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:37:36] [GPU 3] switch_experts8_latent512_k8 Epoch 150/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:47:49] [GPU 3] switch_experts8_latent1024_k16 Epoch 160/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:47:51] [GPU 3] switch_experts8_latent512_k8 Epoch 160/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:58:09] [GPU 3] switch_experts8_latent512_k8 Epoch 170/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 09:58:15] [GPU 3] switch_experts8_latent1024_k16 Epoch 170/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:08:28] [GPU 3] switch_experts8_latent512_k8 Epoch 180/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:08:31] [GPU 3] switch_experts8_latent1024_k16 Epoch 180/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:18:47] [GPU 3] switch_experts8_latent512_k8 Epoch 190/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:19:10] [GPU 3] switch_experts8_latent1024_k16 Epoch 190/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:28:53] [GPU 3] switch_experts8_latent512_k8 Epoch 200/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:29:00] [GPU 3] ✓ Completed: switch_experts8_latent512_k8 Test Loss: 0.001157
+[2026-01-26 10:29:10] Process completed: switch_experts8_latent512_k8, GPU 3, Success: True
+[2026-01-26 10:29:21] [GPU 3] switch_experts8_latent1024_k16 Epoch 200/200 Train: 0.001157 Val: 0.001157
+[2026-01-26 10:29:25] [GPU 3] ✓ Completed: switch_experts8_latent1024_k16 Test Loss: 0.001157
+[2026-01-26 10:29:30] Process completed: switch_experts8_latent1024_k16, GPU 3, Success: True
+[2026-01-26 10:29:30] 
+Phase 1 Summary: 10/10 completed
+[2026-01-26 10:29:30] 
+======================================================================
+[2026-01-26 10:29:30] PIPELINE COMPLETE
+[2026-01-26 10:29:30] ======================================================================
+[2026-01-26 10:29:30] Log saved to: outputs/pipeline_logs/pipeline_20260126_061839.log

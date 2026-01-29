@@ -1,0 +1,452 @@
+[2026-01-27 03:00:11] ======================================================================
+[2026-01-27 03:00:11] MULTI-GPU SAE PIPELINE
+[2026-01-27 03:00:11] ======================================================================
+[2026-01-27 03:00:11] GPUs: [0, 1, 2, 3]
+[2026-01-27 03:00:11] Phases: 3 to 3
+[2026-01-27 03:00:11] Log: outputs/pipeline_logs/pipeline_20260127_030011.log
+
+[2026-01-27 03:00:11] Checking prerequisites...
+[2026-01-27 03:00:11]   ✓ Train: 3200 files
+[2026-01-27 03:00:11]   ✓ Val: 400 files
+[2026-01-27 03:00:11]   ✓ Test: 400 files
+[2026-01-27 03:00:11]   ✓ Found 4 CUDA devices
+[2026-01-27 03:00:11]     GPU 0: NVIDIA TITAN V
+[2026-01-27 03:00:11]     GPU 1: NVIDIA TITAN V
+[2026-01-27 03:00:11]     GPU 2: NVIDIA TITAN V
+[2026-01-27 03:00:11]     GPU 3: NVIDIA TITAN V
+[2026-01-27 03:00:11] ✓ All prerequisites met
+[2026-01-27 03:00:11] 
+======================================================================
+[2026-01-27 03:00:11] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 03:00:11] ======================================================================
+
+[2026-01-27 03:00:11] Using best variant from Phase 2: topk
+[2026-01-27 03:00:11] Running feature significance analysis for variant: topk
+[2026-01-27 03:00:11] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 03:06:11] ✓ analyze_feature_significance.py completed successfully
+[2026-01-27 03:06:11] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: TOPK
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for TOPK:
+  Composite score: 0.639
+  Config: latent_dim=256, k=16
+
+Loading SAE model...
+✓ Loaded TOPK SAE (latent_dim=256)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 192 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 163/192
+
+Saving results to outputs/feature_analysis_topk/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 192
+Significant pairs (FDR < 0.05): 163
+
+Significant features per motif:
+  in_feedforward_loop: 41
+  in_feedback_loop: 41
+  in_single_input_module: 41
+  in_cascade: 40
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_topk/
+================================================================================
+
+[2026-01-27 03:06:11] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 03:06:11] ✗ run_interpretability_experiments.py failed
+[2026-01-27 03:06:11] Error:   File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/run_interpretability_experiments.py", line 791
+    {results_dir}")
+                 ^
+SyntaxError: unterminated string literal (detected at line 791)
+
+[2026-01-27 03:06:11] 
+======================================================================
+[2026-01-27 03:06:11] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 03:06:11] ======================================================================
+
+[2026-01-27 03:06:11] Running native ablation for motif: in_feedback_loop
+[2026-01-27 03:06:11] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedback_loop --use-rpb --k 16
+[2026-01-27 03:06:20] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 03:06:20] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedback_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedback_loop
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.735
+  Features with |r_pb| > 0.3: 16
+
+Top 5 features by |r_pb| to in_feedback_loop:
+  1. Feature 125: |r_pb| = 0.735
+  2. Feature 211: |r_pb| = 0.432
+  3. Feature 186: |r_pb| = 0.430
+  4. Feature 35: |r_pb| = 0.423
+  5. Feature 76: |r_pb| = 0.399
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 125, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 211, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 186, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 35, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 76, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 03:06:20] Running native ablation for motif: in_cascade
+[2026-01-27 03:06:20] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_cascade --use-rpb --k 16
+[2026-01-27 03:06:28] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 03:06:28] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_cascade
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_cascade
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.102
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_cascade:
+  1. Feature 223: |r_pb| = 0.102
+  2. Feature 187: |r_pb| = 0.100
+  3. Feature 64: |r_pb| = 0.099
+  4. Feature 186: |r_pb| = 0.094
+  5. Feature 211: |r_pb| = 0.092
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 223, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 187, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 64, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 186, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 211, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 03:06:28] Running native ablation for motif: in_feedforward_loop
+[2026-01-27 03:06:28] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_feedforward_loop --use-rpb --k 16
+[2026-01-27 03:06:36] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 03:06:36] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedforward_loop
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedforward_loop
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.294
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_feedforward_loop:
+  1. Feature 125: |r_pb| = 0.294
+  2. Feature 211: |r_pb| = 0.147
+  3. Feature 35: |r_pb| = 0.147
+  4. Feature 186: |r_pb| = 0.146
+  5. Feature 76: |r_pb| = 0.142
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 125, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 211, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 35, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 186, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 76, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 03:06:36] Running native ablation for motif: in_single_input_module
+[2026-01-27 03:06:36] Running: native_gnn_ablation.py --variant topk --latent_dim 256 --motif in_single_input_module --use-rpb --k 16
+[2026-01-27 03:06:45] ✓ native_gnn_ablation.py completed successfully
+[2026-01-27 03:06:45] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_single_input_module
+Top features to ablate: 5
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_single_input_module
+  Variant: topk, Latent dim: 256
+  ✓ Loading cached latents from latents_topk_latent256_k16.pkl
+  ✓ Loaded 4000 nodes × 256 latent dims (CACHED)
+  Max |r_pb|: 0.293
+  Features with |r_pb| > 0.3: 0
+
+Top 5 features by |r_pb| to in_single_input_module:
+  1. Feature 125: |r_pb| = 0.293
+  2. Feature 211: |r_pb| = 0.147
+  3. Feature 35: |r_pb| = 0.146
+  4. Feature 186: |r_pb| = 0.145
+  5. Feature 76: |r_pb| = 0.142
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 125, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 211, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 35, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 186, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+Error: Failed to load GNN model: GCNModel.__init__() got an unexpected keyword argument 'hidden_dim1'
+Running native ablation for feature 76, motif=in_feedback_loop
+
+Processing Summary:
+  Successfully processed: 0 graphs
+  Skipped (missing files): 0 graphs
+  Errors: 100 graphs
+
+
+======================================================================
+✓ STRATEGY 1 ENHANCED (SAE r_pb Guided) COMPLETE
+======================================================================
+
+[2026-01-27 03:06:45] 
+======================================================================
+[2026-01-27 03:06:45] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 03:06:45] ======================================================================
+
+[2026-01-27 03:06:45] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 03:06:46] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 03:06:46] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 03:06:46] 
+======================================================================
+[2026-01-27 03:06:46] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 03:06:46] ======================================================================
+
+[2026-01-27 03:06:46] Running: generate_mixed_motif_activations.py 
+[2026-01-27 03:06:56] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 03:06:56] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 03:06:56] Mixed-motif generalization requires manual feature selection
+[2026-01-27 03:06:56] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 03:06:56] 
+======================================================================
+[2026-01-27 03:06:56] PIPELINE COMPLETE
+[2026-01-27 03:06:56] ======================================================================
+[2026-01-27 03:06:56] Log saved to: outputs/pipeline_logs/pipeline_20260127_030011.log

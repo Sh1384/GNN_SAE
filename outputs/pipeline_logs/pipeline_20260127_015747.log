@@ -1,0 +1,162 @@
+[2026-01-27 01:57:47] ======================================================================
+[2026-01-27 01:57:47] MULTI-GPU SAE PIPELINE
+[2026-01-27 01:57:47] ======================================================================
+[2026-01-27 01:57:47] GPUs: [0, 1, 2, 3]
+[2026-01-27 01:57:47] Phases: 3 to 3
+[2026-01-27 01:57:47] Log: outputs/pipeline_logs/pipeline_20260127_015747.log
+
+[2026-01-27 01:57:47] Checking prerequisites...
+[2026-01-27 01:57:47]   ✓ Train: 3200 files
+[2026-01-27 01:57:47]   ✓ Val: 400 files
+[2026-01-27 01:57:47]   ✓ Test: 400 files
+[2026-01-27 01:57:48]   ✓ Found 4 CUDA devices
+[2026-01-27 01:57:48]     GPU 0: NVIDIA TITAN V
+[2026-01-27 01:57:48]     GPU 1: NVIDIA TITAN V
+[2026-01-27 01:57:48]     GPU 2: NVIDIA TITAN V
+[2026-01-27 01:57:48]     GPU 3: NVIDIA TITAN V
+[2026-01-27 01:57:48] ✓ All prerequisites met
+[2026-01-27 01:57:48] 
+======================================================================
+[2026-01-27 01:57:48] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 01:57:48] ======================================================================
+
+[2026-01-27 01:57:48] Using best variant from Phase 2: topk
+[2026-01-27 01:57:48] Running feature significance analysis for variant: topk
+[2026-01-27 01:57:48] Running: analyze_feature_significance.py --variant topk --source-csv outputs/sae_config_comparison.csv
+[2026-01-27 01:57:54] ✗ analyze_feature_significance.py failed
+[2026-01-27 01:57:54] Error: 
+Processing test graphs:   0%|          | 0/400 [00:00<?, ?it/s]
+Processing test graphs:   0%|          | 0/400 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 596, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 520, in main
+    df_latents, df_motifs = extract_latent_representations(model, test_graph_ids, latent_dim)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/analyze_feature_significance.py", line 132, in extract_latent_representations
+    latents = model.encode(activations)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/sparse_autoencoder.py", line 103, in encode
+    z = self.encoder(x)
+        ^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/users/goodarzilab/shervin/miniconda3/lib/python3.12/site-packages/torch/nn/modules/linear.py", line 134, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Expected all tensors to be on the same device, but got mat1 is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA_addmm)
+
+[2026-01-27 01:57:54] Warning: Feature significance analysis failed, but continuing...
+[2026-01-27 01:57:54] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 01:57:56] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 01:57:56] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+ERROR: Correlation data not found at outputs/feature_analysis_topk/latent_correlations.csv
+  Have you run: python analyze_feature_significance.py --variant topk?
+ERROR: Could not load correlation data
+
+[2026-01-27 01:57:56] 
+======================================================================
+[2026-01-27 01:57:56] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 01:57:56] ======================================================================
+
+[2026-01-27 01:57:56] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-27 01:57:56] 
+======================================================================
+[2026-01-27 01:57:56] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 01:57:56] ======================================================================
+
+[2026-01-27 01:57:56] Using best variant from Phase 2: topk
+[2026-01-27 01:57:56] Running: compare_ablation_strategies.py --motif-mode --variant topk
+[2026-01-27 01:57:58] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 01:57:58] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: TOPK
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-27 01:57:58] 
+======================================================================
+[2026-01-27 01:57:58] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 01:57:58] ======================================================================
+
+[2026-01-27 01:57:58] Running: generate_mixed_motif_activations.py 
+[2026-01-27 01:58:08] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-27 01:58:08] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer3_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-27 01:58:08] Mixed-motif generalization requires manual feature selection
+[2026-01-27 01:58:08] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-27 01:58:08] 
+======================================================================
+[2026-01-27 01:58:08] PIPELINE COMPLETE
+[2026-01-27 01:58:08] ======================================================================
+[2026-01-27 01:58:08] Log saved to: outputs/pipeline_logs/pipeline_20260127_015747.log

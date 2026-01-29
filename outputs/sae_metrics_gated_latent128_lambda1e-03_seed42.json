@@ -1,0 +1,45 @@
+{
+  "best_val_loss": 0.00037737758248113096,
+  "test_metrics": {
+    "total": 0.00036863493733108044,
+    "reconstruction": 0.00035885895158571657,
+    "sparsity": 0.0005815362528664991,
+    "l0_sparsity": 0.010578944813460112
+  },
+  "train_history": {
+    "train_loss": [
+      0.0004264572680767742
+    ],
+    "train_recon": [
+      0.00041100659291259944
+    ],
+    "train_sparsity": [
+      0.0016127441995195113
+    ],
+    "train_l0": [
+      0.03662848472595215
+    ],
+    "val_loss": [
+      0.00037737758248113096
+    ],
+    "val_recon": [
+      0.00036739950155606493
+    ],
+    "val_sparsity": [
+      0.0005991443977109157
+    ],
+    "val_l0": [
+      0.011045324383303523
+    ]
+  },
+  "config": {
+    "input_dim": 80,
+    "latent_dim": 128,
+    "sparsity_coef": 0.001,
+    "aux_coef": 0.03125,
+    "sparsity_method": "gated",
+    "target_sparsity": null,
+    "variant_name": "gated_latent128_lambda1e-03",
+    "seed": 42
+  }
+}

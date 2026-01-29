@@ -1,0 +1,65 @@
+[2026-01-26 22:08:44] ======================================================================
+[2026-01-26 22:08:44] MULTI-GPU SAE PIPELINE
+[2026-01-26 22:08:44] ======================================================================
+[2026-01-26 22:08:44] GPUs: [0, 1, 2, 3]
+[2026-01-26 22:08:44] Phases: 3 to 3
+[2026-01-26 22:08:44] Log: outputs/pipeline_logs/pipeline_20260126_220844.log
+
+[2026-01-26 22:08:44] Checking prerequisites...
+[2026-01-26 22:08:44]   ✓ Train: 3200 files
+[2026-01-26 22:08:44]   ✓ Val: 400 files
+[2026-01-26 22:08:44]   ✓ Test: 400 files
+[2026-01-26 22:08:45]   ✓ Found 4 CUDA devices
+[2026-01-26 22:08:45]     GPU 0: NVIDIA TITAN V
+[2026-01-26 22:08:45]     GPU 1: NVIDIA TITAN V
+[2026-01-26 22:08:45]     GPU 2: NVIDIA TITAN V
+[2026-01-26 22:08:45]     GPU 3: NVIDIA TITAN V
+[2026-01-26 22:08:45] ✓ All prerequisites met
+[2026-01-26 22:08:45] 
+======================================================================
+[2026-01-26 22:08:45] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-26 22:08:45] ======================================================================
+
+[2026-01-26 22:08:45] Running: run_interpretability_experiments.py 
+[2026-01-26 22:08:46] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-26 22:08:46] ERROR: Either --variant OR (--latent_dim AND --k) must be specified
+
+[2026-01-26 22:08:46] 
+======================================================================
+[2026-01-26 22:08:46] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-26 22:08:46] ======================================================================
+
+[2026-01-26 22:08:46] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-26 22:08:46] 
+======================================================================
+[2026-01-26 22:08:46] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-26 22:08:46] ======================================================================
+
+[2026-01-26 22:08:46] Running: compare_ablation_strategies.py --motif-mode
+[2026-01-26 22:08:48] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-26 22:08:48] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+Error: --motif-mode requires --variant or --all-variants
+
+[2026-01-26 22:08:48] 
+======================================================================
+[2026-01-26 22:08:48] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-26 22:08:48] ======================================================================
+
+[2026-01-26 22:08:48] Running: generate_mixed_motif_activations.py 
+[2026-01-26 22:08:56] ✗ generate_mixed_motif_activations.py failed
+[2026-01-26 22:08:56] Error: Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/generate_mixed_motif_activations.py", line 26, in <module>
+    from gnn_train_copy import GCNModel
+ModuleNotFoundError: No module named 'gnn_train_copy'
+
+[2026-01-26 22:08:56] 
+======================================================================
+[2026-01-26 22:08:56] PIPELINE COMPLETE
+[2026-01-26 22:08:56] ======================================================================
+[2026-01-26 22:08:56] Log saved to: outputs/pipeline_logs/pipeline_20260126_220844.log

@@ -1,0 +1,335 @@
+[2026-01-29 08:30:47] ======================================================================
+[2026-01-29 08:30:47] MULTI-GPU SAE PIPELINE
+[2026-01-29 08:30:47] ======================================================================
+[2026-01-29 08:30:47] GPUs: [0, 1, 2, 3]
+[2026-01-29 08:30:47] Phases: 3 to 3
+[2026-01-29 08:30:47] Log: outputs/pipeline_logs/pipeline_20260129_083047.log
+
+[2026-01-29 08:30:47] Checking prerequisites...
+[2026-01-29 08:30:47]   ✓ Train: 3200 files
+[2026-01-29 08:30:47]   ✓ Val: 400 files
+[2026-01-29 08:30:47]   ✓ Test: 400 files
+[2026-01-29 08:30:47]   ✓ Found 4 CUDA devices
+[2026-01-29 08:30:47]     GPU 0: NVIDIA TITAN V
+[2026-01-29 08:30:47]     GPU 1: NVIDIA TITAN V
+[2026-01-29 08:30:47]     GPU 2: NVIDIA TITAN V
+[2026-01-29 08:30:47]     GPU 3: NVIDIA TITAN V
+[2026-01-29 08:30:47] ✓ All prerequisites met
+[2026-01-29 08:30:47] 
+======================================================================
+[2026-01-29 08:30:47] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-29 08:30:47] ======================================================================
+
+[2026-01-29 08:30:47] Using best variant from Phase 2: switch
+[2026-01-29 08:30:47] Running feature significance analysis for variant: switch
+[2026-01-29 08:30:47] Running: analyze_feature_significance.py --variant switch --source-csv outputs/sae_config_comparison.csv
+[2026-01-29 08:34:33] ✓ analyze_feature_significance.py completed successfully
+[2026-01-29 08:34:33] ================================================================================
+FEATURE-MOTIF SIGNIFICANCE ANALYSIS: SWITCH
+================================================================================
+
+Loading configuration from outputs/sae_config_comparison.csv...
+✓ Best config for SWITCH:
+  Composite score: 0.582
+  Config: latent_dim=512, experts=8, latent_pe=64, k_pe=8
+
+Loading SAE model...
+✓ Loaded SWITCH SAE (latent_dim=512)
+
+Loading test graph IDs...
+✓ Loaded 400 test graph IDs
+Extracting SAE latent representations for test nodes...
+✓ Extracted latent representations for 4000 nodes
+Computing point-biserial correlations...
+✓ Computed 112 correlations
+
+Running permutation test with 1000 permutations...
+✓ Permutation testing complete
+  Significant feature-motif pairs (FDR < 0.05): 62/112
+
+Saving results to outputs/feature_analysis_switch/
+✓ Saved latent_correlations.csv
+✓ Saved feature_motif_correlations.csv
+
+Generating visualizations...
+✓ Saved feature_motif_heatmap.png
+✓ Saved feature_motif_heatmap_significant.png
+✓ Saved correlation_distributions.png
+✓ Saved null_distributions.png
+✓ Saved volcano_plot.png
+✓ Saved top_features_per_motif.png
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+Total feature-motif pairs analyzed: 112
+Significant pairs (FDR < 0.05): 62
+
+Significant features per motif:
+  in_feedforward_loop: 5
+  in_feedback_loop: 28
+  in_single_input_module: 27
+  in_cascade: 2
+
+✓ Analysis complete!
+✓ Results saved to: outputs/feature_analysis_switch/
+================================================================================
+
+[2026-01-29 08:34:33] Running: run_interpretability_experiments.py --variant switch
+[2026-01-29 08:34:58] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-29 08:34:58] ✓ Auto-loaded best config for SWITCH:
+  latent_dim=512
+  num_experts=8
+  latent_per_expert=64
+  k_per_expert=8
+  composite_score=0.581703125
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=512, k=8
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+
+Filtering criteria:
+  - FDR < 0.05: 62 pairs
+  - |rpb| >= 0: 112 pairs
+  - Both criteria: 62 pairs
+Saved feature mapping to: ablations/interpretability_switch_latent512_k8_rpb0.00_results/feature_motif_mapping.json
+
+Non-filtered features available for random controls: 0
+
+Filtered features per motif:
+  Cascade: 2 features
+  Feedback Loop: 28 features
+  Feedforward Loop: 5 features
+  Single Input Module: 27 features
+
+======================================================================
+MONOSEMANTICITY ANALYSIS
+======================================================================
+
+Feature specificity (after filtering):
+  Monosemantic (1 motif only): 1
+  Polysemantic (2 motifs): 22
+  Polysemantic (3 motifs): 3
+  Polysemantic (4 motifs): 2
+
+  Total unique features: 28
+  Monosemantic rate: 3.6%
+  Polysemantic rate: 96.4%
+
+Most polysemantic features (top 10):
+  z139: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.068, -0.546, 0.388, -0.067]
+  z163: 4 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module, in_cascade) [rpb: 0.070, -0.550, 0.389, -0.066]
+  z146: 3 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module) [rpb: 0.041, -0.305, 0.194]
+  z176: 3 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module) [rpb: 0.036, -0.293, 0.187]
+  z192: 3 motifs (in_feedforward_loop, in_feedback_loop, in_single_input_module) [rpb: 0.049, -0.338, 0.222]
+  z132: 2 motifs (in_feedback_loop, in_single_input_module) [rpb: 0.244, -0.167]
+  z147: 2 motifs (in_feedback_loop, in_single_input_module) [rpb: 0.050, -0.047]
+  z149: 2 motifs (in_feedback_loop, in_single_input_module) [rpb: 0.193, -0.120]
+  z150: 2 motifs (in_feedback_loop, in_single_input_module) [rpb: 0.176, -0.120]
+  z155: 2 motifs (in_feedback_loop, in_single_input_module) [rpb: 0.131, -0.075]
+
+======================================================================
+STEP 1: Motif-Specific Ablations
+======================================================================
+
+Ablating Cascade features (2)...
+Error in ablation cascade_switch_l512_experts8_latentpeexp64_k8:
+
+  Warning: Ablation experiment returned no results for Cascade
+
+Ablating Feedback Loop features (28)...
+Error in ablation feedback_loop_switch_l512_experts8_latentpeexp64_k8:
+
+  Warning: Ablation experiment returned no results for Feedback Loop
+
+Ablating Feedforward Loop features (5)...
+Error in ablation feedforward_loop_switch_l512_experts8_latentpeexp64_k8:
+
+  Warning: Ablation experiment returned no results for Feedforward Loop
+
+Ablating Single Input Module features (27)...
+Error in ablation single_input_module_switch_l512_experts8_latentpeexp64_k8:
+
+  Warning: Ablation experiment returned no results for Single Input Module
+
+WARNING: No motif-specific ablation results collected!
+This may be because:
+  1. No features met the filtering criteria
+  2. Ablation experiments failed
+Skipping statistical analysis and plotting.
+
+Saved phase_3a_config.json (status: incomplete)
+
+[2026-01-29 08:34:58] 
+======================================================================
+[2026-01-29 08:34:58] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-29 08:34:58] ======================================================================
+
+[2026-01-29 08:34:58] Running native ablation for motif: in_feedback_loop
+[2026-01-29 08:34:58] Running: native_gnn_ablation.py --variant switch --latent_dim 512 --motif in_feedback_loop --use-rpb
+[2026-01-29 08:35:01] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 08:35:01] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedback_loop
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'num_experts': 8, 'latent_per_expert': 64, 'k_per_expert': 8}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedback_loop
+  Variant: switch, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Failed to instantiate switch SAE model: SwitchSAE.__init__() got an unexpected keyword argument 'latent_dim'
+ERROR: Could not compute r_pb for variant switch
+
+[2026-01-29 08:35:01] Running native ablation for motif: in_cascade
+[2026-01-29 08:35:01] Running: native_gnn_ablation.py --variant switch --latent_dim 512 --motif in_cascade --use-rpb
+[2026-01-29 08:35:04] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 08:35:04] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_cascade
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'num_experts': 8, 'latent_per_expert': 64, 'k_per_expert': 8}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_cascade
+  Variant: switch, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Failed to instantiate switch SAE model: SwitchSAE.__init__() got an unexpected keyword argument 'latent_dim'
+ERROR: Could not compute r_pb for variant switch
+
+[2026-01-29 08:35:04] Running native ablation for motif: in_feedforward_loop
+[2026-01-29 08:35:04] Running: native_gnn_ablation.py --variant switch --latent_dim 512 --motif in_feedforward_loop --use-rpb
+[2026-01-29 08:35:08] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 08:35:08] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_feedforward_loop
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'num_experts': 8, 'latent_per_expert': 64, 'k_per_expert': 8}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_feedforward_loop
+  Variant: switch, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Failed to instantiate switch SAE model: SwitchSAE.__init__() got an unexpected keyword argument 'latent_dim'
+ERROR: Could not compute r_pb for variant switch
+
+[2026-01-29 08:35:08] Running native ablation for motif: in_single_input_module
+[2026-01-29 08:35:08] Running: native_gnn_ablation.py --variant switch --latent_dim 512 --motif in_single_input_module --use-rpb
+[2026-01-29 08:35:11] ✓ native_gnn_ablation.py completed successfully
+[2026-01-29 08:35:11] ======================================================================
+NATIVE GNN ABLATION - STRATEGY 1 ENHANCED (SAE r_pb Guided)
+======================================================================
+
+Using r_pb to rank SAE features by motif correlation
+Target motif: in_single_input_module
+Top features to ablate: 5
+  Loaded config from Phase 2 results: {'latent_dim': 512, 'num_experts': 8, 'latent_per_expert': 64, 'k_per_expert': 8}
+
+Computing r_pb for all SAE features...
+
+Computing SAE r_pb for motif: in_single_input_module
+  Variant: switch, Latent dim: 512
+  Loading SAE model and encoding activations...
+  ⚠️  Could not load SAE model: Failed to instantiate switch SAE model: SwitchSAE.__init__() got an unexpected keyword argument 'latent_dim'
+ERROR: Could not compute r_pb for variant switch
+
+[2026-01-29 08:35:11] 
+======================================================================
+[2026-01-29 08:35:11] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-29 08:35:11] ======================================================================
+
+[2026-01-29 08:35:11] Running: compare_ablation_strategies.py --motif-mode --variant switch
+[2026-01-29 08:35:12] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-29 08:35:12] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+
+----------------------------------------------------------------------
+Variant: SWITCH
+----------------------------------------------------------------------
+
+  Feedback Loop... ⚠ Missing results
+
+  Cascade... ⚠ Missing results
+
+  Feedforward Loop... ⚠ Missing results
+
+  Single Input Module... ⚠ Missing results
+
+======================================================================
+SAVING MOTIF-LEVEL SUMMARY
+======================================================================
+
+✓ Motif-group comparison complete!
+   Outputs saved to: outputs/ablation_strategy_comparison/
+
+[2026-01-29 08:35:12] 
+======================================================================
+[2026-01-29 08:35:12] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-29 08:35:12] ======================================================================
+
+[2026-01-29 08:35:12] Running: generate_mixed_motif_activations.py 
+[2026-01-29 08:35:20] ✓ generate_mixed_motif_activations.py completed successfully
+[2026-01-29 08:35:20] ======================================================================
+GENERATING ACTIVATIONS FOR MIXED-MOTIF GRAPHS
+======================================================================
+Using device: cuda
+Detected architecture: hidden_dim1=80, hidden_dim2=80
+Loaded GNN model from checkpoints/gnn_model.pt
+
+Found 1000 mixed-motif graphs
+Range: graph_4000 to graph_4999
+
+Generating activations...
+
+======================================================================
+SUMMARY
+======================================================================
+Total graphs processed: 1000
+Successfully saved: 1000
+Failed: 0
+
+Activations saved to: outputs/activations/layer2_new/mixed/
+Expected shape per graph: (n_nodes, 64)
+
+Sample verification (graph_4500):
+  Shape: torch.Size([10, 80])
+  Mean: 0.0000
+  Std: 0.0000
+
+======================================================================
+COMPLETE
+======================================================================
+
+[2026-01-29 08:35:20] Mixed-motif generalization requires manual feature selection
+[2026-01-29 08:35:20] Please run run_ablation.py and native_gnn_ablation.py with --use_mixed_motifs
+[2026-01-29 08:35:20] 
+======================================================================
+[2026-01-29 08:35:20] PIPELINE COMPLETE
+[2026-01-29 08:35:20] ======================================================================
+[2026-01-29 08:35:20] Log saved to: outputs/pipeline_logs/pipeline_20260129_083047.log

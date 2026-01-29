@@ -1,0 +1,12 @@
+{
+  "variant": "topk",
+  "latent_dim": 256,
+  "variant_kwargs": {
+    "k": 16
+  },
+  "min_rpb": 0,
+  "n_random_trials": 20,
+  "use_mixed_motifs": false,
+  "results_dir": "ablations/interpretability_topk_latent256_k16_rpb0.00_results",
+  "plots_dir": "ablations/interpretability_topk_latent256_k16_rpb0.00_plots"
+}

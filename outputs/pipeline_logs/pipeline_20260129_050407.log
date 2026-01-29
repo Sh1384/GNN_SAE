@@ -1,0 +1,79 @@
+[2026-01-29 05:04:07] ======================================================================
+[2026-01-29 05:04:07] MULTI-GPU SAE PIPELINE
+[2026-01-29 05:04:07] ======================================================================
+[2026-01-29 05:04:07] GPUs: [0, 1, 2, 3]
+[2026-01-29 05:04:07] Phases: 2 to 2
+[2026-01-29 05:04:07] Log: outputs/pipeline_logs/pipeline_20260129_050407.log
+
+[2026-01-29 05:04:07] Checking prerequisites...
+[2026-01-29 05:04:07]   ✓ Train: 3200 files
+[2026-01-29 05:04:07]   ✓ Val: 400 files
+[2026-01-29 05:04:07]   ✓ Test: 400 files
+[2026-01-29 05:04:07]   ✓ Found 4 CUDA devices
+[2026-01-29 05:04:07]     GPU 0: NVIDIA TITAN V
+[2026-01-29 05:04:07]     GPU 1: NVIDIA TITAN V
+[2026-01-29 05:04:07]     GPU 2: NVIDIA TITAN V
+[2026-01-29 05:04:07]     GPU 3: NVIDIA TITAN V
+[2026-01-29 05:04:07] ✓ All prerequisites met
+[2026-01-29 05:04:07] 
+======================================================================
+[2026-01-29 05:04:07] PHASE 2: CONFIGURATION COMPARISON
+[2026-01-29 05:04:07] ======================================================================
+
+[2026-01-29 05:04:07] Running: compare_sae_configs.py 
+[2026-01-29 05:07:46] ✗ compare_sae_configs.py failed
+[2026-01-29 05:07:46] Error: 
+topk configs:   0%|          | 0/11 [00:00<?, ?it/s]
+topk configs:   9%|▉         | 1/11 [00:03<00:30,  3.07s/it]
+topk configs:  18%|█▊        | 2/11 [00:05<00:25,  2.87s/it]
+topk configs:  27%|██▋       | 3/11 [00:09<00:25,  3.17s/it]
+topk configs:  36%|███▋      | 4/11 [00:12<00:22,  3.26s/it]
+topk configs:  45%|████▌     | 5/11 [00:16<00:20,  3.34s/it]
+topk configs:  55%|█████▍    | 6/11 [00:20<00:18,  3.70s/it]
+topk configs:  64%|██████▎   | 7/11 [00:27<00:18,  4.70s/it]
+topk configs:  73%|███████▎  | 8/11 [00:30<00:12,  4.28s/it]
+topk configs:  82%|████████▏ | 9/11 [00:35<00:08,  4.46s/it]
+topk configs:  91%|█████████ | 10/11 [00:41<00:04,  4.90s/it]
+topk configs: 100%|██████████| 11/11 [00:49<00:00,  5.84s/it]
+topk configs: 100%|██████████| 11/11 [00:49<00:00,  4.49s/it]
+
+gated configs:   0%|          | 0/9 [00:00<?, ?it/s]
+gated configs:  11%|█         | 1/9 [00:04<00:38,  4.79s/it]
+gated configs:  22%|██▏       | 2/9 [00:08<00:27,  3.93s/it]
+gated configs:  33%|███▎      | 3/9 [00:12<00:23,  3.96s/it]
+gated configs:  44%|████▍     | 4/9 [00:19<00:26,  5.33s/it]
+gated configs:  56%|█████▌    | 5/9 [00:26<00:23,  5.76s/it]
+gated configs:  67%|██████▋   | 6/9 [00:31<00:16,  5.52s/it]
+gated configs:  78%|███████▊  | 7/9 [00:45<00:16,  8.35s/it]
+gated configs:  89%|████████▉ | 8/9 [00:59<00:10, 10.08s/it]
+gated configs: 100%|██████████| 9/9 [01:10<00:00, 10.64s/it]
+gated configs: 100%|██████████| 9/9 [01:10<00:00,  7.88s/it]
+
+jumprelu configs:   0%|          | 0/6 [00:00<?, ?it/s]
+jumprelu configs:  17%|█▋        | 1/6 [00:07<00:37,  7.52s/it]
+jumprelu configs:  33%|███▎      | 2/6 [00:12<00:23,  5.96s/it]
+jumprelu configs:  50%|█████     | 3/6 [00:25<00:27,  9.24s/it]
+jumprelu configs:  67%|██████▋   | 4/6 [00:34<00:17,  8.97s/it]
+jumprelu configs:  83%|████████▎ | 5/6 [00:56<00:13, 13.90s/it]
+jumprelu configs: 100%|██████████| 6/6 [01:09<00:00, 13.35s/it]
+jumprelu configs: 100%|██████████| 6/6 [01:09<00:00, 11.50s/it]
+
+switch configs:   0%|          | 0/4 [00:00<?, ?it/s]
+switch configs:  25%|██▌       | 1/4 [00:03<00:11,  3.80s/it]
+switch configs:  50%|█████     | 2/4 [00:09<00:10,  5.10s/it]
+switch configs:  75%|███████▌  | 3/4 [00:14<00:05,  5.02s/it]
+switch configs: 100%|██████████| 4/4 [00:24<00:00,  6.77s/it]
+switch configs: 100%|██████████| 4/4 [00:24<00:00,  6.05s/it]
+Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 1172, in <module>
+    main()
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/compare_sae_configs.py", line 1036, in main
+    print(f"  k = {int(best['k'])}")
+                   ^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
+
+[2026-01-29 05:07:46] 
+======================================================================
+[2026-01-29 05:07:46] PIPELINE COMPLETE
+[2026-01-29 05:07:46] ======================================================================
+[2026-01-29 05:07:46] Log saved to: outputs/pipeline_logs/pipeline_20260129_050407.log

@@ -1,0 +1,17 @@
+Feature_Set,Motif,N_Features,Specific_Impact,Random_Mean,Random_Std,Z_Score,Percentile,P_Value,Significant
+Cascade,Single Input Module,40,2.1150141520240363e-08,0.0,0.0,0.0,100.0,0.0,True
+Cascade,Feedback Loop,40,2.0850268269018113e-05,-3.004691215476604e-08,6.617444900424222e-24,3.155344018026401e+18,100.0,0.0,True
+Cascade,Cascade,40,-6.182598349833102e-08,0.0,0.0,0.0,0.0,0.0,True
+Cascade,Feedforward Loop,40,-8.720954588866608e-09,0.0,0.0,0.0,0.0,0.0,True
+Feedback Loop,Single Input Module,41,2.7510829605322513e-08,0.0,0.0,0.0,100.0,0.0,True
+Feedback Loop,Feedback Loop,41,0.0005993891555599362,-3.004691215476604e-08,6.617444900424222e-24,9.0581668830165e+19,100.0,0.0,True
+Feedback Loop,Cascade,41,-7.993709487538804e-08,0.0,0.0,0.0,0.0,0.0,True
+Feedback Loop,Feedforward Loop,41,-1.1096296996894886e-08,0.0,0.0,0.0,0.0,0.0,True
+Feedforward Loop,Single Input Module,41,2.7510829605322513e-08,0.0,0.0,0.0,100.0,0.0,True
+Feedforward Loop,Feedback Loop,41,0.0005993891555599362,-3.004691215476604e-08,6.617444900424222e-24,9.0581668830165e+19,100.0,0.0,True
+Feedforward Loop,Cascade,41,-7.993709487538804e-08,0.0,0.0,0.0,0.0,0.0,True
+Feedforward Loop,Feedforward Loop,41,-1.1096296996894886e-08,0.0,0.0,0.0,0.0,0.0,True
+Single Input Module,Single Input Module,41,2.7510829605322513e-08,0.0,0.0,0.0,100.0,0.0,True
+Single Input Module,Feedback Loop,41,0.0005993891555599362,-3.004691215476604e-08,6.617444900424222e-24,9.0581668830165e+19,100.0,0.0,True
+Single Input Module,Cascade,41,-7.993709487538804e-08,0.0,0.0,0.0,0.0,0.0,True
+Single Input Module,Feedforward Loop,41,-1.1096296996894886e-08,0.0,0.0,0.0,0.0,0.0,True

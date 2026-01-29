@@ -1,0 +1,85 @@
+[2026-01-27 01:40:48] ======================================================================
+[2026-01-27 01:40:48] MULTI-GPU SAE PIPELINE
+[2026-01-27 01:40:48] ======================================================================
+[2026-01-27 01:40:48] GPUs: [0, 1, 2, 3]
+[2026-01-27 01:40:48] Phases: 3 to 3
+[2026-01-27 01:40:48] Log: outputs/pipeline_logs/pipeline_20260127_014048.log
+
+[2026-01-27 01:40:48] Checking prerequisites...
+[2026-01-27 01:40:48]   ✓ Train: 3200 files
+[2026-01-27 01:40:48]   ✓ Val: 400 files
+[2026-01-27 01:40:48]   ✓ Test: 400 files
+[2026-01-27 01:40:49]   ✓ Found 4 CUDA devices
+[2026-01-27 01:40:49]     GPU 0: NVIDIA TITAN V
+[2026-01-27 01:40:49]     GPU 1: NVIDIA TITAN V
+[2026-01-27 01:40:49]     GPU 2: NVIDIA TITAN V
+[2026-01-27 01:40:49]     GPU 3: NVIDIA TITAN V
+[2026-01-27 01:40:49] ✓ All prerequisites met
+[2026-01-27 01:40:49] 
+======================================================================
+[2026-01-27 01:40:49] PHASE 3a: SAE LATENT SPACE ABLATIONS
+[2026-01-27 01:40:49] ======================================================================
+
+[2026-01-27 01:40:49] Using best variant from Phase 2: topk
+[2026-01-27 01:40:49] Running: run_interpretability_experiments.py --variant topk
+[2026-01-27 01:40:51] ✓ run_interpretability_experiments.py completed successfully
+[2026-01-27 01:40:51] ✓ Auto-loaded best config for TOPK:
+  latent_dim=256
+  k=16
+  composite_score=0.6389583333333333
+
+======================================================================
+MOTIF-SPECIFIC ABLATION WITH EFFECT SIZE FILTERING
+======================================================================
+SAE Configuration:
+  latent_dim=256, k=16
+Graph Type:
+  Single-motif graphs (0-3999)
+Feature Selection:
+  FDR threshold: < 0.05
+  Min |rpb| threshold: >= 0
+Random Controls:
+  Trials per feature count: 20
+ERROR: Correlation data not found at outputs/feature_analysis_topk/latent_correlations.csv
+  Have you run: python analyze_feature_significance.py --variant topk?
+ERROR: Could not load correlation data
+
+[2026-01-27 01:40:51] 
+======================================================================
+[2026-01-27 01:40:51] PHASE 3b: NATIVE GNN ABLATIONS
+[2026-01-27 01:40:51] ======================================================================
+
+[2026-01-27 01:40:51] ERROR: Phase 3a config not found. Run Phase 3a first.
+[2026-01-27 01:40:51] 
+======================================================================
+[2026-01-27 01:40:51] PHASE 3c: ABLATION STRATEGY COMPARISON
+[2026-01-27 01:40:51] ======================================================================
+
+[2026-01-27 01:40:51] Running: compare_ablation_strategies.py --motif-mode
+[2026-01-27 01:40:53] ✓ compare_ablation_strategies.py completed successfully
+[2026-01-27 01:40:53] ======================================================================
+ABLATION STRATEGY COMPARISON: SAE Latent vs Native GNN
+======================================================================
+
+======================================================================
+MOTIF-GROUP LEVEL COMPARISON (Phase 3c Mode)
+======================================================================
+Error: --motif-mode requires --variant or --all-variants
+
+[2026-01-27 01:40:53] 
+======================================================================
+[2026-01-27 01:40:53] PHASE 3d: MIXED-MOTIF GENERALIZATION
+[2026-01-27 01:40:53] ======================================================================
+
+[2026-01-27 01:40:53] Running: generate_mixed_motif_activations.py 
+[2026-01-27 01:41:00] ✗ generate_mixed_motif_activations.py failed
+[2026-01-27 01:41:00] Error: Traceback (most recent call last):
+  File "/data/users/goodarzilab/shervin/182-GNN_SAE/sae/generate_mixed_motif_activations.py", line 26, in <module>
+    from gnn_train_copy import GCNModel
+ModuleNotFoundError: No module named 'gnn_train_copy'
+
+[2026-01-27 01:41:00] 
+======================================================================
+[2026-01-27 01:41:00] PIPELINE COMPLETE
+[2026-01-27 01:41:00] ======================================================================
+[2026-01-27 01:41:00] Log saved to: outputs/pipeline_logs/pipeline_20260127_014048.log

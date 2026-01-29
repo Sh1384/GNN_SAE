@@ -1,0 +1,15 @@
+{
+  "variant": "switch",
+  "latent_dim": 512,
+  "variant_kwargs": {
+    "num_experts": 8,
+    "latent_per_expert": 64,
+    "k_per_expert": 8
+  },
+  "min_rpb": 0,
+  "n_random_trials": 20,
+  "use_mixed_motifs": false,
+  "results_dir": "ablations/interpretability_switch_latent512_k8_rpb0.00_results",
+  "plots_dir": "ablations/interpretability_switch_latent512_k8_rpb0.00_plots",
+  "status": "incomplete_no_results"
+}
