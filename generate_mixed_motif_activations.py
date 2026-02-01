@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Generate Layer 2 Activations for Mixed-Motif Graphs
+Generate Layer 3 Activations for Mixed-Motif Graphs
 
-Loads mixed-motif graphs (4000-4999) and generates layer2 activations
+Loads mixed-motif graphs (4000-4999) and generates layer3 activations
 using the current GNN checkpoint (checkpoints/gnn_model.pt).
 
 Saves to: outputs/activations/layer2_new/mixed/
@@ -20,10 +20,11 @@ import networkx as nx
 from tqdm import tqdm
 from typing import Optional
 
-# Import GCN model from gnn_train_copy
+# Import GCN model from gnn_train (in parent directory)
 import sys
-sys.path.insert(0, str(Path(__file__).parent))
-from gnn_train_copy import GCNModel
+parent_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(parent_dir))
+from gnn_train import GCNModel
 
 
 def load_graph_from_pickle(graph_path: Path) -> Optional[Data]:
@@ -120,7 +121,7 @@ def load_gnn_model(checkpoint_path: Path, device: str = 'cuda') -> nn.Module:
 
 def extract_layer2_activation(model: GCNModel, data: Data, device: str = 'cuda') -> torch.Tensor:
     """
-    Extract layer 2 activation for a single graph.
+    Extract layer 3 activation for a single graph.
 
     Args:
         model: GNN model
@@ -136,10 +137,10 @@ def extract_layer2_activation(model: GCNModel, data: Data, device: str = 'cuda')
         # Forward pass with activation storage
         _ = model.forward(data, store_activations=True)
 
-        # Get layer2 activation
-        layer2_act = model.layer2_activations.cpu()
+        # Get layer3 activation (64-dim)
+        layer3_act = model.layer2_activations.cpu()
 
-    return layer2_act
+    return layer3_act
 
 
 def main():
@@ -196,14 +197,14 @@ def main():
             failed_count += 1
             continue
 
-        # Extract layer2 activation
+        # Extract layer3 activation
         try:
-            layer2_act = extract_layer2_activation(model, data, device)
+            layer3_act = extract_layer2_activation(model, data, device)
 
             # Save activation
             graph_id = data.graph_id
             output_file = output_dir / f"graph_{graph_id}.pt"
-            torch.save(layer2_act, output_file)
+            torch.save(layer3_act, output_file)
 
             success_count += 1
 

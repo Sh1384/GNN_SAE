@@ -571,7 +571,7 @@ def run_native_ablation(variant: str, config: Dict, feature_idx: int,
         from pathlib import Path
         parent_dir = Path(__file__).parent.parent
         sys.path.insert(0, str(parent_dir))
-        from gnn_train_copy import GCNModel
+        from gnn_train import GCNModel
         gnn_checkpoint_path = "checkpoints/gnn_model.pt"
         if Path(gnn_checkpoint_path).exists():
             try:
@@ -713,7 +713,7 @@ def run_native_dimension_ablation(motif: str, native_dims: List[int],
         from pathlib import Path
         parent_dir = Path(__file__).parent.parent
         sys.path.insert(0, str(parent_dir))
-        from gnn_train_copy import GCNModel
+        from gnn_train import GCNModel
         gnn_checkpoint_path = "checkpoints/gnn_model.pt"
         if Path(gnn_checkpoint_path).exists():
             state_dict = torch.load(gnn_checkpoint_path, weights_only=True)

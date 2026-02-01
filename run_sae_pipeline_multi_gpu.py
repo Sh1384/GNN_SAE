@@ -38,11 +38,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 import torch
 
-# Add sae folder to path for imports
-SAE_DIR = Path(__file__).parent / "sae"
-sys.path.insert(0, str(SAE_DIR))
-
-# Now we can import from sae folder
+# Import SAE models from current directory
 from sparse_autoencoder import TopKSAE, GatedSAE, JumpReLUSAE, SwitchSAE, ActivationDataset, SAETrainer, save_json
 
 
@@ -414,11 +410,11 @@ def run_phase1_parallel(gpu_devices: List[int], log_file: Path, force_retrain: b
 # ============================================================================
 
 def run_script(script_name: str, args: List[str], log_file: Path, timeout: Optional[int] = None) -> bool:
-    """Run a Python script from the sae folder."""
-    script_path = SAE_DIR / script_name
+    """Run a Python script from the project root directory."""
+    script_path = Path(script_name)
 
     if not script_path.exists():
-        log_message(f"ERROR: {script_name} not found in sae/", log_file)
+        log_message(f"ERROR: {script_name} not found in project root", log_file)
         return False
 
     log_message(f"Running: {script_name} {' '.join(args)}", log_file)
@@ -429,7 +425,7 @@ def run_script(script_name: str, args: List[str], log_file: Path, timeout: Optio
             capture_output=True,
             text=True,
             timeout=timeout,
-            cwd=str(Path.cwd())  # Run from project root, not sae/
+            cwd=str(Path.cwd())
         )
 
         if result.returncode == 0:

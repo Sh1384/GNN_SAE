@@ -6,30 +6,21 @@ echo "          SAE PIPELINE - PRE-FLIGHT CHECKLIST"
 echo "═══════════════════════════════════════════════════════════════"
 echo
 
-# Check 1: sae folder and scripts
-echo "✓ Checking sae/ folder..."
-if [ -d "sae" ]; then
-    script_count=$(ls sae/*.py 2>/dev/null | wc -l)
-    echo "  Found sae/ directory with $script_count Python scripts"
-
-    # Check key files
-    for script in sparse_autoencoder.py compare_sae_configs.py retrain_best_configs.py; do
-        if [ -f "sae/$script" ]; then
-            echo "  ✓ sae/$script"
-        else
-            echo "  ✗ MISSING: sae/$script"
-        fi
-    done
-else
-    echo "  ✗ ERROR: sae/ directory not found!"
-    exit 1
-fi
+# Check 1: Key Python scripts
+echo "✓ Checking required scripts..."
+for script in sparse_autoencoder.py compare_sae_configs.py retrain_best_configs.py run_ablation.py; do
+    if [ -f "$script" ]; then
+        echo "  ✓ $script"
+    else
+        echo "  ✗ MISSING: $script"
+    fi
+done
 echo
 
 # Check 2: Layer 3 activations
 echo "✓ Checking activations..."
 for split in train val test; do
-    dir="outputs/activations/layer3_new/$split"
+    dir="outputs/activations/layer2_new/$split"
     if [ -d "$dir" ]; then
         count=$(ls $dir/graph_*.pt 2>/dev/null | wc -l)
         echo "  $split: $count files"

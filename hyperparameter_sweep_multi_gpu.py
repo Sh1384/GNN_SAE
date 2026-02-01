@@ -18,8 +18,8 @@ from optuna.trial import Trial
 from optuna.samplers import TPESampler
 from joblib import Parallel, delayed
 
-# Import from gnn_train_copy
-from gnn_train_copy import (
+# Import from gnn_train
+from gnn_train import (
     GraphDataset,
     GCNModel,
     GNNTrainer,
